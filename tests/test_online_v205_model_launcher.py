@@ -103,6 +103,7 @@ def test_dry_run_never_prompts_or_probes_and_only_creates_logs(monkeypatch, tmp_
                            ('--preparation-mode', 'before-actors')]:
         assert command[command.index(flag) + 1] == expected
     assert '--dry-run' in command and '--headless' in command and '--resume' not in command
+    assert '--retry-infra' not in command
     assert 'shell' not in options and options['cwd'] == ROOT
     assert {path.name for path in run_root.iterdir()} == {'logs'}
     assert json.loads((run_root / 'logs' / 'model_config.json').read_text())['models'][0]['model'] == model_id
@@ -180,16 +181,68 @@ def test_saved_config_is_stable_on_resume_and_model_change_is_rejected(tmp_path)
     assert saved.read_bytes() == original and manifest.read_text() == '{"registered": true}\n'
 
 
-def test_config_mismatch_blocks_prompt_and_subprocess(monkeypatch, tmp_path):
+@pytest.mark.parametrize('provider,model_id', [
+    ('deepseek', 'deepseek-v4-pro'), ('glm', 'glm-5.3'),
+    ('kimi', 'k3-256k'), ('gpt', 'gpt-5.4'),
+])
+def test_config_mismatch_blocks_prompt_and_subprocess(monkeypatch, tmp_path, provider, model_id):
     base_path = write_config(tmp_path)
     run_root = tmp_path / 'run'
-    launcher.persist_config(run_root, launcher.one_model_config(provider_config(), 'gateway_ds', 'old-model'))
+    saved = launcher.persist_config(run_root, launcher.one_model_config(provider_config(), launcher.PROVIDERS[provider], 'old-model'))
+    original = saved.read_bytes()
+    (run_root / 'manifest.json').write_text('{"registered": true}\n')
     monkeypatch.setattr(launcher.getpass, 'getpass', lambda *_: pytest.fail('Must reject before asking for credentials'))
     monkeypatch.setattr(launcher.subprocess, 'Popen', lambda *_, **__: pytest.fail('Must reject before any API subprocess'))
     with pytest.raises(SystemExit) as caught:
-        launcher.main(['--provider', 'deepseek', '--model', 'new-model', '--config', str(base_path),
+        launcher.main(['--provider', provider, '--model', model_id, '--config', str(base_path),
                        '--run-root', str(run_root), '--resume'])
     assert caught.value.code == 2
+    assert saved.read_bytes() == original
+
+
+@pytest.mark.parametrize('provider,model_id', [
+    ('deepseek', 'deepseek-v4-pro'), ('glm', 'glm-5.3'),
+    ('kimi', 'k3-256k'), ('gpt', 'gpt-5.4'),
+])
+@pytest.mark.parametrize('retry_infra', [False, True])
+def test_resume_reuses_original_config_and_only_forwards_explicit_retry(
+        monkeypatch, tmp_path, provider, model_id, retry_infra):
+    base_path = write_config(tmp_path)
+    run_root = tmp_path / 'run'
+    alias = launcher.PROVIDERS[provider]
+    saved = launcher.persist_config(run_root, launcher.one_model_config(provider_config(), alias, model_id))
+    original, original_mtime = saved.read_bytes(), saved.stat().st_mtime_ns
+    manifest = run_root / 'manifest.json'
+    manifest.write_text('{"registered": true}\n')
+    finished_artifact = run_root / 'finished_episode.json'
+    finished_artifact.write_text('{"state": "finished"}\n')
+    monkeypatch.setattr(launcher.getpass, 'getpass', lambda *_: pytest.fail('dry resume must not ask for keys'))
+    calls = capture_processes(monkeypatch)
+    argv = ['--provider', provider, '--model', model_id, '--config', str(base_path),
+            '--run-root', str(run_root), '--resume', '--dry-run']
+    if retry_infra:
+        argv.append('--retry-infra')
+    assert launcher.main(argv) == 0 and len(calls) == 1
+    command = calls[0][0]
+    assert Path(command[1]).name == 'run_online_v2.py'
+    assert command[command.index('--config') + 1] == str(saved)
+    assert command[command.index('--only') + 1] == alias
+    assert '--resume' in command and '--dry-run' in command
+    assert ('--retry-infra' in command) is retry_infra
+    assert saved.read_bytes() == original and saved.stat().st_mtime_ns == original_mtime
+    assert manifest.read_text() == '{"registered": true}\n'
+    assert finished_artifact.read_text() == '{"state": "finished"}\n'
+
+
+def test_retry_infra_without_resume_is_rejected_before_any_prompt_or_process(monkeypatch, tmp_path, capsys):
+    monkeypatch.setattr(launcher.getpass, 'getpass', lambda *_: pytest.fail('Invalid retry must not prompt'))
+    monkeypatch.setattr(launcher.subprocess, 'Popen', lambda *_, **__: pytest.fail('Invalid retry must not launch any process'))
+    run_root = tmp_path / 'run'
+    with pytest.raises(SystemExit) as caught:
+        launcher.main(['--provider', 'gpt', '--model', 'gpt-5.4', '--run-root', str(run_root), '--retry-infra'])
+    assert caught.value.code == 2
+    assert '--retry-infra requires --resume' in capsys.readouterr().err
+    assert not run_root.exists()
 
 
 def test_registered_root_without_generated_config_and_nonempty_root_are_preserved(tmp_path):
