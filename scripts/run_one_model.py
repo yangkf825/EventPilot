@@ -156,6 +156,8 @@ def runner_argv(args, alias, config_path, run_root):
                         '--multi-case-ids', PILOT_MULTI_CASES])
     if args.resume:
         command.append('--resume')
+    if args.retry_infra:
+        command.append('--retry-infra')
     if args.dry_run:
         command.append('--dry-run')
     return command
@@ -222,6 +224,8 @@ def parser():
     result.add_argument('--repeats', type=int, default=1)
     result.add_argument('--workers', type=int, default=2)
     result.add_argument('--resume', action='store_true')
+    result.add_argument('--retry-infra', action='store_true',
+                        help='With --resume only: retry infrastructure/unverified jobs; keep scored Agent results')
     result.add_argument('--dry-run', action='store_true', help='No key prompt, connectivity probe, browser or API calls')
     result.add_argument('--skip-probe', action='store_true', help='Skip the connectivity API request before a real run')
     result.add_argument('--headed', action='store_true', help='Show browser windows (default: headless)')
@@ -236,10 +240,13 @@ def main(argv=None):
             raise ValueError('--repeats and --workers must be positive integers')
         if args.resume and args.run_root is None:
             raise ValueError('--resume requires the original --run-root')
+        if args.retry_infra and not args.resume:
+            raise ValueError('--retry-infra requires --resume')
         alias = PROVIDERS[args.provider]
         config = one_model_config(load_json(args.config.expanduser().resolve(), 'provider config'), alias, args.model)
         run_root = (args.run_root or default_run_root(args.model)).expanduser().resolve()
         config_path = persist_config(run_root, config, resume=args.resume)
+        command = runner_argv(args, alias, config_path, run_root)
         env_name = config['models'][0]['api_key_env']
         print(f'Model ID: {args.model}\nProvider alias: {alias}\nAPI key environment: {env_name}\nRun directory: {run_root}', flush=True)
         env = os.environ.copy()
@@ -255,7 +262,7 @@ def main(argv=None):
                 result = stream_command(probe, env, run_root / 'logs' / 'probe.log')
                 if result:
                     return result
-        return stream_command(runner_argv(args, alias, config_path, run_root), env, run_root / 'logs' / 'run.log')
+        return stream_command(command, env, run_root / 'logs' / 'run.log')
     except (ValueError, OSError) as error:
         cli.error(str(error))
     except (KeyboardInterrupt, EOFError):

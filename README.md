@@ -213,7 +213,11 @@ python -u scripts/run_online_v2.py run \
 
 `all` 包含 `main,ablation,counterfactual,multi,baseline,final_intent`。100 条全规模、1 repeat 下，每个模型注册 **700 个作业**。主实验和消融的 Full Trajectory 条件共享同一 episode，避免把重复采样当成不同条件；实际 actor episode 数最多 600，API 请求数通常更多。四模型注册 2,800 个作业。
 
-续跑上面的 DeepSeek Pro run，保持原数据、代码、配置与所有注册参数一致：
+### 断点续跑与异常重试
+
+支持 `--resume`。程序复用已完成的作业，日志显示 `CACHED`；未完成或中断的作业建立新 attempt，从任务入口或可用的事件检查点重做该 episode。已经完成的 preparation 资格检查默认也会复用。续跑精度是**作业 / episode 级**，正在打开的网页标签和尚未完成的 API 响应不会跨进程延续。
+
+例如续跑上面固定目录的 DeepSeek Pro 实验：
 
 ```bash
 python -u scripts/run_one_model.py \
@@ -221,9 +225,66 @@ python -u scripts/run_one_model.py \
   --mode full --repeats 1 --run-root runs/deepseek_v4_pro_full_once --resume
 ```
 
-自动创建目录的运行，续跑时把 `--run-root` 换成启动时显示的实际目录。`logs/run.log` 保存持续进度，`logs/model_probe.json` 保存连通性报告。可用 `--workers 1` 降低并发；完整选项见 `python scripts/run_one_model.py --help`。
+其他四类单模型运行的续跑命令如下。把 `--run-root` 的示例路径换成**启动时显示的原结果目录**；如果原先用了不同模型 ID，也要把 `--model` 换回原 ID：
 
-新数据版本或新代码应使用新目录。只有确定需要重试基础设施失败时才加 `--retry-infra`；它不会选择性重跑已计分的 Agent 错误。
+DeepSeek：
+
+```bash
+python -u scripts/run_one_model.py \
+  --provider deepseek --model deepseek-v4-flash --mode full --repeats 1 \
+  --run-root 'runs/ORIGINAL_DEEPSEEK_RUN' --resume
+```
+
+GLM：
+
+```bash
+python -u scripts/run_one_model.py \
+  --provider glm --model glm-5.3 --mode full --repeats 1 \
+  --run-root 'runs/ORIGINAL_GLM_RUN' --resume
+```
+
+Kimi：
+
+```bash
+python -u scripts/run_one_model.py \
+  --provider kimi --model k3-256k --mode full --repeats 1 \
+  --run-root 'runs/ORIGINAL_KIMI_RUN' --resume
+```
+
+GPT：
+
+```bash
+python -u scripts/run_one_model.py \
+  --provider gpt --model gpt-5.4 --mode full --repeats 1 \
+  --run-root 'runs/ORIGINAL_GPT_RUN' --resume
+```
+
+保持原代码、数据、Python/依赖版本、模型配置及所有注册参数一致。首次 `--mode pilot`，续跑保持 pilot；首次用了 `--workers 1` 或 `--repeats 3`，续跑也必须填写相同值。`--resume` 必须显式提供原 `--run-root`，不重新生成带新时间戳的目录。先停止原运行进程，再续跑同一目录。
+
+每次续跑前仍会做模型连通性探测；Key 环境变量缺失时会重新隐藏输入。`logs/run.log` 追加进度，旧结果与 attempt 保留。`logs/model_probe.json` 为最近一次探测报告，历次探测输出追加在 `logs/probe.log` 中。
+
+已经完成并记为接口/环境不可确定的作业，普通 `--resume` 也会跳过。确需重新尝试这类问题，使用 **`--resume --retry-infra`**，例如：
+
+```bash
+python -u scripts/run_one_model.py \
+  --provider deepseek --model deepseek-v4-pro --mode full --repeats 1 \
+  --run-root runs/deepseek_v4_pro_full_once --resume --retry-infra
+```
+
+该选项重新检查准备资格，重试被 runner 标记为基础设施失败或结果未验证的作业，保存旧 attempt；不会选择性重跑已计分的 Agent 错误或修改 Gold。常规中断续跑只需 `--resume`。如果中断发生在 PREP 阶段并留下非 ready 缓存，普通续跑仍提示 `checkpoint_unavailable` 时，也使用 `--resume --retry-infra` 重新尝试准备与资格审计。
+
+如果首次直接使用 `run_online_v2.py`，继续使用原来的完整 Python 命令，加上 `--resume`；不要切换入口，因为此类目录没有 `logs/model_config.json`。前面的四模型共同 run 可这样续跑：
+
+```bash
+python -u scripts/run_online_v2.py run \
+  --config models.gateway.json \
+  --only gateway_ds,gateway_glm,gateway_kimi,gateway_gpt \
+  --run-root runs/four_models_full \
+  --experiments all --repeats 1 --workers 4 --headless \
+  --prep-model gateway_ds --judge-model gateway_gpt --resume
+```
+
+完整选项见 `python scripts/run_one_model.py --help`。新数据版本或新代码应使用新目录，不混入旧结果。
 
 准备阶段现在逐例打印 START、API 调用和回放复核状态，并每 15 秒输出心跳。`preparation_state.json` 保存当前案例和完成计数；回放退出、浏览器操作及关闭都有截止时间，超时保留为环境未确定。清理旧请求后再次严格核对检查点。
 
