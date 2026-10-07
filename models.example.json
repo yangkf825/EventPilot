@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "timeout": 180,
+  "retries": 2,
+  "models": [
+    {
+      "name": "gateway_ds",
+      "enabled": true,
+      "backend": "chat-completions",
+      "endpoint": "https://api.example.com/v1/chat/completions",
+      "model": "REPLACE_WITH_EXACT_MODEL_ID",
+      "api_key_env": "GATEWAY_DS_API_KEY",
+      "temperature": 0,
+      "min_interval_s": 1,
+      "max_tokens": 16384
+    },
+    {
+      "name": "gateway_glm",
+      "enabled": true,
+      "backend": "chat-completions",
+      "endpoint": "https://api.example.com/v1/chat/completions",
+      "model": "REPLACE_WITH_EXACT_MODEL_ID",
+      "api_key_env": "GATEWAY_GLM_API_KEY",
+      "temperature": 0,
+      "min_interval_s": 1,
+      "max_tokens": 16384
+    },
+    {
+      "name": "gateway_kimi",
+      "enabled": true,
+      "backend": "chat-completions",
+      "endpoint": "https://api.example.com/v1/chat/completions",
+      "model": "REPLACE_WITH_EXACT_MODEL_ID",
+      "api_key_env": "GATEWAY_KIMI_API_KEY",
+      "temperature": 0,
+      "min_interval_s": 1,
+      "max_tokens": 16384
+    },
+    {
+      "name": "gateway_gpt",
+      "enabled": true,
+      "backend": "chat-completions",
+      "endpoint": "https://api.example.com/v1/chat/completions",
+      "model": "REPLACE_WITH_EXACT_MODEL_ID",
+      "api_key_env": "GATEWAY_GPT_API_KEY",
+      "temperature": 0,
+      "min_interval_s": 1,
+      "max_completion_tokens": 16384
+    }
+  ]
+}
