@@ -1,0 +1,331 @@
+{
+  "source_dataset": "osunlp/Mind2Web",
+  "revision": "17ece8eb89862368edc0cc806acee6fca5163474",
+  "tasks": [
+    {
+      "task_id": "01815816-53e8-43b4-8923-b0f4390a9a15",
+      "website": "apple",
+      "split": "test_task",
+      "original_goal_sha256": "84bca634f4aded64ebb2b1171eef5db43ac19d1d07914080818661f8ebf9d335"
+    },
+    {
+      "task_id": "05d98f5e-bdda-4d35-8231-bfd14e711640",
+      "website": "finance.yahoo",
+      "split": "test_domain",
+      "original_goal_sha256": "26ca5278e72132c6be4ac88eeccb73b537744a2d9d5cf85f2cebadd8e9b73e37"
+    },
+    {
+      "task_id": "0b5d3539-fe0e-4777-99e5-3555b6ce73c7",
+      "website": "theweathernetwork",
+      "split": "test_domain",
+      "original_goal_sha256": "65e68874df9e15362bb9807a62a12140beee42f5d348f334ee63b45aa756c00c"
+    },
+    {
+      "task_id": "0e56e2a4-99e9-4692-9763-231bcab8806d",
+      "website": "finance.yahoo",
+      "split": "test_domain",
+      "original_goal_sha256": "3b483bf894bfc648259ad86154ee636e864b47c75cd5555eedf8385684a0313d"
+    },
+    {
+      "task_id": "12cfbc8c-8e27-419a-b87e-f8b8f1dfec60",
+      "website": "finance.yahoo",
+      "split": "test_domain",
+      "original_goal_sha256": "32ca91714026b1ee4f07915236d0b5e1f26a659c76420df347d40368e900fc23"
+    },
+    {
+      "task_id": "17cfd4fe-079b-4f9d-ae2a-d17660677d1d",
+      "website": "gov.uk",
+      "split": "test_domain",
+      "original_goal_sha256": "3871bb5edfa13ae93d075a488385c5692ff3f7a450e4102caa6e553335d59bbf"
+    },
+    {
+      "task_id": "1c73e566-7bab-40d3-ba28-bf016cbe7b92",
+      "website": "usps",
+      "split": "test_domain",
+      "original_goal_sha256": "63aee870bc3fbfc79e230405e27d0c643289ca350f7460fdad6ec7f823079691"
+    },
+    {
+      "task_id": "253b052a-a418-466d-9117-9d92a5ac9f3d",
+      "website": "theweathernetwork",
+      "split": "test_domain",
+      "original_goal_sha256": "809a66d6559d75d0dcd475573c9bd3e24c52df748aeb660e6c3d53fac584a6d5"
+    },
+    {
+      "task_id": "277e3468-f8cb-45c6-9e4b-0328066c42d3",
+      "website": "usps",
+      "split": "test_domain",
+      "original_goal_sha256": "cc3557a63246021ad0b21cb7be432fd200800b1532cef8ee726b5b5ca1eb75f9"
+    },
+    {
+      "task_id": "2fc80069-bdba-4064-82d0-1123a85f2651",
+      "website": "apple",
+      "split": "test_task",
+      "original_goal_sha256": "e5eaf5f329909624e441e4cf68d6e8098cf998bdc75a307e7f1af43fb2644e75"
+    },
+    {
+      "task_id": "335e1107-45ac-4969-85b8-7dfda00cc7ef",
+      "website": "gov.uk",
+      "split": "test_domain",
+      "original_goal_sha256": "ab039363530f3161cd1905fa6f62f08ae95d58072b35bd43b7b6600d0756e762"
+    },
+    {
+      "task_id": "37564222-bb58-4a55-b47b-e9ffbbc1d160",
+      "website": "sports.yahoo",
+      "split": "train",
+      "original_goal_sha256": "6e892ff3b28b6a00e49a0742ccf2e9cc4c97edfed7d19555ad8bde1660356a2b"
+    },
+    {
+      "task_id": "380d2539-703d-4e2c-b3c0-b608b34733db",
+      "website": "budget",
+      "split": "test_task",
+      "original_goal_sha256": "0343283264ebec83829dc2010c02a9191898b19218e4fb9dc7e25d80f9a8dcc0"
+    },
+    {
+      "task_id": "3960e140-65e8-4168-91fb-1426c8ee0cdb",
+      "website": "recreation.gov",
+      "split": "test_website",
+      "original_goal_sha256": "4f997b436753545abaea80fc045a3b07d9ad6d56826ece02be37a6fec08493dd"
+    },
+    {
+      "task_id": "3e142eee-7a62-4ad7-ae16-419d596ab63b",
+      "website": "sports.yahoo",
+      "split": "train",
+      "original_goal_sha256": "76402aa2c5b7b56e4192c14288f0388433e2a22396eaec20e6b9ee674f621e39"
+    },
+    {
+      "task_id": "480f3147-311a-4941-b0ad-5394c2ab2bd3",
+      "website": "usps",
+      "split": "test_domain",
+      "original_goal_sha256": "30c0041a22906a1c2d18fd219db1a844a45d3864e048c3c5279e34c6d6e8bf4e"
+    },
+    {
+      "task_id": "54edb54d-5b3e-426e-8dff-7b9096a3f970",
+      "website": "theweathernetwork",
+      "split": "test_domain",
+      "original_goal_sha256": "35823e5bc8d04215b0fe739881191372eda83c734f23321899b4048ab51d3b6f"
+    },
+    {
+      "task_id": "593830ff-fd2c-4479-abf8-8fddee2cdaea",
+      "website": "budget",
+      "split": "train",
+      "original_goal_sha256": "e0913d60a70f9ee8871043a3fad6e3311b0d2e0cffeccc818df35728509c03fd"
+    },
+    {
+      "task_id": "607dfa0d-67ba-4f6c-b109-7b2e34ae5e0b",
+      "website": "akc.org",
+      "split": "test_domain",
+      "original_goal_sha256": "baf4f701ca98f2c4c183f10f564a384b69bd98ef1427f01d2860cfafbca99601"
+    },
+    {
+      "task_id": "63be6edd-ebf5-446f-a61e-7b9990c850ae",
+      "website": "recreation.gov",
+      "split": "test_website",
+      "original_goal_sha256": "064b57b74aebd49a3ecb235e26b99f18c8a33640014960b32da29f64850a985d"
+    },
+    {
+      "task_id": "63d1f820-37bf-4adb-aabb-65eb7925790c",
+      "website": "sports.yahoo",
+      "split": "train",
+      "original_goal_sha256": "6063290b7132763b88ad749714166a9b6d128ad3c1ddbe6d3ae752df917f32fb"
+    },
+    {
+      "task_id": "66a5b212-cf94-4917-8015-58970dc54187",
+      "website": "amtrak",
+      "split": "train",
+      "original_goal_sha256": "bab9587b4532b62d9e8fc583648e45fe4cd808ae277d368e6e909e4a6958979a"
+    },
+    {
+      "task_id": "6a3cc218-a8f9-4187-8d58-0a92e3f472df",
+      "website": "dmv.virginia.gov",
+      "split": "test_domain",
+      "original_goal_sha256": "9d3c1eb9211d2fe82fdde087941799128b411bd5e08521fffb9d7eebdbfd0ccc"
+    },
+    {
+      "task_id": "6c0a3b1e-6ce8-4955-9359-dd4378aacc82",
+      "website": "apple",
+      "split": "train",
+      "original_goal_sha256": "c713e27901a68879e6f8c7b1a543a612242735118403611111e0bb118f185f59"
+    },
+    {
+      "task_id": "707a0f16-2ea7-42cb-a9eb-6c14e9676ea6",
+      "website": "weather",
+      "split": "test_domain",
+      "original_goal_sha256": "d66b726ed1523e99cc0d99030ab50a669431def1bbff6ade828b8205c057ebcb"
+    },
+    {
+      "task_id": "70f488de-8476-45df-a1da-a432e55f228b",
+      "website": "dmv.virginia.gov",
+      "split": "test_domain",
+      "original_goal_sha256": "7ec3f2a67f06b929678123bd0128cc35882d9b6b4766894499107014eca5194b"
+    },
+    {
+      "task_id": "7480540d-0519-440b-b22e-fa7badf55822",
+      "website": "weather",
+      "split": "test_domain",
+      "original_goal_sha256": "4b193490add10ce215c77ab096832fc9095c6541243f2d1683d7e3a8ccc87034"
+    },
+    {
+      "task_id": "77663082-2179-47e3-a22d-09e6d7a780b7",
+      "website": "finance.yahoo",
+      "split": "test_domain",
+      "original_goal_sha256": "afe225eac3a7927afdbae83d54bb9874cc0b30b344859a527861962635543f0f"
+    },
+    {
+      "task_id": "79450983-5780-460f-a2d8-e8a4698e0089",
+      "website": "akc.org",
+      "split": "test_domain",
+      "original_goal_sha256": "0ae639e34d03418ce1649882b0c68e2c610cdaa02bc12f8e73ce336b23cb31ea"
+    },
+    {
+      "task_id": "7a8f2c58-bccb-42a2-bee4-98feec1d9d69",
+      "website": "usps",
+      "split": "test_domain",
+      "original_goal_sha256": "4fb526230ab81a63dd718fa0ca0aea5cea1fe22d8a41fa2dbe547ce3503360ad"
+    },
+    {
+      "task_id": "7aa219f8-0e64-4d31-8245-9a61041d1e7a",
+      "website": "finance.yahoo",
+      "split": "test_domain",
+      "original_goal_sha256": "a0f8e11494087a6eb8cb2fd24184d792822861201b33eba42c99dfd161f9ed9a"
+    },
+    {
+      "task_id": "7dbd1196-4f1e-4e98-b6ec-7d896188a386",
+      "website": "dmv.virginia.gov",
+      "split": "test_domain",
+      "original_goal_sha256": "140474422cacef32ee67c52b889e2b57a6ac28339d76eb983fcb60cc31ca3ef1"
+    },
+    {
+      "task_id": "807a79ec-93b5-4d19-b544-8501a5ffc532",
+      "website": "akc.org",
+      "split": "test_domain",
+      "original_goal_sha256": "b0e985ef6521b7b90bb0560d9e75d7216a87b3909bcfa05136bdbe7508e2ca90"
+    },
+    {
+      "task_id": "845fbfa9-1b98-4df4-b7c5-4c71ef3e5b1b",
+      "website": "amtrak",
+      "split": "test_task",
+      "original_goal_sha256": "f8135a0cb50808d93eff2ef000a3fd8290f2a13a8b6f93dc9b51d24f82b43eb6"
+    },
+    {
+      "task_id": "8dcf6423-262a-439b-9ee7-279a920468fa",
+      "website": "amtrak",
+      "split": "test_task",
+      "original_goal_sha256": "1377a888ab50cce7184b9731b4bd88c0ded47285c26f5caf0ca246d557ba6587"
+    },
+    {
+      "task_id": "9a462751-758e-42bd-967d-373c13b90382",
+      "website": "sports.yahoo",
+      "split": "train",
+      "original_goal_sha256": "947b5514f977d483da98571824627f8459cf7c7064bcc04eff5082401f56eec0"
+    },
+    {
+      "task_id": "9b125b87-61b4-4457-b7c2-4b51056fa1a4",
+      "website": "amtrak",
+      "split": "test_task",
+      "original_goal_sha256": "30ef6549bd46b56db3f135fd60ad50a76c2bb068ad74f9e103bb86804e97be16"
+    },
+    {
+      "task_id": "ae26c7ab-e3a9-4575-94b6-5cb92888a890",
+      "website": "dmv.virginia.gov",
+      "split": "test_domain",
+      "original_goal_sha256": "16fd3756c4b382e7e02a77b4d4470aeee246277de05e76f693dc66c1c9e3a595"
+    },
+    {
+      "task_id": "afe67cf4-e6af-4bcc-b87c-0648540ab442",
+      "website": "finance.yahoo",
+      "split": "test_domain",
+      "original_goal_sha256": "bd68cbbada112b11693b69e63f6a570192aeedaa618f7ec158ef257aa6346a52"
+    },
+    {
+      "task_id": "b11977d2-b8fa-4719-9dea-30dac6066e94",
+      "website": "usps",
+      "split": "test_domain",
+      "original_goal_sha256": "9afe693e032cb8b3fbcb5e30038ea16ce7b04369df617e3ea5f5340bd3427288"
+    },
+    {
+      "task_id": "b5d06b36-9861-437f-a7da-944d8a1995ce",
+      "website": "akc.org",
+      "split": "test_domain",
+      "original_goal_sha256": "7f632622f87a70653696d1c472729f1c830b9e8d0a9c6cc5a428887effac80c8"
+    },
+    {
+      "task_id": "ba537ab6-59d0-4b85-8c22-91a4af753180",
+      "website": "akc.org",
+      "split": "test_domain",
+      "original_goal_sha256": "8039f6db60a0fc52580c095c777df75e2fd323ec726659fdf286a4652c30f273"
+    },
+    {
+      "task_id": "c3e841d5-4624-44cb-a8b5-897b9aa3ef9b",
+      "website": "sixflags",
+      "split": "train",
+      "original_goal_sha256": "e9e8e35ab8a4af6bc78384c236c004717c3132b2d079567ebc395e16a397e035"
+    },
+    {
+      "task_id": "c4538b84-ca81-413a-8f3d-7ce87e42b4f6",
+      "website": "sixflags",
+      "split": "train",
+      "original_goal_sha256": "93c264597d085fd79a6266bfdc49a7ff6208bb1f452541d9d7cdbc99eb7216de"
+    },
+    {
+      "task_id": "cb8b0cd3-93fb-49ef-b93a-a510e79fd483",
+      "website": "weather",
+      "split": "test_domain",
+      "original_goal_sha256": "2d07b2252d60dc51d91054db20d85273e7e4b09eefc035972e593ff136058201"
+    },
+    {
+      "task_id": "d9c8afd2-372a-4a04-8517-24d9c1cd39b0",
+      "website": "gov.uk",
+      "split": "test_domain",
+      "original_goal_sha256": "9f8e250e4c399c40200f7fa849ef85ef5dd0fc60eba398a15365ac6913635f3f"
+    },
+    {
+      "task_id": "dc1f0824-5483-4d3b-87d2-3f760a42a25e",
+      "website": "sixflags",
+      "split": "train",
+      "original_goal_sha256": "73b6e4ff42e0c81d5bacd4799f0c4a880537457cefbb1ca78840d4c9aac4cf9f"
+    },
+    {
+      "task_id": "dd3b12e6-2c57-4023-beb5-e08448024a49",
+      "website": "akc.org",
+      "split": "test_domain",
+      "original_goal_sha256": "c2566f02b527bcc9229e5e56ee2209d45235870413f2bcadfcf834f29a2173db"
+    },
+    {
+      "task_id": "dd8a2207-a5b0-4116-a63d-b62835d68b4e",
+      "website": "budget",
+      "split": "test_task",
+      "original_goal_sha256": "59a44fb5de078eb1c5c1711177da0417b718c0229bff73b1df418b8731e1777f"
+    },
+    {
+      "task_id": "de69733d-58cb-4118-a38f-ef684fc4d07d",
+      "website": "recreation.gov",
+      "split": "test_website",
+      "original_goal_sha256": "8a0c9b9761011afff68feab29027c231f1c7ec76f4d4eaf236b80bfbece8afe4"
+    },
+    {
+      "task_id": "e8a2c53e-afd8-4adf-bf10-cfe211e2f80c",
+      "website": "usps",
+      "split": "test_domain",
+      "original_goal_sha256": "c4376caa9a2b2cac09cc51b93f59162933f9f6149eef87c801b972f78325837d"
+    },
+    {
+      "task_id": "f45b0783-4325-4b3e-959d-c181971d72f6",
+      "website": "sports.yahoo",
+      "split": "train",
+      "original_goal_sha256": "c575904dbb442d0f0578d63ea05ae4d186a56a23cbc02abc5c620a18518ae266"
+    },
+    {
+      "task_id": "feacf6a1-8671-45ad-8b96-6510d61bbfe4",
+      "website": "dmv.virginia.gov",
+      "split": "test_domain",
+      "original_goal_sha256": "9399fd1b967771435c812437b813717208675b6916ed5db4933870974754b378"
+    },
+    {
+      "task_id": "ff1fb71d-9e34-44dd-8417-89c25d7cc7bf",
+      "website": "akc.org",
+      "split": "test_domain",
+      "original_goal_sha256": "53c0b9b1048b420cf6ff8f239e2c29e98e27e420fb95d8dc8b77e61fd8aa1847"
+    }
+  ],
+  "expected_private_source_index_sha256": "022d6318fcdf59665a6017302a3032d70f4d2c61f87d39e698f819806c81b9ed"
+}

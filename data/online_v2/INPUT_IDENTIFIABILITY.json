@@ -1,0 +1,375 @@
+{
+  "scope": "all_100_registered_main_cases_before_environment_eligibility",
+  "interpretation": "Input ablations intentionally remove information. Identical supplied inputs with differing labels are underidentified, not evidence of model incapacity. These bounds apply only to this exact registered cohort and stateless case calls.",
+  "selection_independent_of_model_scores": true,
+  "views": {
+    "event-only": {
+      "registered_cases": 100,
+      "distinct_visible_inputs": 70,
+      "ambiguous_input_groups": 20,
+      "cases_in_ambiguous_groups": 50,
+      "stateless_empirical_best_accuracy": 0.7,
+      "ambiguous_groups": [
+        {
+          "input_sha256": "f9bb3785b1a079f297a8fb5ceffaf3a98a855881d7168516110a52de63c7b5a3",
+          "case_ids": [
+            "ON2_S_001",
+            "ON2_S_003",
+            "ON2_S_005"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "977af0b78c9bc8ceb6530b45ad587c6fe18f1d62595be1cbdd85dbbce3500504",
+          "case_ids": [
+            "ON2_S_006",
+            "ON2_S_008",
+            "ON2_S_010"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "96daa2f255f16655a08680940997cdfa0926d3c7f26882c2b4823e154436346f",
+          "case_ids": [
+            "ON2_S_011",
+            "ON2_S_013",
+            "ON2_S_015"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "6d5d25350037c7a5eeec73b816af0ab6927c31217d1befbd14b1fa7850ff42df",
+          "case_ids": [
+            "ON2_S_016",
+            "ON2_S_018",
+            "ON2_S_020"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "59cf561700a6bf4b6969af7a4059a19c9356885c4fedbd775d2b574a8a23be3e",
+          "case_ids": [
+            "ON2_S_021",
+            "ON2_S_023",
+            "ON2_S_025"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "fa032d807b4cc4fe80f11a293e220f097b2bdb7b76ea88572bd0b8cfd8ca6dce",
+          "case_ids": [
+            "ON2_S_026",
+            "ON2_S_028",
+            "ON2_S_030"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "e2156119fc7df70581979d23f4f0a55e8b364f9eb39cd8ff830f72e4a6471a45",
+          "case_ids": [
+            "ON2_S_031",
+            "ON2_S_033",
+            "ON2_S_035"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "fbc46a4234a16385b835d4d38edc9e13d43fc26300d67617caa165afa3cef13d",
+          "case_ids": [
+            "ON2_S_036",
+            "ON2_S_038",
+            "ON2_S_040"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "0fb6a3031fc41fef5e0ddfd3c3393790aeb05093276079716b931acf4a3252ab",
+          "case_ids": [
+            "ON2_S_041",
+            "ON2_S_043",
+            "ON2_S_045"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "7b1ff34e3922c41195668d8b6a12c3293e09e1098e16a5a4b4e4fd5346608e1e",
+          "case_ids": [
+            "ON2_S_046",
+            "ON2_S_048",
+            "ON2_S_050"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "70b983dda2250a75c87163d83378a5de719397bc9539f4e68d8823c6194164d0",
+          "case_ids": [
+            "ON2_S_051",
+            "ON2_S_053"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1
+          }
+        },
+        {
+          "input_sha256": "f5a2e0c775d1040a7741b0ced5f9e977d5925820ba3a6411a9e16768ef9d838d",
+          "case_ids": [
+            "ON2_S_056",
+            "ON2_S_058"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1
+          }
+        },
+        {
+          "input_sha256": "fcb0d3ef059583287a4507d4ba14ae36d4dc3bf0ae6a0f61cbe7ce26613ffbae",
+          "case_ids": [
+            "ON2_S_061",
+            "ON2_S_063"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1
+          }
+        },
+        {
+          "input_sha256": "0b8e65ad33118f1f1613b10045124f2483335fae46fe979aa6ac7ba1c5aaf221",
+          "case_ids": [
+            "ON2_S_066",
+            "ON2_S_068"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1
+          }
+        },
+        {
+          "input_sha256": "9ef12ad1f581cb7191a8d6b793f23f4dfe58768eb255068f1d09b0c87fa1b94d",
+          "case_ids": [
+            "ON2_S_071",
+            "ON2_S_073"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1
+          }
+        },
+        {
+          "input_sha256": "6509e6910076a13091fe158930748d74471b1a9eede88f1169f1e2832e2c2639",
+          "case_ids": [
+            "ON2_S_076",
+            "ON2_S_078"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1
+          }
+        },
+        {
+          "input_sha256": "369049b164a88070a142751f9c73fcf051e3f4e7a7261ce3f61c7326253b56d4",
+          "case_ids": [
+            "ON2_S_081",
+            "ON2_S_083"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1
+          }
+        },
+        {
+          "input_sha256": "c7287c2867d1f8d5674bc2cfea526b65bf57374905b975e98dd4dade8cb3cfab",
+          "case_ids": [
+            "ON2_S_086",
+            "ON2_S_088"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1
+          }
+        },
+        {
+          "input_sha256": "b0a4f86056800c7643a4d1b66490ef5ce92861dcea047107d48d623b72d9a01b",
+          "case_ids": [
+            "ON2_S_091",
+            "ON2_S_093"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1
+          }
+        },
+        {
+          "input_sha256": "269b0692ca24c54cec6643128a88aa7a7d5413e4d673497d2fc84e6c2b884b83",
+          "case_ids": [
+            "ON2_S_096",
+            "ON2_S_098"
+          ],
+          "label_counts": {
+            "INTERRUPT": 1,
+            "DEFER": 1
+          }
+        }
+      ]
+    },
+    "goal": {
+      "registered_cases": 100,
+      "distinct_visible_inputs": 90,
+      "ambiguous_input_groups": 10,
+      "cases_in_ambiguous_groups": 20,
+      "stateless_empirical_best_accuracy": 0.9,
+      "ambiguous_groups": [
+        {
+          "input_sha256": "0adc4bb828fef22d8569284fd18de930b1a17c8bc89d95168c5a33fb5e0230a3",
+          "case_ids": [
+            "ON2_S_003",
+            "ON2_S_005"
+          ],
+          "label_counts": {
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "945c39e5e511900747dd9b0f49e7235cd6f5e0ba31bf3a86f856831234778fc1",
+          "case_ids": [
+            "ON2_S_008",
+            "ON2_S_010"
+          ],
+          "label_counts": {
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "a1d804406afbb363d3bbf213f09d60af454a47b62ba46a432082b65841219e7c",
+          "case_ids": [
+            "ON2_S_013",
+            "ON2_S_015"
+          ],
+          "label_counts": {
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "e6f26df21b5fe6e79858e5e16c5df16eb8cee79b4ac868b43ab77b840fdd64b0",
+          "case_ids": [
+            "ON2_S_018",
+            "ON2_S_020"
+          ],
+          "label_counts": {
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "1ee91afe5915373c0cd17e6f34bcfa642813c5f510b34fc58fde396be7fe0672",
+          "case_ids": [
+            "ON2_S_023",
+            "ON2_S_025"
+          ],
+          "label_counts": {
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "1136c08123939f58154212e3f5142f2317e9cd7aa660423e1bac1ad3fc9d2afd",
+          "case_ids": [
+            "ON2_S_028",
+            "ON2_S_030"
+          ],
+          "label_counts": {
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "b03c8063f01c5a0f9a55023fa7276f47ec522b7bac0b4e29967b8ffaab735ae3",
+          "case_ids": [
+            "ON2_S_033",
+            "ON2_S_035"
+          ],
+          "label_counts": {
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "fee8aa31d5f0f6d467e64cb6b4488d5b545ca9f5ab3d970d2b3e93ebfd5f9f4a",
+          "case_ids": [
+            "ON2_S_038",
+            "ON2_S_040"
+          ],
+          "label_counts": {
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "4ee2c47d9216179bfbd6438eda000c4d50a04b429d45288f167508b2b279e041",
+          "case_ids": [
+            "ON2_S_043",
+            "ON2_S_045"
+          ],
+          "label_counts": {
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        },
+        {
+          "input_sha256": "48c231eb572539543e47672ce1ac7d23389a35856a89bb71f813b84a99e114b4",
+          "case_ids": [
+            "ON2_S_048",
+            "ON2_S_050"
+          ],
+          "label_counts": {
+            "DEFER": 1,
+            "IGNORE": 1
+          }
+        }
+      ]
+    }
+  }
+}

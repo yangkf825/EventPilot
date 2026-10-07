@@ -1,0 +1,54 @@
+{"goal": "Find technical specs for the latest Macbook Air.", "split": "test_task", "task_id": "01815816-53e8-43b4-8923-b0f4390a9a15", "website": "apple"}
+{"goal": "Find the latest news about Bitcoin.", "split": "test_domain", "task_id": "05d98f5e-bdda-4d35-8231-bfd14e711640", "website": "finance.yahoo"}
+{"goal": "Check weather for 7 days at night for Vancouver, BC.", "split": "test_domain", "task_id": "0b5d3539-fe0e-4777-99e5-3555b6ce73c7", "website": "theweathernetwork"}
+{"goal": "Check the 5-year performance chart for the S&P 500 index.", "split": "test_domain", "task_id": "0e56e2a4-99e9-4692-9763-231bcab8806d", "website": "finance.yahoo"}
+{"goal": "Search for the BTC symbol and show me its historical data", "split": "test_domain", "task_id": "12cfbc8c-8e27-419a-b87e-f8b8f1dfec60", "website": "finance.yahoo"}
+{"goal": "Find eligibility for Jobseeker's Allowance (JSA).", "split": "test_domain", "task_id": "17cfd4fe-079b-4f9d-ae2a-d17660677d1d", "website": "gov.uk"}
+{"goal": "Find a list of domestically restricted items and a list for mailable gases for shipping.", "split": "test_domain", "task_id": "1c73e566-7bab-40d3-ba28-bf016cbe7b92", "website": "usps"}
+{"goal": "Find the hours of sun for Vancouver, British Columbia for the next seven days.", "split": "test_domain", "task_id": "253b052a-a418-466d-9117-9d92a5ac9f3d", "website": "theweathernetwork"}
+{"goal": "Book an appointment for applying new passport for one adult, Ellen Walker, with phone number 123-456-7890 and email address EW@gmail.com on April 4, 2023 at 1 pm in the post office nearest to zip code 60505. Don't send updates via text message.", "split": "test_domain", "task_id": "277e3468-f8cb-45c6-9e4b-0328066c42d3", "website": "usps"}
+{"goal": "Compare Apple watches and  learn more about the ultra version.", "split": "test_task", "task_id": "2fc80069-bdba-4064-82d0-1123a85f2651", "website": "apple"}
+{"goal": "Find the eligibility to get the Adult Passport", "split": "test_domain", "task_id": "335e1107-45ac-4969-85b8-7dfda00cc7ef", "website": "gov.uk"}
+{"goal": "Find the results of the most recent NFL games.", "split": "train", "task_id": "37564222-bb58-4a55-b47b-e9ffbbc1d160", "website": "sports.yahoo"}
+{"goal": "Find cars that can be picked up at SFO on April 20, 2023 and returned on April 27, 2023.", "split": "test_task", "task_id": "380d2539-703d-4e2c-b3c0-b608b34733db", "website": "budget"}
+{"goal": "Find a day use area for picnicking for 20 people in Tennessee.", "split": "test_website", "task_id": "3960e140-65e8-4168-91fb-1426c8ee0cdb", "website": "recreation.gov"}
+{"goal": "Find the list of injured NBA players.", "split": "train", "task_id": "3e142eee-7a62-4ad7-ae16-419d596ab63b", "website": "sports.yahoo"}
+{"goal": "Find a  post office for within 50 miles of zip 84043, if more than one found than sort it on general delivery, passport appointment, and greeting card service availibiliy and view the details of that post office.", "split": "test_domain", "task_id": "480f3147-311a-4941-b0ad-5394c2ab2bd3", "website": "usps"}
+{"goal": "Check the current wind speed in Calgary, Alberta.", "split": "test_domain", "task_id": "54edb54d-5b3e-426e-8dff-7b9096a3f970", "website": "theweathernetwork"}
+{"goal": "Show brochure of Loss Damage Waiver Protection.", "split": "train", "task_id": "593830ff-fd2c-4479-abf8-8fddee2cdaea", "website": "budget"}
+{"goal": "Compare a bulldog and a boxer.", "split": "test_domain", "task_id": "607dfa0d-67ba-4f6c-b109-7b2e34ae5e0b", "website": "akc.org"}
+{"goal": "Find parks In Arizona.", "split": "test_website", "task_id": "63be6edd-ebf5-446f-a61e-7b9990c850ae", "website": "recreation.gov"}
+{"goal": "Find the current roster of the Miami Heat.", "split": "train", "task_id": "63d1f820-37bf-4adb-aabb-65eb7925790c", "website": "sports.yahoo"}
+{"goal": "Show me the amtrak national route map", "split": "train", "task_id": "66a5b212-cf94-4917-8015-58970dc54187", "website": "amtrak"}
+{"goal": "Find the late fees for car registration renewals", "split": "test_domain", "task_id": "6a3cc218-a8f9-4187-8d58-0a92e3f472df", "website": "dmv.virginia.gov"}
+{"goal": "Find the price of HomePod mini", "split": "train", "task_id": "6c0a3b1e-6ce8-4955-9359-dd4378aacc82", "website": "apple"}
+{"goal": "Find the monthly forecast for zip code 90028.", "split": "test_domain", "task_id": "707a0f16-2ea7-42cb-a9eb-6c14e9676ea6", "website": "weather"}
+{"goal": "Find the Driver License Eligibility Requirements", "split": "test_domain", "task_id": "70f488de-8476-45df-a1da-a432e55f228b", "website": "dmv.virginia.gov"}
+{"goal": "Find the 10 day forecast for zip code 90028.", "split": "test_domain", "task_id": "7480540d-0519-440b-b22e-fa7badf55822", "website": "weather"}
+{"goal": "Find the IPO calendar.", "split": "test_domain", "task_id": "77663082-2179-47e3-a22d-09e6d7a780b7", "website": "finance.yahoo"}
+{"goal": "Find the playful level of a corgi.", "split": "test_domain", "task_id": "79450983-5780-460f-a2d8-e8a4698e0089", "website": "akc.org"}
+{"goal": "Calculate the price to ship a large flat rate box from 77449 to 77084 at the first available date and time.", "split": "test_domain", "task_id": "7a8f2c58-bccb-42a2-bee4-98feec1d9d69", "website": "usps"}
+{"goal": "Find the current stock price and market trends for Apple Inc.", "split": "test_domain", "task_id": "7aa219f8-0e64-4d31-8245-9a61041d1e7a", "website": "finance.yahoo"}
+{"goal": "Browse the page with information about driver license eligibility for non residents.", "split": "test_domain", "task_id": "7dbd1196-4f1e-4e98-b6ec-7d896188a386", "website": "dmv.virginia.gov"}
+{"goal": "Recommend some cute female dog names starting with T", "split": "test_domain", "task_id": "807a79ec-93b5-4d19-b544-8501a5ffc532", "website": "akc.org"}
+{"goal": "check the national cafe menu", "split": "test_task", "task_id": "845fbfa9-1b98-4df4-b7c5-4c71ef3e5b1b", "website": "amtrak"}
+{"goal": "Tell me more about the Adirondack route.", "split": "test_task", "task_id": "8dcf6423-262a-439b-9ee7-279a920468fa", "website": "amtrak"}
+{"goal": "Find the current injuries of Phoenix Suns players.", "split": "train", "task_id": "9a462751-758e-42bd-967d-373c13b90382", "website": "sports.yahoo"}
+{"goal": "Tell me information about what identification I need to bring on my trip.", "split": "test_task", "task_id": "9b125b87-61b4-4457-b7c2-4b51056fa1a4", "website": "amtrak"}
+{"goal": "Show Teen Driver Safety program information.", "split": "test_domain", "task_id": "ae26c7ab-e3a9-4575-94b6-5cb92888a890", "website": "dmv.virginia.gov"}
+{"goal": "Open chart for BTC-USD.", "split": "test_domain", "task_id": "afe67cf4-e6af-4bcc-b87c-0648540ab442", "website": "finance.yahoo"}
+{"goal": "Find a self service kiosk within 10 miles of zip code 10019", "split": "test_domain", "task_id": "b11977d2-b8fa-4719-9dea-30dac6066e94", "website": "usps"}
+{"goal": "Show me the comparison between Affenpinscher and Afghan Hound.", "split": "test_domain", "task_id": "b5d06b36-9861-437f-a7da-944d8a1995ce", "website": "akc.org"}
+{"goal": "Find a list of articles about vitamins and supplements for dogs.", "split": "test_domain", "task_id": "ba537ab6-59d0-4b85-8c22-91a4af753180", "website": "akc.org"}
+{"goal": "Buy a single day pass to Six Flags, Magic Mountain.", "split": "train", "task_id": "c3e841d5-4624-44cb-a8b5-897b9aa3ef9b", "website": "sixflags"}
+{"goal": "Find the Saturday park hours for Six Flags, Magic Mountain.", "split": "train", "task_id": "c4538b84-ca81-413a-8f3d-7ce87e42b4f6", "website": "sixflags"}
+{"goal": "Find the radar map for Los Angeles, CA.", "split": "test_domain", "task_id": "cb8b0cd3-93fb-49ef-b93a-a510e79fd483", "website": "weather"}
+{"goal": "How to extend the Global Talent visa", "split": "test_domain", "task_id": "d9c8afd2-372a-4a04-8517-24d9c1cd39b0", "website": "gov.uk"}
+{"goal": "Show me all the events at any six flags park in Texas", "split": "train", "task_id": "dc1f0824-5483-4d3b-87d2-3f760a42a25e", "website": "sixflags"}
+{"goal": "Find the average size of a golden retriever.", "split": "test_domain", "task_id": "dd3b12e6-2c57-4023-beb5-e08448024a49", "website": "akc.org"}
+{"goal": "Find only SUVs & Wagons that can be picked up at SFO on April 20, 2023 and returned on April 27, 2023.", "split": "test_task", "task_id": "dd8a2207-a5b0-4116-a63d-b62835d68b4e", "website": "budget"}
+{"goal": "Find a day use park that offers horseback riding near Nashville.", "split": "test_website", "task_id": "de69733d-58cb-4118-a38f-ef684fc4d07d", "website": "recreation.gov"}
+{"goal": "Find the closest post office within 10 miles of zip code 90210", "split": "test_domain", "task_id": "e8a2c53e-afd8-4adf-bf10-cfe211e2f80c", "website": "usps"}
+{"goal": "Search for the latest news and rumors about the NBA team the Los Angeles Lakers.", "split": "train", "task_id": "f45b0783-4325-4b3e-959d-c181971d72f6", "website": "sports.yahoo"}
+{"goal": "Start the process to renew a vehicle registration", "split": "test_domain", "task_id": "feacf6a1-8671-45ad-8b96-6510d61bbfe4", "website": "dmv.virginia.gov"}
+{"goal": "Find the coat type of a beagle.", "split": "test_domain", "task_id": "ff1fb71d-9e34-44dd-8417-89c25d7cc7bf", "website": "akc.org"}

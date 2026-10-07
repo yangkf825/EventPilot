@@ -1,0 +1,65 @@
+{
+  "schema_version": "online_v2.0.4-author-candidate",
+  "created_date": "2026-10-06",
+  "status": "author_candidate",
+  "files": {
+    "single_event.jsonl": {
+      "cases": 100,
+      "events": 100,
+      "sha256": "aa5730780723b275867a068b3e23b04d0bd87180a02c3e4a86fb64b037995e7d"
+    },
+    "counterfactual.jsonl": {
+      "cases": 70,
+      "events": 70,
+      "sha256": "9e143eab4b6f70a79cfc500dca324a24092748049ddb0779f87b27a72a439070"
+    },
+    "multi_event.jsonl": {
+      "cases": 20,
+      "events": 70,
+      "sha256": "b8fa8a701883b554f22e8895332a2b4db3921d43aaafcd6c874062eb0615f391"
+    }
+  },
+  "main_labels": {
+    "INTERRUPT": 40,
+    "IGNORE": 30,
+    "DEFER": 30
+  },
+  "follow_up_labels": {
+    "HANDLE": 20,
+    "REPLAN": 10,
+    "TERMINATE": 10
+  },
+  "difficulty": {
+    "medium": 50,
+    "hard": 20,
+    "easy": 30
+  },
+  "counterfactual_groups": {
+    "goal": 10,
+    "state": 10,
+    "semantic": 10
+  },
+  "author_profile_count": 20,
+  "source_task_families": 15,
+  "independent_main_task_family_count": 15,
+  "unique_original_source_tasks": 54,
+  "full_trajectory_origin": "runtime_only_no_authored_logs",
+  "human_reviewed": false,
+  "all_cases_execution_verified": false,
+  "structured_annotation_rows": 240,
+  "source_corpus": {
+    "tasks": 54,
+    "path": "/Volumes/H盘/EventArena-Mind2Web/data/online_v2/source_task_index.jsonl"
+  },
+  "source_task_index": {
+    "tasks": 54,
+    "path": "source_task_index.jsonl",
+    "sha256": "022d6318fcdf59665a6017302a3032d70f4d2c61f87d39e698f819806c81b9ed"
+  },
+  "limitations": [
+    "Live public websites can change or reject automation.",
+    "Author-added dependencies are not official Mind2Web relations.",
+    "Case variants share source families; use grouped analysis.",
+    "All Gold labels require independent human review."
+  ]
+}

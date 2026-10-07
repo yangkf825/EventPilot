@@ -1,0 +1,26 @@
+{
+  "schema_version": "eventarena_public_author_candidates_v1",
+  "experiment_version": "online_v2.0.4-author-candidate",
+  "files": {
+    "single_event.jsonl": {
+      "cases": 100,
+      "events": 100,
+      "sha256": "32881b979e5fa3eba00e0b01e9d24b1357252a4b4c33ab1bfd9a1a2f24db6d85"
+    },
+    "counterfactual.jsonl": {
+      "cases": 70,
+      "events": 70,
+      "sha256": "7f3e67f6c1c8ddd74e3a7bcca7eb41d5eac202bb788a1a83a308c47682eafd01"
+    },
+    "multi_event.jsonl": {
+      "cases": 20,
+      "events": 70,
+      "sha256": "860a90233797915739702a52ce03a130258f8b66660b3055c596e0fb2ce4e980"
+    }
+  },
+  "human_reviewed": false,
+  "runtime_dataset": false,
+  "original_source_texts_included": false,
+  "prepare_command": "python scripts/prepare_dataset.py --download --extract",
+  "note": "Author-defined adaptations and events with source identifiers. The full source-validated runtime dataset is reconstructed locally from official data; data/online_v2 is ignored by Git."
+}
