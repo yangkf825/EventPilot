@@ -93,7 +93,7 @@ read -rs "GATEWAY_DS_API_KEY?DeepSeek API Key: "; echo
 export GATEWAY_DS_API_KEY
 ```
 
-运行多个模型时，对应设置 `GATEWAY_GLM_API_KEY`、`GATEWAY_KIMI_API_KEY`、`GATEWAY_GPT_API_KEY`。Bash 可用 `read -r -s -p 'DeepSeek API Key: ' GATEWAY_DS_API_KEY; printf '\n'; export GATEWAY_DS_API_KEY`。
+其他模型对应 `GATEWAY_GLM_API_KEY`、`GATEWAY_KIMI_API_KEY`、`GATEWAY_GPT_API_KEY`。下文 `run_one_model.py` 单模型入口会自动隐藏输入缺少的 Key，也可以事先设置环境变量。Bash 可用 `read -r -s -p 'DeepSeek API Key: ' GATEWAY_DS_API_KEY; printf '\n'; export GATEWAY_DS_API_KEY`。
 
 `.env.example` 仅展示变量名；runner **不自动加载 `.env`**，需要在运行进程的环境中设置变量。不要将密钥写进 Python、README 或公开 JSON。`models.gateway.json` 和 `.env` 已被 Git ignore。
 
@@ -140,15 +140,63 @@ python -u scripts/run_online_v2.py run \
 
 ## 6. 全部实验运行命令
 
-只运行 DeepSeek，所有实验、每项 1 repeat：
+以下命令在项目根目录、Python 环境已经激活后运行。每条只测试一个模型，包含全部实验，每项 **1 repeat**，默认 2 workers，并自动创建带模型名和时间的独立结果目录。
+
+DeepSeek：
 
 ```bash
-python -u scripts/run_online_v2.py run \
-  --config models.gateway.json --only gateway_ds \
-  --run-root runs/deepseek_full \
-  --experiments all --repeats 1 --workers 4 --headless \
-  --prep-model gateway_ds --judge-model gateway_ds
+python -u scripts/run_one_model.py \
+  --provider deepseek --model deepseek-v4-flash --mode full --repeats 1
 ```
+
+GLM：
+
+```bash
+python -u scripts/run_one_model.py \
+  --provider glm --model glm-5.3 --mode full --repeats 1
+```
+
+Kimi：
+
+```bash
+python -u scripts/run_one_model.py \
+  --provider kimi --model k3-256k --mode full --repeats 1
+```
+
+GPT：
+
+```bash
+python -u scripts/run_one_model.py \
+  --provider gpt --model gpt-5.4 --mode full --repeats 1
+```
+
+`--model` 是发送给 API 的确切模型 ID，不是配置别名。可以替换成服务实际提供的任意 ID，例如 `deepseek-v4-pro`、`glm-5`、`glm-5-turbo`、`glm-5.1`、`glm-5.2`、`gpt-5.4-mini`、`gpt-6-astra` 等；这些名称只是命令示例，是否可调用由你的服务决定。
+
+| `--provider` | 继承的配置别名 | API Key 环境变量 |
+| --- | --- | --- |
+| `deepseek` | `gateway_ds` | `GATEWAY_DS_API_KEY` |
+| `glm` | `gateway_glm` | `GATEWAY_GLM_API_KEY` |
+| `kimi` | `gateway_kimi` | `GATEWAY_KIMI_API_KEY` |
+| `gpt` | `gateway_gpt` | `GATEWAY_GPT_API_KEY` |
+
+入口继承 `models.gateway.json` 中对应模型的 endpoint、采样参数、预算和 Key 环境变量，只替换模型 ID，并保存到 `logs/model_config.json`；原配置文件不变。Key 只保留在运行进程的环境里。模型切换时若服务要求不同参数，应先按其接口要求调整本机配置。
+
+例如指定 DeepSeek Pro 和固定结果目录：
+
+```bash
+python -u scripts/run_one_model.py \
+  --provider deepseek --model deepseek-v4-pro \
+  --mode full --repeats 1 --run-root runs/deepseek_v4_pro_full_once
+```
+
+准备正式运行前，可增加 `--dry-run` 查看注册数量；此模式不探测、不调用 API、不询问 Key。真实运行先探测指定模型 ID，通过后才开始实验；`--mode pilot` 可先运行少量案例。
+
+```bash
+python scripts/run_one_model.py \
+  --provider glm --model glm-5.3 --mode full --repeats 1 --dry-run
+```
+
+这些单模型命令用当前模型同时准备检查点和担任 Judge，各结果目录独立准备；适合逐模型运行检查。正式跨模型比较使用下面共同 run 的命令，以固定检查点和 Judge。
 
 四个模型在同一个 run 中运行，配置好四个 API 环境变量后：
 
@@ -165,15 +213,15 @@ python -u scripts/run_online_v2.py run \
 
 `all` 包含 `main,ablation,counterfactual,multi,baseline,final_intent`。100 条全规模、1 repeat 下，每个模型注册 **700 个作业**。主实验和消融的 Full Trajectory 条件共享同一 episode，避免把重复采样当成不同条件；实际 actor episode 数最多 600，API 请求数通常更多。四模型注册 2,800 个作业。
 
-续跑同一个 DeepSeek run，保持原数据、代码、配置与所有注册参数一致：
+续跑上面的 DeepSeek Pro run，保持原数据、代码、配置与所有注册参数一致：
 
 ```bash
-python -u scripts/run_online_v2.py run \
-  --config models.gateway.json --only gateway_ds \
-  --run-root runs/deepseek_full \
-  --experiments all --repeats 1 --workers 4 --headless \
-  --prep-model gateway_ds --judge-model gateway_ds --resume
+python -u scripts/run_one_model.py \
+  --provider deepseek --model deepseek-v4-pro \
+  --mode full --repeats 1 --run-root runs/deepseek_v4_pro_full_once --resume
 ```
+
+自动创建目录的运行，续跑时把 `--run-root` 换成启动时显示的实际目录。`logs/run.log` 保存持续进度，`logs/model_probe.json` 保存连通性报告。可用 `--workers 1` 降低并发；完整选项见 `python scripts/run_one_model.py --help`。
 
 新数据版本或新代码应使用新目录。只有确定需要重试基础设施失败时才加 `--retry-infra`；它不会选择性重跑已计分的 Agent 错误。
 
@@ -183,7 +231,7 @@ python -u scripts/run_online_v2.py run \
 
 ## 7. 进度与结果
 
-另开终端、进入项目目录，查看实时状态：
+另开终端、进入项目目录，查看实时状态；将示例中的 `runs/deepseek_full` 替换为启动时显示的实际结果目录：
 
 ```bash
 python scripts/run_online_v2.py status --run-root runs/deepseek_full

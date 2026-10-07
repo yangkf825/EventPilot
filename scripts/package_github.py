@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ('run_online_v2.py', 'build_online_v2.py', 'validate_online_v2.py',
            'analyze_online_v2.py', 'preflight_online_v2.py', 'review_online_v2.py',
            'prepare_online_v2.py', 'paired_online_v2.py', 'recompute_online_v2.py',
-           'probe_gateway.py', 'run_models.py', 'metrics.py', 'download_data.py',
+           'probe_gateway.py', 'run_one_model.py', 'run_models.py', 'metrics.py', 'download_data.py',
            'prepare_dataset.py', 'check_public_data.py', 'package_github.py')
 PUBLIC_DATA = ('single_event.jsonl', 'counterfactual.jsonl', 'multi_event.jsonl',
                'manifest.json', 'split_manifest.json', 'INPUT_IDENTIFIABILITY.json')
