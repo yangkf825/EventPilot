@@ -65,14 +65,16 @@ def test_unknown_operation_is_not_given_format_retry(tmp_path):
     assert ep['status']=='invalid_output' and ep['format_retry_count']==0
 
 
-def test_current_observation_reference_resolves_the_complete_actual_page(tmp_path):
+def test_current_observation_is_direct_readable_and_complete_actual_page(tmp_path):
     ep,model=run(case(),[{'op':'ANSWER'}],tmp_path)
     payload=json.loads(model.messages[0][-1]['content'])
-    history=payload['full_trajectory']
-    mapping=history['states'][payload['observation']['state_ref']]
-    from eventarena.online_v2_engine import decode_lossless_trajectory
-    resolved=next(o for o in decode_lossless_trajectory(history)['observations'] if o.get('index')==payload['observation']['observation_index'])
+    from eventarena.online_v2_engine import decode_actor_payload
+    assert payload['payload_encoding']=='lossless_actor_shared_v2'
+    assert 'state_ref' not in payload['observation']
+    resolved=decode_actor_payload(payload)['observation']
     actual=ep['observations'][0]
+    assert payload['observation']['text']==actual['text']
+    assert payload['observation']['candidates']==actual['candidates']
     assert resolved['text']==actual['text']
     assert resolved['candidates']==actual['candidates']
 

@@ -16,7 +16,13 @@ def test_allowlist_excludes_private_data_and_local_config():
     paths = {path.relative_to(ROOT).as_posix() for path in pack.selected_files(ROOT)}
     assert 'README.md' in paths and 'models.example.json' in paths
     assert 'scripts/prepare_dataset.py' in paths
-    assert not any(path.startswith(('data/raw/', 'data/online_v2/', 'data/local/', 'runs/', 'logs/'))
+    assert 'eventarena/preparation_gate.py' in paths and 'eventarena/run_lock.py' in paths
+    assert 'tests/test_online_v206_site_preflight.py' in paths
+    assert 'tests/fixtures/storage_v205/scripts/run_online_v2.py.txt' in paths
+    assert 'scripts/run_official_online.py' in paths and 'eventarena_official/evaluation_recovery.py' in paths
+    assert 'config/official_online/event_pilot_specs.json' in paths and 'LICENSE' in paths
+    assert 'docs/OFFICIAL_DATA_SETUP.md' in paths and 'tests/test_official_evaluation.py' in paths
+    assert not any(path.startswith(('data/raw/', 'data/online_v2/', 'data/official_online/', 'data/local/', 'runs/', 'logs/'))
                    for path in paths)
     assert not paths.intersection({'models.gateway.json', 'models.local.json', '.env'})
 

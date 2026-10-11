@@ -20,11 +20,34 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT), str(ROOT / 'scripts')]
+from eventarena.storage_io import atomic_write_json, open_append, StorageIOError
+from eventarena.preparation_gate import coverage_report, enforce_coverage, PreparationCoverageError
+from eventarena.run_lock import exclusive_run, RunAlreadyActiveError
+PROTOCOL_VERSION = 'online_v2.0.6'
 EXPERIMENTS = ('main', 'ablation', 'counterfactual', 'multi', 'baseline', 'final_intent')
 VIEWS = ('event-only', 'goal', 'state', 'trajectory')
 FILES = {'main': 'single_event.jsonl', 'ablation': 'single_event.jsonl',
          'counterfactual': 'counterfactual.jsonl', 'multi': 'multi_event.jsonl',
          'baseline': 'single_event.jsonl', 'final_intent': 'single_event.jsonl'}
+INFRA_RETRY_POLICY = 'retry_unavailable_runs_or_rejudge_unchanged_complete_traces_v1'
+INFRA_FAILURE_CATEGORIES = {
+    'provider_failure', 'environment_invalid', 'evaluation_unverified', 'provider_error',
+    'website_unavailable', 'browser_error', 'checkpoint_setup_unverified',
+    'judge_or_outcome_unverified', 'checkpoint_preparation_failed',
+}
+INFRA_FAILURE_STATUSES = {
+    'provider_error', 'website_unavailable', 'browser_error', 'interrupted',
+    'checkpoint_setup_unverified', 'checkpoint_unavailable', 'runner_error',
+    'checkpoint_replay_mismatch', 'checkpoint_capture_unavailable',
+    'checkpoint_projection_unavailable',
+}
+ACTOR_FACT_FIELDS = (
+    'case_id', 'protocol', 'status', 'actions', 'observations', 'final_observation',
+    'responses', 'decisions', 'follow_ups', 'predicted_schedule', 'decision_stages',
+    'events', 'task_states', 'task_outputs', 'prior_results', 'checkpoint',
+    'checkpoints', 'controlled_action_boundary', 'exposed', 'final_answer',
+    'counterfactual_input_audit', 'checkpoint_replay_audit',
+)
 
 
 def now():
@@ -37,11 +60,7 @@ def read_json(path, default=None):
 
 
 def write_json(path, value):
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temp = path.with_suffix(path.suffix + '.tmp')
-    temp.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding='utf-8')
-    temp.replace(path)
+    atomic_write_json(path, value)
 
 
 def read_cases(path):
@@ -50,6 +69,88 @@ def read_cases(path):
 
 def sha(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+
+
+def retryable_infrastructure_episode(episode):
+    """One rule for jobs and their shared aliases; known Actor failures stay frozen."""
+    if not isinstance(episode, dict):
+        return False
+    from eventarena.online_v2_eval import MODEL_FAILURES
+    if episode.get('status') in MODEL_FAILURES:
+        return False
+    outcome = episode.get('evaluation', {})
+    if outcome.get('environment_valid') is not False and outcome.get('episode_success') in (True, False):
+        return False
+    return (episode.get('status') in INFRA_FAILURE_STATUSES
+            or outcome.get('environment_valid') is False
+            or outcome.get('failure_category') in INFRA_FAILURE_CATEGORIES)
+
+
+def rejudgeable_episode(episode):
+    """An unavailable Judge can be retried without resampling a completed Actor."""
+    if not retryable_infrastructure_episode(episode):
+        return False
+    outcome = episode.get('evaluation', {})
+    if (outcome.get('environment_valid') is not True
+            or outcome.get('episode_success') is not None
+            or outcome.get('failure_category') not in {'judge_or_outcome_unverified', 'evaluation_unverified'}):
+        return False
+    if episode.get('status') not in {'agent_finished'}:
+        return False
+    observations, actions = episode.get('observations'), episode.get('actions')
+    if not isinstance(observations, list) or not observations or not isinstance(actions, list) or not actions:
+        return False
+    if not all(isinstance(o, dict) and isinstance(o.get('url'), str)
+               and isinstance(o.get('text'), str) for o in observations):
+        return False
+    if not all(isinstance(a, dict) and isinstance(a.get('action'), dict)
+               and isinstance(a['action'].get('op'), str)
+               and all(isinstance(a.get(p), dict) and isinstance(a[p].get('url'), str)
+                       and isinstance(a[p].get('text'), str) for p in ('before', 'after')) for a in actions):
+        return False
+    if not isinstance(episode.get('task_states'), dict) or not isinstance(episode.get('task_outputs'), dict):
+        return False
+    if episode.get('protocol') == 'controlled_episode_v2':
+        audit = episode.get('checkpoint_replay_audit', {})
+        if audit.get('matches') is not True or audit.get('available', True) is not True:
+            return False
+    return True
+
+
+async def rejudge_saved_episode(case, original, judge):
+    """Re-evaluate immutable evidence; invalidate only unknown verification caches."""
+    from eventarena.online_v2_eval import evaluate_episode
+    if not rejudgeable_episode(original):
+        raise ValueError('Only an intact, environment-valid unknown evaluation can be rejudged')
+    episode = copy.deepcopy(original)
+    actor_sha = sha({k: original[k] for k in ACTOR_FACT_FIELDS if k in original})
+    caches = episode.get('verified_tasks', {})
+    invalidated = [tid for tid, cached in caches.items()
+                   if isinstance(cached, dict) and
+                   (not isinstance(cached.get('result'), dict) or cached['result'].get('success') is None)]
+    episode['verified_tasks'] = {tid: cached for tid, cached in caches.items() if tid not in invalidated}
+    episode['evaluation'] = await evaluate_episode(case, episode, judge)
+    episode['actual_schedule'] = episode['evaluation'].get('actual_schedule', episode.get('actual_schedule', []))
+    if sha({k: episode[k] for k in ACTOR_FACT_FIELDS if k in episode}) != actor_sha:
+        raise ValueError('Rejudging changed recorded Actor facts')
+    episode.setdefault('infrastructure_recovery', []).append({
+        'policy': INFRA_RETRY_POLICY, 'timestamp': now(), 'mode': 'judge_only',
+        'actor_resampled': False, 'actor_facts_sha256': actor_sha,
+        'previous_evaluation_sha256': sha(original['evaluation']),
+        'invalidated_unknown_verifications': invalidated,
+    })
+    return episode
+
+
+def archive_shared_episode(shared_file, episode, attempt):
+    """Preserve each old shared result before either rejudging or replaying it."""
+    target = shared_file.with_name(f"episode_failed_{attempt:03d}_{sha(episode)[:16]}.json")
+    if target.exists():
+        if read_json(target) != episode:
+            raise ValueError('Shared recovery archive differs from the preserved episode')
+    else:
+        write_json(target, episode)
+    return target
 
 
 def public_config(value):
@@ -161,7 +262,9 @@ def code_fingerprint():
 
 
 def make_manifest(args, selected, models, configured, jobs):
-    return {'schema_version': 'eventarena_online_run_v2', 'models': models,
+    from eventarena.online_v2_eval import JUDGE_CITATION_POLICY, JUDGE_FORMAT_RETRIES, OUTCOME_EVIDENCE_POLICY
+    from eventarena.online_v2_engine import ACTOR_REPRESENTATION_POLICY
+    return {'schema_version': 'eventarena_online_run_v2', 'protocol_version': PROTOCOL_VERSION, 'models': models,
             'runtime': {'python': platform.python_version(),
                         'packages': {name: importlib.metadata.version(name) for name in ('playwright','httpx')}},
             'model_configs': public_config({m: configured[m] for m in set(models + [args.prep_model, args.judge_model]) if m}),
@@ -169,9 +272,14 @@ def make_manifest(args, selected, models, configured, jobs):
             'arguments': {k: getattr(args, k) for k in ('experiments', 'repeats', 'workers', 'seed', 'single_limit', 'multi_limit',
                            'cf_groups', 'cf_group_ids', 'case_ids', 'multi_case_ids', 'split', 'prep_model', 'judge_model', 'max_steps',
                            'pre_steps', 'setup_steps', 'max_context_chars', 'loop_limit', 'format_retries', 'headless')} | {
-                               'preparation_mode':getattr(args,'preparation_mode','on-demand')},
-            'output_policy': 'actor/Judge: one unambiguous strict JSON object; single classification also accepts an exact bare primary label, missing follow-up is incorrect; actor-only bounded format retry; no semantic action repair',
-            'observation_policy': 'complete live rendered body.innerText plus visible controls; full factual history',
+                               'preparation_mode':getattr(args,'preparation_mode','on-demand'),
+                               'min_preparation_coverage':getattr(args,'min_preparation_coverage',0.9)},
+            'output_policy': 'strict JSON; actor-only bounded action-format retry; Judge citation/format repair only, no retries of valid false/null verdicts; no semantic action repair',
+            'judge_policy': {'citations': JUDGE_CITATION_POLICY, 'format_retries': JUDGE_FORMAT_RETRIES,
+                             'evidence_integrity': OUTCOME_EVIDENCE_POLICY},
+            'observation_policy': 'complete live rendered body.innerText plus visible controls; directly readable current observation; lossless factual history',
+            'actor_representation_policy': ACTOR_REPRESENTATION_POLICY,
+            'infrastructure_retry_policy': INFRA_RETRY_POLICY,
             'jobs': jobs, 'counts': {e: len(c) for e, c in selected.items()},
             'source_families': {e: len({c.get('task_family_id', c.get('base_task_id', c['case_id'])) for c in cases})
                                 for e, cases in selected.items()},
@@ -208,13 +316,17 @@ def status(root):
         if state == 'running':
             active.append({**job, 'updated_at': saved.get('updated_at'), 'progress': saved.get('progress')})
     preparation = read_json(root / 'preparation_state.json')
+    gate = read_json(root / 'preparation_gate.json')
     phase = 'evaluation'
     if preparation and preparation.get('state') != 'finished':
         phase = 'preparation'
+    elif gate and gate.get('passed') is not True:
+        phase = 'blocked_preparation'
     elif not active and states.get('finished', 0) == len(manifest['jobs']):
         phase = 'finished'
     return {'run_root': str(root), 'registered': True, 'total': len(manifest['jobs']),
-            'states': states, 'active': active, 'phase': phase, 'preparation': preparation}
+            'states': states, 'active': active, 'phase': phase, 'preparation': preparation,
+            'preparation_gate': gate}
 
 
 def metric_record(episode):
@@ -224,7 +336,7 @@ def metric_record(episode):
               'counterfactual_protocol_valid', 'preparation_status', 'checkpoint_key',
               'format_retry_count', 'format_diagnostics', 'navigation_errors', 'checkpoint_replay_audit',
               'shared_episode_file', 'information_policy', 'preparation_failure_status', 'preparation_failure_is_model',
-              'environment_capture', 'failure_phase', 'eligibility_status')
+              'environment_capture', 'failure_phase', 'eligibility_status', 'infrastructure_recovery')
     result = {k: copy.deepcopy(episode[k]) for k in fields if k in episode}
     result['responses'] = [{k: r.get(k) for k in ('stage', 'parsed', 'api_ok', 'error')}
                            for r in episode.get('responses', []) if r.get('stage') == 'decision']
@@ -403,7 +515,7 @@ class LimitedModel:
                 if len(self.model.usage) > before:
                     row.update(self.model.usage[-1])
                 if self.run_root:
-                    with (self.run_root / 'model_call_usage.jsonl').open('a', encoding='utf-8') as stream:
+                    with open_append(self.run_root / 'model_call_usage.jsonl') as stream:
                         stream.write(json.dumps(row, ensure_ascii=False) + '\n')
 
 
@@ -444,6 +556,36 @@ async def obtain_checkpoint(case, repeat, selected_cases, root, prep_model, opts
         return prepared, checkpoint, key
 
 
+def recover_failed_checkpoints(root):
+    """Archive failed preparation, including ready captures with failed reset.
+
+    Qualified common states are immutable. Failed control groups are retried as
+    whole groups, without retaining one side's audit against a replaced capture.
+    """
+    checkpoint_root = root / 'checkpoints'
+    if not checkpoint_root.exists():
+        return []
+    gates = [read_json(p) for p in (root / 'preparation_eligibility').glob('repeat_*/*/eligibility.json')]
+    failed_keys = {g.get('checkpoint_key') for g in gates if g and g.get('eligible') is not True}
+    qualified_keys = {g.get('checkpoint_key') for g in gates if g and g.get('eligible') is True}
+    stamp = now().replace(':', '').replace('+', '_')
+    archived = []
+    for directory in list(checkpoint_root.iterdir()):
+        if not directory.is_dir() or '_failed_' in directory.name:
+            continue
+        saved = read_json(directory / 'state_pair.json') or read_json(directory / 'episode.json')
+        bad_reset = directory.name in failed_keys and directory.name not in qualified_keys
+        if saved and (saved.get('status') != 'checkpoint_ready' or bad_reset):
+            target = directory.with_name(directory.name + '_failed_' + stamp)
+            directory.rename(target)
+            archived.append({'checkpoint_key': directory.name, 'archived_to': target.name,
+                             'reason': 'failed_reset_audit' if bad_reset else 'preparation_not_ready'})
+    if archived:
+        write_json(root / 'checkpoint_recovery' / (stamp + '.json'),
+                   {'no_tested_actor_scores_read': True, 'archived': archived})
+    return archived
+
+
 async def execute(args, root, selected, names):
     from eventarena.providers import Model
     from eventarena.online_v2_engine import run_episode, run_checkpoint_episode
@@ -458,21 +600,18 @@ async def execute(args, root, selected, names):
     original_by_id = {c['case_id']: c for c in single_cases}
     queue = asyncio.Queue()
     if args.retry_infra:
-        # One explicit recovery of failed preparation per invocation. Preserve
-        # every old browser trace instead of overwriting it for each backbone.
-        checkpoint_root = root / 'checkpoints'
-        if checkpoint_root.exists():
-            stamp = now().replace(':', '').replace('+', '_')
-            for directory in list(checkpoint_root.iterdir()):
-                if not directory.is_dir() or '_failed_' in directory.name:
-                    continue
-                saved = read_json(directory / 'state_pair.json') or read_json(directory / 'episode.json')
-                if saved and saved.get('status') != 'checkpoint_ready':
-                    directory.rename(directory.with_name(directory.name + '_failed_' + stamp))
+        recover_failed_checkpoints(root)
     eligibility = None
     if getattr(args,'preparation_mode','on-demand') == 'before-actors':
         from prepare_online_v2 import prepare_pool
         eligibility = await prepare_pool(args,root,selected,models,locks,obtain_checkpoint)
+        gate_report = coverage_report(selected, eligibility, args.repeats,
+                                      getattr(args, 'min_preparation_coverage', 0.9))
+        write_json(root / 'preparation_gate.json', gate_report)
+        print('[PREP GATE] ' + json.dumps(gate_report['experiments'], ensure_ascii=False), flush=True)
+        if not gate_report['passed']:
+            write_json(root / 'status.json', status(root))
+        enforce_coverage(gate_report)
         if args.command == 'prepare':
             return
     for job in manifest['jobs']:
@@ -489,10 +628,7 @@ async def execute(args, root, selected, names):
             folder.mkdir(parents=True, exist_ok=True)
             old_job = read_json(folder / 'job.json', {})
             old_episode = read_json(folder / 'episode.json')
-            retryable = old_episode and old_episode.get('evaluation', {}).get('failure_category') in {
-                'provider_failure', 'environment_invalid', 'evaluation_unverified', 'provider_error',
-                'website_unavailable', 'browser_error', 'checkpoint_setup_unverified', 'judge_or_outcome_unverified'}
-            retryable = retryable or bool(old_episode and old_episode.get('status') in {'provider_error', 'checkpoint_unavailable'})
+            retryable = retryable_infrastructure_episode(old_episode)
             if args.resume and old_job.get('state') == 'finished' and not (args.retry_infra and retryable):
                 done += 1
                 print(f"[{done}/{len(manifest['jobs'])}] CACHED {job['model']} {job['experiment']}/{job['view']} repeat={job['repeat']} {job['case_id']}", flush=True)
@@ -509,7 +645,7 @@ async def execute(args, root, selected, names):
             def progress(info):
                 state.update(updated_at=now(), progress=info)
                 write_json(folder / 'job.json', state)
-                with (root / 'progress.jsonl').open('a', encoding='utf-8') as stream:
+                with open_append(root / 'progress.jsonl') as stream:
                     stream.write(json.dumps({'timestamp': now(), **job, **info}, ensure_ascii=False) + '\n')
                 print(f"  {job['model']} {job['case_id']} {job['experiment']}/{job['view']} {info.get('stage','')} {info.get('state','')}", flush=True)
 
@@ -535,12 +671,21 @@ async def execute(args, root, selected, names):
             opts.update(repeat=job['repeat'], progress=progress, judge=judge if args.judge_model else None)
             case = cases[(job['experiment'], job['case_id'])]
             try:
-                if job['experiment'] in {'main', 'ablation', 'counterfactual', 'baseline', 'multi'}:
+                share = job['experiment'] == 'main' or (job['experiment'] == 'ablation' and job['view'] == 'trajectory')
+                if args.retry_infra and rejudgeable_episode(old_episode) and not share:
+                    episode = await rejudge_saved_episode(case, old_episode, judge if args.judge_model else None)
+                elif job['experiment'] in {'main', 'ablation', 'counterfactual', 'baseline', 'multi'}:
                     source_case = original_by_id[case['original_case_id']] if job['experiment'] == 'baseline' else case
                     source_pool = selected['counterfactual'] if job['experiment'] == 'counterfactual' else single_cases
-                    prepared, cp, key = await obtain_checkpoint(source_case, job['repeat'], source_pool,
-                                                              root, models[args.prep_model], opts, locks)
                     gate = eligibility.get((source_case['case_id'],job['repeat'])) if eligibility is not None else None
+                    if gate is not None and gate['eligible'] is not True:
+                        # A frozen failed gate cannot be repaired by a tested
+                        # view/model. Do not issue preparer calls per skipped job.
+                        prepared = {'status': gate.get('preparation_status')}
+                        cp, key = {}, gate.get('checkpoint_key')
+                    else:
+                        prepared, cp, key = await obtain_checkpoint(source_case, job['repeat'], source_pool,
+                                                                  root, models[args.prep_model], opts, locks)
                     if prepared.get('status') != 'checkpoint_ready' or not cp or (gate is not None and not gate['eligible']):
                         episode = {'case_id': case['case_id'], 'repeat': job['repeat'], 'view': job['view'],
                                    'protocol': 'controlled_episode_v2', 'status': 'checkpoint_unavailable',
@@ -558,7 +703,6 @@ async def execute(args, root, selected, names):
                         cp['goal'] = case['goal']
                         cp['events'] = copy.deepcopy(case.get('events', []))
                         cp['event'] = copy.deepcopy(cp['events'][0]) if len(cp['events']) == 1 else None
-                        share = job['experiment'] == 'main' or (job['experiment'] == 'ablation' and job['view'] == 'trajectory')
                         if share:
                             cache_key = f"full/{job['model']}/{job['repeat']}/{case['case_id']}"
                             async with locks.setdefault(cache_key, asyncio.Lock()):
@@ -568,10 +712,17 @@ async def execute(args, root, selected, names):
                                     # Main and Full Trajectory are two reports of one
                                     # episode. Recovery must not rerun it for each alias.
                                     retried_shared.add(cache_key)
-                                    if episode and episode.get('evaluation',{}).get('environment_valid') is False:
-                                        archived = shared_file.with_name(f"episode_failed_{attempt:03d}.json")
-                                        shared_file.replace(archived)
-                                        episode = None
+                                    if retryable_infrastructure_episode(episode):
+                                        archived = archive_shared_episode(shared_file, episode, attempt)
+                                        if rejudgeable_episode(episode):
+                                            episode = await rejudge_saved_episode(case, episode, judge if args.judge_model else None)
+                                            episode['infrastructure_recovery'][-1]['preserved_shared_episode'] = str(archived)
+                                            write_json(shared_file, episode)
+                                        else:
+                                            # No valid complete trajectory exists;
+                                            # only this shared episode is replayed.
+                                            shared_file.unlink()
+                                            episode = None
                                 if episode is None:
                                     episode = await run_checkpoint_episode(case, models[job['model']], cp, 'trajectory', attempt_folder, opts)
                                     episode['shared_episode_file'] = str(attempt_folder / 'episode.json')
@@ -600,6 +751,14 @@ async def execute(args, root, selected, names):
             except asyncio.CancelledError:
                 state.update(state='interrupted', updated_at=now())
                 write_json(folder / 'job.json', state)
+                raise
+            except StorageIOError:
+                # A storage outage leaves the job resumable, never scored.
+                state.update(state='interrupted', updated_at=now(), error_type='StorageIOError')
+                try:
+                    write_json(folder / 'job.json', state)
+                except OSError:
+                    pass  # Retain the original error if this drive is still unavailable.
                 raise
             except Exception as error:
                 # Never log provider response bodies, authorization or exception text.
@@ -654,6 +813,8 @@ def parser():
     p.add_argument('--headless', action='store_true')
     p.add_argument('--resume', action='store_true')
     p.add_argument('--retry-infra', action='store_true', help='Retry infrastructure/unverified jobs, preserving previous results; never retry scored Agent failures')
+    p.add_argument('--min-preparation-coverage', type=float, default=0.9,
+                   help='Required eligibility coverage in each registered experiment before tested actors start (default 0.9); 0 is diagnostic only and still requires an eligible case')
     p.add_argument('--dry-run', action='store_true')
     p.add_argument('--strict-review', action='store_true')
     p.add_argument('--preparation-mode',choices=('before-actors','on-demand'),default='before-actors',
@@ -663,23 +824,25 @@ def parser():
 
 def main(argv=None):
     args = parser().parse_args(argv)
-    if args.command == 'prepare' and args.preparation_mode != 'before-actors':
-        raise ValueError('prepare requires before-actors; it must never sample tested actors')
+    if args.command in {'run', 'prepare'} and args.preparation_mode != 'before-actors':
+        raise ValueError('run and prepare require before-actors; prepare must never sample tested actors, '
+                         'and run preparation coverage cannot be bypassed with on-demand')
     root = args.run_root.expanduser().resolve()
     if args.command == 'status':
         print(json.dumps(status(root), ensure_ascii=False, indent=2))
         return
     if args.command == 'evaluate':
-        saved = read_json(root / 'manifest.json')
-        if not saved:
-            raise ValueError('Run manifest not found')
-        if saved.get('code_sha256') != code_fingerprint():
-            raise ValueError('Registered code changed; use its frozen version to evaluate and preserve the original scoring protocol')
-        for key, value in saved['arguments'].items():
-            setattr(args, key, value)
-        selected = {e: read_cases(root / 'registered_data' / (e + '.jsonl')) for e in saved['counts']}
-        summarize(root, selected, saved['models'], args)
-        print('Result tables saved:', root)
+        with exclusive_run(root):
+            saved = read_json(root / 'manifest.json')
+            if not saved:
+                raise ValueError('Run manifest not found')
+            if saved.get('code_sha256') != code_fingerprint():
+                raise ValueError('Registered code changed; use its frozen version to evaluate and preserve the original scoring protocol')
+            for key, value in saved['arguments'].items():
+                setattr(args, key, value)
+            selected = {e: read_cases(root / 'registered_data' / (e + '.jsonl')) for e in saved['counts']}
+            summarize(root, selected, saved['models'], args)
+            print('Result tables saved:', root)
         return
     args.config, args.data_dir = args.config.resolve(), args.data_dir.resolve()
     from validate_online_v2 import validate
@@ -690,6 +853,8 @@ def main(argv=None):
     if min(args.repeats, args.workers, args.single_limit, args.cf_groups, args.multi_limit,
            args.max_steps, args.pre_steps, args.setup_steps, args.max_context_chars, args.loop_limit) < 1:
         raise ValueError('Limits and budgets must be positive')
+    if not 0 <= args.min_preparation_coverage <= 1:
+        raise ValueError('--min-preparation-coverage must be between 0 and 1')
     config = read_json(args.config)
     configured = {m['name']: m for m in config['models']}
     names = args.only.split(',') if args.only else [m['name'] for m in config['models'] if m.get('enabled')]
@@ -711,30 +876,35 @@ def main(argv=None):
     for name in set(names + [args.prep_model, args.judge_model]):
         if name and not os.environ.get(configured[name]['api_key_env']):
             raise ValueError('Set ' + configured[name]['api_key_env'] + ' before running')
-    previous = read_json(root / 'manifest.json')
-    if previous:
-        if not args.resume:
-            raise ValueError('Existing registered run; use --resume or a new run directory')
-        if previous != manifest:
-            raise ValueError('Dataset, code, config or registered arguments changed; use a new run directory')
-    elif root.exists() and any(p.name != 'logs' for p in root.iterdir()):
-        raise ValueError('Nonempty directory without a registered manifest')
-    root.mkdir(parents=True, exist_ok=True)
-    write_json(root / 'manifest.json', manifest)
-    for experiment, cases in selected.items():
-        folder = root / 'registered_data'
-        folder.mkdir(exist_ok=True)
-        (folder / (experiment + '.jsonl')).write_text(''.join(json.dumps(c, ensure_ascii=False) + '\n' for c in cases), encoding='utf-8')
-    runtime = os.environ.get('EA_M2W_RUNTIME')
-    if runtime:
-        os.environ.setdefault('PLAYWRIGHT_BROWSERS_PATH', runtime + '/browsers')
-    asyncio.run(execute(args, root, selected, names))
-    if args.command == 'prepare':
-        print('Common preparation and reset audit finished; tested actors were not started:', root, flush=True)
-        return
-    summarize(root, selected, names, args)
-    print('All registered jobs finished; results:', root, flush=True)
+    with exclusive_run(root):
+        previous = read_json(root / 'manifest.json')
+        if previous:
+            if not args.resume:
+                raise ValueError('Existing registered run; use --resume or a new run directory')
+            if previous != manifest:
+                raise ValueError('Registered protocol, dataset, code, config or arguments changed; preserve the original run and use a new run directory. Old results cannot be mixed with new prompts or replay rules.')
+        elif root.exists() and any(p.name != 'logs' for p in root.iterdir()):
+            raise ValueError('Nonempty directory without a registered manifest')
+        root.mkdir(parents=True, exist_ok=True)
+        write_json(root / 'manifest.json', manifest)
+        for experiment, cases in selected.items():
+            folder = root / 'registered_data'
+            folder.mkdir(exist_ok=True)
+            (folder / (experiment + '.jsonl')).write_text(''.join(json.dumps(c, ensure_ascii=False) + '\n' for c in cases), encoding='utf-8')
+        runtime = os.environ.get('EA_M2W_RUNTIME')
+        if runtime:
+            os.environ.setdefault('PLAYWRIGHT_BROWSERS_PATH', runtime + '/browsers')
+        asyncio.run(execute(args, root, selected, names))
+        if args.command == 'prepare':
+            print('Common preparation and reset audit finished; tested actors were not started:', root, flush=True)
+            return
+        summarize(root, selected, names, args)
+        print('All registered jobs finished; results:', root, flush=True)
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except (PreparationCoverageError, RunAlreadyActiveError) as error:
+        print(str(error), file=sys.stderr, flush=True)
+        raise SystemExit(3)

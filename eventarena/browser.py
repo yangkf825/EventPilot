@@ -1,5 +1,6 @@
 """Actual Playwright interaction, factual observations, and checkpoint recording."""
 import asyncio
+import base64
 import hashlib
 import json
 import time
@@ -10,11 +11,19 @@ from playwright.async_api import async_playwright, TimeoutError as PlaywrightTim
 
 OBSERVE_JS = r"""() => {
   const visible = el => !!(el.getClientRects().length) && getComputedStyle(el).visibility !== 'hidden';
+  const domPath = el => {
+    const parts = [];
+    for (let node=el; node && node.nodeType===1; node=node.parentElement) {
+      const siblings=node.parentElement ? [...node.parentElement.children].filter(s=>s.tagName===node.tagName) : [node];
+      parts.unshift(node.tagName.toLowerCase()+':nth-of-type('+(siblings.indexOf(node)+1)+')');
+    }
+    return parts.join('>');
+  };
   const controls = [...document.querySelectorAll('a,button,input,select,textarea,[role=button],[role=link],[role=combobox],[role=option]')]
     .filter(visible).filter(el => !el.closest('[data-eventarena-panel]'));
   const candidates = controls.map((el, idx) => {
     el.setAttribute('data-ea-node', String(idx));
-    return {node_id:String(idx), tag:el.tagName.toLowerCase(), text:el.innerText || el.getAttribute('aria-label') || '',
+    return {node_id:String(idx), dom_path:domPath(el), tag:el.tagName.toLowerCase(), text:el.innerText || el.getAttribute('aria-label') || '',
       role:el.getAttribute('role'), name:el.getAttribute('name'), type:el.getAttribute('type'),
       id:el.id, checked:typeof el.checked==='boolean'?el.checked:null,
       selected:Array.from(el.selectedOptions||[]).map(o=>o.value),
@@ -122,6 +131,11 @@ class Browser:
         self.playwright = self.browser = self.context = self.page = None
         self._driver_process = None
         self._replay_routes = {}
+        self._replay_unfinished_keys = set()
+        self._replay_waiters = {}
+        self._replay_abort_acknowledgments = 0
+        self._owned_route_callback_tasks = set()
+        self.replay_archive_audit = None
         self.replay_cleanup_audit = None
         self.cleanup_audit = None
 
@@ -134,18 +148,122 @@ class Browser:
 
     def _finish_replay_request(self, request):
         self._replay_routes.pop(request, None)
+        waiter = self._replay_waiters.pop(request, None)
+        if waiter is not None:
+            waiter.set()
+
+    async def _abort_owned_replay_route(self, route):
+        """Cancel an interception still owned here; do not invent an event.
+
+        A successful route.abort awaits Chromium's failRequest acknowledgement.
+        Some paused subresource/preflight requests never emit requestfailed,
+        so that explicit acknowledgement is the cancellation evidence. This
+        is never used after fallback has handed the route to the HAR router.
+        """
+        await route.abort()
+        self._replay_abort_acknowledgments += 1
+        self._replay_routes.pop(route.request, None)
+        waiter = self._replay_waiters.pop(route.request, None)
+        if waiter is not None:
+            waiter.set()
+
+    def _remember_owned_route_callback_tasks(self):
+        """Retain only route-dispatch tasks belonging to this exact context.
+
+        Playwright creates the context dispatcher outside our handler. Public
+        unroute(ignoreErrors) suppresses its errors but cannot reap a callback
+        left awaiting a handling future after the driver has closed. Keep the
+        exact context-owned task reference while it is still observable; no
+        process-name matching or indiscriminate task cancellation is used.
+        """
+        implementation = getattr(self.context, '_impl_obj', None)
+        if implementation is None:
+            return
+        for task in asyncio.all_tasks():
+            coroutine = task.get_coro()
+            frame = getattr(coroutine, 'cr_frame', None)
+            if (getattr(coroutine, '__name__', None) == '_on_route' and frame is not None
+                    and frame.f_locals.get('self') is implementation):
+                self._owned_route_callback_tasks.add(task)
+                task.add_done_callback(self._owned_route_callback_tasks.discard)
+
+    async def _reap_owned_route_callback_tasks(self):
+        pending = [task for task in self._owned_route_callback_tasks
+                   if not task.done() and task is not asyncio.current_task()]
+        for task in pending:
+            task.cancel()
+        results = await asyncio.gather(*pending, return_exceptions=True)
+        errors = [result for result in results
+                  if isinstance(result, BaseException) and not isinstance(result, asyncio.CancelledError)]
+        if errors:
+            raise BrowserCleanupError(f'{len(errors)} owned route callbacks failed during shutdown')
+        return len(pending)
 
     async def _track_replay_route(self, route):
         # This public routing layer does not alter the archive or the request.
         # It lets us abort the HAR handler's deliberately stalled requests
         # (recorded response.status == -1) at the replay/live boundary.
+        self._remember_owned_route_callback_tasks()
         self._replay_routes[route.request] = route
         if self.network_mode == 'replay_cleanup':
             # Page timers can issue another request while cleanup is running.
             # Do not give that request back to a potentially stalled archive.
-            await route.abort()
+            await self._abort_owned_replay_route(route)
+        elif self._replay_unfinished_keys and self._request_replay_key(route.request) in self._replay_unfinished_keys:
+            # Playwright's HAR router deliberately returns without handling
+            # a status=-1 entry. Calling fallback first gives away this route,
+            # so aborting it during cleanup raises "already handled" and the
+            # request can remain paused forever. Keep only these incomplete
+            # requests under our own cancellable routing boundary.
+            if route.request.is_navigation_request():
+                await self._abort_owned_replay_route(route)
+            else:
+                waiter = asyncio.Event()
+                self._replay_waiters[route.request] = waiter
+                await waiter.wait()
         else:
             await route.fallback()
+
+    @staticmethod
+    def _request_replay_key(request):
+        return (request.method, request.url, request.post_data_buffer or b'')
+
+    @staticmethod
+    def _entry_replay_key(entry):
+        request = entry['request']
+        post = request.get('postData', {})
+        body = post.get('text', '')
+        body = base64.b64decode(body) if post.get('encoding') == 'base64' else body.encode('utf-8')
+        return (request['method'], request['url'], body)
+
+    def _prepare_replay_archive(self, archive, original_sha256):
+        """Keep the registered archive immutable and omit unfinished bodies.
+
+        A status=-1 entry is not a server response and cannot supply factual
+        task content. Complete responses are copied unchanged. An incomplete
+        URL with a complete recorded alternative is routed through the normal
+        HAR matcher; otherwise it remains paused until our cleanup aborts it.
+        Missing requests still abort, with no live-network fallback.
+        """
+        value = json.loads(archive.read_text(encoding='utf-8'))
+        entries = value['log']['entries']
+        complete = [entry for entry in entries if entry['response']['status'] >= 0]
+        unfinished = [entry for entry in entries if entry['response']['status'] < 0]
+        complete_keys = {self._entry_replay_key(entry) for entry in complete}
+        self._replay_unfinished_keys = {self._entry_replay_key(entry) for entry in unfinished} - complete_keys
+        self.replay_archive_audit = {'registered_sha256': original_sha256,
+            'entry_count':len(entries), 'unfinished_entry_count':len(unfinished),
+            'policy':'unchanged_complete_responses_and_cancellable_incomplete_requests'}
+        if not unfinished:
+            self.replay_archive_audit['replay_sha256'] = original_sha256
+            return archive
+        value['log']['entries'] = complete
+        replay = self.run_dir / 'checkpoint_replay.har'
+        replay.write_text(json.dumps(value, ensure_ascii=False), encoding='utf-8')
+        self.replay_archive_audit['replay_sha256'] = hashlib.sha256(replay.read_bytes()).hexdigest()
+        (self.run_dir/'checkpoint_replay_archive_audit.json').write_text(
+            json.dumps(self.replay_archive_audit, ensure_ascii=False, indent=2), encoding='utf-8')
+        return replay
 
     def _attach_page(self, page):
         def response_received(response):
@@ -215,6 +333,12 @@ class Browser:
                 steps.append({'stage':stage, 'ok':False, 'error_type':'CancelledError', 'message':'cleanup cancelled'})
             except Exception as error:
                 steps.append({'stage':stage, 'ok':False, 'error_type':type(error).__name__, 'message':str(error)})
+        # A failed replay boundary can leave a handler waiting on its owned
+        # incomplete route. After context/browser shutdown there is no live
+        # page it could affect; release it so driver callback tasks can exit.
+        for waiter in self._replay_waiters.values():
+            waiter.set()
+        await asyncio.sleep(0)
         if (self._driver_process is not None and self._driver_process.returncode is None
                 and any(s['stage'] == 'driver.stop' and not s['ok'] for s in steps)):
             try:
@@ -226,6 +350,28 @@ class Browser:
                 steps.append({'stage':'driver.force_stop', 'ok':True})
             except Exception as error:
                 steps.append({'stage':'driver.force_stop', 'ok':False, 'error_type':type(error).__name__, 'message':str(error)})
+        pending_callbacks = any(not task.done() for task in self._owned_route_callback_tasks)
+        if pending_callbacks:
+            # Cancellation is only safe after this driver's connection (or,
+            # when no driver was created, this context) actually shut down.
+            # Otherwise a paused request could still affect a live page.
+            closed = (any(step['ok'] and step['stage'] in {'driver.stop','driver.force_stop'} for step in steps)
+                      or self._driver_process is not None and self._driver_process.returncode is not None
+                      or self.playwright is None and any(step['ok'] and step['stage'] in {'context.close','browser.close'} for step in steps))
+            if closed:
+                try:
+                    count = await self._bounded(self._reap_owned_route_callback_tasks(), 'route_callbacks.cancel', 3.0)
+                    steps.append({'stage':'route_callbacks.cancel', 'ok':True, 'count':count})
+                except asyncio.CancelledError as error:
+                    cancelled = error
+                    steps.append({'stage':'route_callbacks.cancel', 'ok':False,
+                                  'error_type':'CancelledError', 'message':'cleanup cancelled'})
+                except Exception as error:
+                    steps.append({'stage':'route_callbacks.cancel', 'ok':False,
+                                  'error_type':type(error).__name__, 'message':str(error)})
+            else:
+                steps.append({'stage':'route_callbacks.cancel', 'ok':False,
+                              'message':'Owned driver/context shutdown was not verified'})
         self.cleanup_audit = {'completed':all(s['ok'] for s in steps), 'steps':steps,
                               'network_mode':self.network_mode, 'replay_cleanup':self.replay_cleanup_audit}
         self.run_dir.mkdir(parents=True, exist_ok=True)
@@ -240,7 +386,8 @@ class Browser:
         if not har.is_file() or hashlib.sha256(har.read_bytes()).hexdigest()!=capture.get('sha256'):
             raise ValueError('Registered checkpoint network archive missing or changed')
         try:
-            await self._bounded(self.context.route_from_har(str(har),not_found='abort',update=False), 'replay.routes.install')
+            replay = self._prepare_replay_archive(har, capture['sha256'])
+            await self._bounded(self.context.route_from_har(str(replay),not_found='abort',update=False), 'replay.routes.install')
             await self._bounded(self.context.route('**/*', self._track_replay_route), 'replay.tracker.install')
             self.network_mode='recorded_prefix'
         except BaseException:
@@ -276,17 +423,28 @@ class Browser:
             finally:
                 await session.detach()
         pending = list(self._replay_routes.values())
-        aborted = await asyncio.gather(*(r.abort() for r in pending), return_exceptions=True)
+        async def abort_pending(route):
+            if getattr(route, 'request', None) in self._replay_waiters:
+                await self._abort_owned_replay_route(route)
+                return
+            await route.abort()
+        aborted = await asyncio.gather(*(abort_pending(r) for r in pending), return_exceptions=True)
         self.replay_cleanup_audit['abort_errors'] = sum(isinstance(r, BaseException) for r in aborted)
-        # Require terminal request events, rather than assuming abort errors
-        # mean the request finished. Inability to drain is a failed boundary.
+        # Routes handed to HAR require terminal request events. Only our own
+        # never-fallback interceptions can use an explicit successful abort
+        # acknowledgement instead. Abort errors never prove cancellation.
         while self._replay_routes:
             await asyncio.sleep(.01)
         # ignoreErrors only suppresses exceptions from detached callbacks. It
         # does not complete or cancel them; terminal requests were required
-        # above so there is no old archived fetch to cross into the live phase.
+        # above (or explicitly aborted while still owned) so there is no old
+        # archived fetch to cross into the live phase.
         await self.context.unroute_all(behavior='ignoreErrors')
         self.replay_cleanup_audit.update(completed=True, remaining_requests=0)
+        if self._replay_abort_acknowledgments:
+            self.replay_cleanup_audit.update(
+                owned_route_abort_acknowledgments=self._replay_abort_acknowledgments,
+                cancellation_evidence='owned_interception_abort_ack_or_terminal_event')
 
     async def observe(self):
         return await self._bounded(self._observe(), 'observe')

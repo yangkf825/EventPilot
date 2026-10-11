@@ -122,17 +122,22 @@ def test_real_launch_prompts_only_selected_key_probes_then_streams_runner(monkey
         return 'FAKE_TEST_VALUE_NOT_A_REAL_CREDENTIAL'
 
     monkeypatch.setattr(launcher.getpass, 'getpass', fake_getpass)
-    calls = capture_processes(monkeypatch, [('probe succeeded\n', 0), ('first\nsecond\n', 0)])
+    calls = capture_processes(monkeypatch, [('site preflight passed\n', 0), ('probe succeeded\n', 0), ('first\nsecond\n', 0)])
     run_root = tmp_path / 'run'
     assert launcher.main(['--provider', 'kimi', '--model', 'k3-256k', '--config', str(base_path),
                           '--run-root', str(run_root), '--mode', 'pilot', '--headed',
                           '--repeats', '3', '--workers', '4']) == 0
     assert len(prompts) == 1 and 'LAUNCHER_TEST_KIMI' in prompts[0]
-    probe, probe_options = calls[0]
+    site_command, site_options = calls[0]
+    assert Path(site_command[1]).name == 'preflight_online_v2.py'
+    assert site_command[site_command.index('--min-coverage') + 1] == '0.9'
+    assert site_command[site_command.index('--case-ids') + 1] == launcher.PILOT_CASES
+    assert 'LAUNCHER_TEST_KIMI' not in site_options['env']
+    probe, probe_options = calls[1]
     assert probe[1] == str(ROOT / 'scripts' / 'probe_gateway.py')
     assert probe[probe.index('--timeout') + 1] == '60'
     assert probe[probe.index('--output') + 1] == str(run_root / 'logs' / 'model_probe.json')
-    command, options = calls[1]
+    command, options = calls[2]
     assert '--headless' not in command
     assert command[command.index('--case-ids') + 1] == launcher.PILOT_CASES
     assert command[command.index('--cf-group-ids') + 1] == launcher.PILOT_CF_GROUPS
@@ -146,19 +151,57 @@ def test_real_launch_prompts_only_selected_key_probes_then_streams_runner(monkey
 
 def test_probe_failure_does_not_start_runner(monkeypatch, tmp_path):
     monkeypatch.setenv('LAUNCHER_TEST_GPT', 'FAKE_TEST_VALUE_NOT_A_REAL_CREDENTIAL')
-    calls = capture_processes(monkeypatch, [('provider unavailable\n', 1)])
+    calls = capture_processes(monkeypatch, [('site preflight passed\n', 0), ('provider unavailable\n', 1)])
     assert launcher.main(['--provider', 'gpt', '--model', 'gpt-5.4', '--config', str(write_config(tmp_path)),
                           '--run-root', str(tmp_path / 'run')]) == 1
-    assert len(calls) == 1 and Path(calls[0][0][1]).name == 'probe_gateway.py'
+    assert len(calls) == 2 and Path(calls[1][0][1]).name == 'probe_gateway.py'
 
 
 def test_skip_probe_uses_existing_environment_without_prompt(monkeypatch, tmp_path):
     monkeypatch.setenv('LAUNCHER_TEST_GLM', 'FAKE_TEST_VALUE_NOT_A_REAL_CREDENTIAL')
     monkeypatch.setattr(launcher.getpass, 'getpass', lambda *_: pytest.fail('Existing environment key must be reused'))
-    calls = capture_processes(monkeypatch)
+    calls = capture_processes(monkeypatch, [('site preflight passed\n', 0), ('registered_jobs: 700\n', 0)])
     assert launcher.main(['--provider', 'glm', '--model', 'glm-5.3', '--config', str(write_config(tmp_path)),
                           '--run-root', str(tmp_path / 'run'), '--skip-probe']) == 0
-    assert len(calls) == 1 and Path(calls[0][0][1]).name == 'run_online_v2.py'
+    assert len(calls) == 2 and Path(calls[1][0][1]).name == 'run_online_v2.py'
+
+
+def test_failed_site_preflight_stops_before_key_prompt_and_paid_probe(monkeypatch, tmp_path):
+    monkeypatch.delenv('LAUNCHER_TEST_GLM', raising=False)
+    monkeypatch.setattr(launcher.getpass, 'getpass', lambda *_: pytest.fail('No key prompt on failed site preflight'))
+    calls = capture_processes(monkeypatch, [('site coverage below threshold\n', 3)])
+    assert launcher.main(['--provider', 'glm', '--model', 'glm-5.3', '--config', str(write_config(tmp_path)),
+                          '--run-root', str(tmp_path / 'run')]) == 3
+    assert len(calls) == 1 and Path(calls[0][0][1]).name == 'preflight_online_v2.py'
+
+
+def test_skip_site_preflight_keeps_api_probe_and_runner(monkeypatch, tmp_path):
+    monkeypatch.setenv('LAUNCHER_TEST_GLM', 'FAKE_TEST_VALUE_NOT_A_REAL_CREDENTIAL')
+    calls = capture_processes(monkeypatch, [('api probe passed\n', 0), ('registered_jobs: 700\n', 0)])
+    assert launcher.main(['--provider', 'glm', '--model', 'glm-5.3', '--config', str(write_config(tmp_path)),
+                          '--run-root', str(tmp_path / 'run'), '--skip-site-preflight']) == 0
+    assert [Path(c[0][1]).name for c in calls] == ['probe_gateway.py', 'run_online_v2.py']
+
+
+@pytest.mark.parametrize('field,value', [('protocol_version', 'online_v2.0.5'),
+                                         ('code_sha256', 'changed')])
+def test_incompatible_resume_stops_before_preflight_key_or_probe(monkeypatch, tmp_path, field, value):
+    from run_online_v2 import PROTOCOL_VERSION, code_fingerprint
+    base_path = write_config(tmp_path)
+    run_root = tmp_path / 'run'
+    launcher.persist_config(run_root, launcher.one_model_config(provider_config(), 'gateway_ds', 'deepseek-v4-pro'))
+    saved = {'protocol_version': PROTOCOL_VERSION, 'code_sha256': code_fingerprint()}
+    saved[field] = value
+    manifest = run_root / 'manifest.json'
+    manifest.write_text(json.dumps(saved))
+    original = manifest.read_bytes()
+    monkeypatch.setattr(launcher.getpass, 'getpass', lambda *_: pytest.fail('incompatible resume must not request credentials'))
+    monkeypatch.setattr(launcher.subprocess, 'Popen', lambda *a, **k: pytest.fail('incompatible resume must not spawn anything'))
+    with pytest.raises(SystemExit) as error:
+        launcher.main(['--provider', 'deepseek', '--model', 'deepseek-v4-pro', '--config', str(base_path),
+                       '--run-root', str(run_root), '--resume'])
+    assert error.value.code == 2
+    assert manifest.read_bytes() == original
 
 
 def test_saved_config_is_stable_on_resume_and_model_change_is_rejected(tmp_path):
@@ -213,7 +256,10 @@ def test_resume_reuses_original_config_and_only_forwards_explicit_retry(
     saved = launcher.persist_config(run_root, launcher.one_model_config(provider_config(), alias, model_id))
     original, original_mtime = saved.read_bytes(), saved.stat().st_mtime_ns
     manifest = run_root / 'manifest.json'
-    manifest.write_text('{"registered": true}\n')
+    from run_online_v2 import PROTOCOL_VERSION, code_fingerprint
+    registered = json.dumps({'registered': True, 'protocol_version': PROTOCOL_VERSION,
+                             'code_sha256': code_fingerprint()}) + '\n'
+    manifest.write_text(registered)
     finished_artifact = run_root / 'finished_episode.json'
     finished_artifact.write_text('{"state": "finished"}\n')
     monkeypatch.setattr(launcher.getpass, 'getpass', lambda *_: pytest.fail('dry resume must not ask for keys'))
@@ -230,7 +276,7 @@ def test_resume_reuses_original_config_and_only_forwards_explicit_retry(
     assert '--resume' in command and '--dry-run' in command
     assert ('--retry-infra' in command) is retry_infra
     assert saved.read_bytes() == original and saved.stat().st_mtime_ns == original_mtime
-    assert manifest.read_text() == '{"registered": true}\n'
+    assert manifest.read_text() == registered
     assert finished_artifact.read_text() == '{"state": "finished"}\n'
 
 

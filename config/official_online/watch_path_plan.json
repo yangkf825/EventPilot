@@ -1,0 +1,36 @@
+[
+  {
+    "task_id": "bf3b311cc8dce16d3de844f4b5875dfd",
+    "steps": [
+      {
+        "href_regex": "^https://www\\.apple\\.com/watch/$"
+      },
+      {
+        "href_regex": "^https://www\\.apple\\.com/apple-watch-ultra-4/$"
+      },
+      {
+        "href_regex": "^https://www\\.apple\\.com/watch/compare/$"
+      }
+    ],
+    "requirements": [
+      {
+        "step": 2,
+        "regex": "Apple Watch Ultra 4",
+        "field": "title"
+      },
+      {
+        "step": 2,
+        "regex": "battery life|Health\\s*Sensing"
+      },
+      {
+        "regex": "Compare Apple\\s*Watch Models"
+      },
+      {
+        "regex": "Apple Watch Series 12"
+      },
+      {
+        "regex": "Apple Watch Ultra 4"
+      }
+    ]
+  }
+]

@@ -19,6 +19,11 @@ class ProviderText(str):
         result.diagnostics = diagnostics
         return result
 
+    def __getnewargs__(self):
+        # copy/pickle must supply both constructor arguments when rebuilding
+        # this str subclass; deepcopy also isolates nested diagnostic values.
+        return str(self), self.diagnostics
+
 
 class Model:
     def __init__(self, name, config=None):
