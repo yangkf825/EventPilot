@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run Online v2.0.5 for one exact model ID, with credentials kept in the environment.
+"""Run Online v2.0.6 for one exact model ID, with credentials kept in the environment.
 
 Example: python scripts/run_one_model.py --provider deepseek --model deepseek-v4-pro
 Use --dry-run to check registration without requesting a key or calling an API.
@@ -107,7 +107,7 @@ def one_model_config(config, alias, model_id):
 def default_run_root(model_id):
     safe_name = re.sub(r'[^A-Za-z0-9._-]+', '_', model_id).strip('._-')[:80] or 'model'
     stamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
-    return ROOT / 'runs' / f'{safe_name}_v2_0_5_once_{stamp}'
+    return ROOT / 'runs' / f'{safe_name}_v2_0_6_once_{stamp}'
 
 
 def load_json(path, description):
@@ -142,13 +142,23 @@ def persist_config(run_root, config, resume=False):
     return path
 
 
+def assert_resume_code(run_root):
+    """Reject incompatible registrations before browser checks or paid probes."""
+    saved = load_json(Path(run_root) / 'manifest.json', 'registered manifest')
+    from run_online_v2 import PROTOCOL_VERSION, code_fingerprint
+    if (saved.get('protocol_version') != PROTOCOL_VERSION
+            or saved.get('code_sha256') != code_fingerprint()):
+        raise ValueError('Registered code or protocol changed; preserve the original results '
+                         'and use a new --run-root. Old runs cannot resume with new prompts or replay rules.')
+
+
 def runner_argv(args, alias, config_path, run_root):
     command = [sys.executable, str(ROOT / 'scripts' / 'run_online_v2.py'), 'run',
                '--config', str(config_path), '--only', alias,
                '--run-root', str(run_root), '--experiments', 'all',
                '--repeats', str(args.repeats), '--workers', str(args.workers),
                '--preparation-mode', 'before-actors', '--prep-model', alias,
-               '--judge-model', alias]
+               '--judge-model', alias, '--min-preparation-coverage', str(args.min_preparation_coverage)]
     if not args.headed:
         command.append('--headless')
     if args.mode == 'pilot':
@@ -219,7 +229,7 @@ def parser():
     result.add_argument('--model', required=True, help='Exact model ID accepted by your configured endpoint')
     result.add_argument('--config', type=Path, default=ROOT / 'models.gateway.json',
                         help='Existing provider config; endpoint and request parameters are retained')
-    result.add_argument('--run-root', type=Path, help='Result directory (default: timestamped runs/<model>_v2_0_5_once_...)')
+    result.add_argument('--run-root', type=Path, help='Result directory (default: timestamped runs/<model>_v2_0_6_once_...)')
     result.add_argument('--mode', choices=('full', 'pilot'), default='full')
     result.add_argument('--repeats', type=int, default=1)
     result.add_argument('--workers', type=int, default=2)
@@ -228,6 +238,10 @@ def parser():
                         help='With --resume only: retry infrastructure/unverified jobs; keep scored Agent results')
     result.add_argument('--dry-run', action='store_true', help='No key prompt, connectivity probe, browser or API calls')
     result.add_argument('--skip-probe', action='store_true', help='Skip the connectivity API request before a real run')
+    result.add_argument('--min-preparation-coverage', type=float, default=0.9,
+                        help='Minimum eligible fraction per experiment before tested actors start')
+    result.add_argument('--skip-site-preflight', action='store_true',
+                        help='Skip entry-page preflight only; preparation coverage and strict reset audit remain required')
     result.add_argument('--headed', action='store_true', help='Show browser windows (default: headless)')
     return result
 
@@ -238,6 +252,8 @@ def main(argv=None):
     try:
         if min(args.repeats, args.workers) < 1:
             raise ValueError('--repeats and --workers must be positive integers')
+        if not 0 <= args.min_preparation_coverage <= 1:
+            raise ValueError('--min-preparation-coverage must be between 0 and 1')
         if args.resume and args.run_root is None:
             raise ValueError('--resume requires the original --run-root')
         if args.retry_infra and not args.resume:
@@ -246,11 +262,23 @@ def main(argv=None):
         config = one_model_config(load_json(args.config.expanduser().resolve(), 'provider config'), alias, args.model)
         run_root = (args.run_root or default_run_root(args.model)).expanduser().resolve()
         config_path = persist_config(run_root, config, resume=args.resume)
+        if args.resume:
+            assert_resume_code(run_root)
         command = runner_argv(args, alias, config_path, run_root)
         env_name = config['models'][0]['api_key_env']
         print(f'Model ID: {args.model}\nProvider alias: {alias}\nAPI key environment: {env_name}\nRun directory: {run_root}', flush=True)
         env = os.environ.copy()
         if not args.dry_run:
+            if not args.skip_site_preflight:
+                preflight = [sys.executable, str(ROOT / 'scripts/preflight_online_v2.py'),
+                             '--output', str(run_root / 'logs/site_preflight.csv'),
+                             '--min-coverage', str(args.min_preparation_coverage)]
+                if args.mode == 'pilot':
+                    preflight.extend(['--case-ids', PILOT_CASES, '--cf-group-ids', PILOT_CF_GROUPS,
+                                      '--multi-case-ids', PILOT_MULTI_CASES])
+                result = stream_command(preflight, env.copy(), run_root / 'logs/site_preflight.log')
+                if result:
+                    return result
             if not env.get(env_name):
                 env[env_name] = getpass.getpass(f'{env_name} (hidden): ')
                 if not env[env_name]:

@@ -8,6 +8,8 @@ import asyncio
 import copy
 import json
 import time
+import sys
+from eventarena.storage_io import open_append, StorageIOError
 
 
 HEARTBEAT_SECONDS = 15
@@ -58,7 +60,7 @@ class PreparationProgress:
         record = {'timestamp': stamp, 'scope': 'common_preparation',
                   'case_id': current.get('case_id'), 'repeat': current.get('repeat'), **safe}
         for name in ('preparation_progress.jsonl', 'progress.jsonl'):
-            with (self.root / name).open('a', encoding='utf-8') as stream:
+            with open_append(self.root / name) as stream:
                 stream.write(json.dumps(record, ensure_ascii=False) + '\n')
         print(f"[PREP {current.get('index', 0)}/{self.state['planned']}] "
               f"{current.get('case_id', '')} repeat={current.get('repeat', '')}: "
@@ -77,7 +79,7 @@ class PreparationProgress:
                       'last_stage': last.get('stage'), 'last_state': last.get('state'),
                       'case_elapsed_s': round(time.monotonic() - self.case_started, 1)}
             for name in ('preparation_progress.jsonl', 'progress.jsonl'):
-                with (self.root / name).open('a', encoding='utf-8') as stream:
+                with open_append(self.root / name) as stream:
                     stream.write(json.dumps(record, ensure_ascii=False) + '\n')
             print(f"[PREP {current.get('index', 0)}/{self.state['planned']}] "
                   f"{current.get('case_id', '')} repeat={current.get('repeat', '')}: "
@@ -90,17 +92,20 @@ class PreparationProgress:
         self.progress({'stage': 'case', 'state': 'CACHED' if cached else 'DONE',
                        'preparation_status': row.get('reason')})
         print(f"  preparation result: {row.get('reason')}; eligible={row.get('eligible') is True}", flush=True)
+        if cached and row.get('eligible') is not True:
+            print('  CACHED_UNAVAILABLE: reused a failed preparation record; '
+                  'this is not a successful task. Use --resume --retry-infra after fixing the environment.', flush=True)
 
     def finish(self, rows):
         self.state.update(state='finished', current_case=None, completed=len(rows),
                           eligible=sum(r.get('eligible') is True for r in rows), finished_at=self.now())
         self.persist()
         print(f"[PREP] Finished common preparation: {len(rows)}/{self.state['planned']}; "
-              f"eligible={self.state['eligible']}. Tested actor jobs may now start.", flush=True)
+              f"eligible={self.state['eligible']}. Coverage gate is checked before tested actors start.", flush=True)
 
 
 async def prepare_pool(args, root, selected, models, locks, obtain_checkpoint):
-    from run_online_v2 import FILES, read_cases, read_json, write_json, write_csv
+    from run_online_v2 import FILES, read_cases, read_json, write_json, write_csv, sha
     from eventarena.online_v2_engine import AutonomousEpisode, restore_checkpoint
     from eventarena.browser import Browser
     originals = {c['case_id']: c for c in read_cases(args.data_dir / FILES['main'])}
@@ -125,7 +130,14 @@ async def prepare_pool(args, root, selected, models, locks, obtain_checkpoint):
             folder = directory / f'repeat_{repeat}' / cid
             progress.begin(cid, repeat, n)
             cached = read_json(folder / 'eligibility.json')
-            if cached and not getattr(args, 'retry_infra', False):
+            if cached and (cached.get('case_id') != cid or cached.get('repeat') != repeat):
+                raise ValueError('Preparation cache identity differs from the registered case')
+            if cached and cached.get('case_sha256') not in (None, sha(case)):
+                raise ValueError('Preparation cache case contents changed; use a new run directory')
+            retry = getattr(args, 'retry_infra', False)
+            # Valid common initial conditions are frozen. Recovery retries only
+            # failed gates; it never reselects already valid cases after actor scores.
+            if cached and (not retry or cached.get('eligible') is True):
                 rows.append(cached)
                 progress.complete(cached, cached=True)
                 continue
@@ -147,7 +159,7 @@ async def prepare_pool(args, root, selected, models, locks, obtain_checkpoint):
             opts = {k: getattr(args, k) for k in ('headless', 'max_steps', 'pre_steps', 'setup_steps',
                                                 'max_context_chars', 'loop_limit', 'format_retries')}
             opts.update(repeat=repeat, judge=judge if args.judge_model else None, progress=progress.progress)
-            row = {'case_id': cid, 'repeat': repeat, 'checkpoint_key': None,
+            row = {'case_id': cid, 'repeat': repeat, 'case_sha256': sha(case), 'checkpoint_key': None,
                    'preparation_status': None, 'eligible': False,
                    'reason': 'common_preparation_unavailable', 'independent_of_tested_actor_scores': True}
             try:
@@ -181,6 +193,8 @@ async def prepare_pool(args, root, selected, models, locks, obtain_checkpoint):
                                                   preparation_failure_is_model=False,
                                                   checkpoint_replay_audit=copy.deepcopy(audit))
 
+                    except StorageIOError:
+                        raise
                     except TimeoutError as error:
                         # Browser operations have their own, shorter deadlines.
                         # Only an expired outer deadline represents the 120s limit.
@@ -207,7 +221,7 @@ async def prepare_pool(args, root, selected, models, locks, obtain_checkpoint):
                         engine.persist()
                         progress.progress({'stage': 'reset_audit', 'state': 'returned',
                                            'preparation_status': row['reason']})
-            except (asyncio.CancelledError, KeyboardInterrupt):
+            except (asyncio.CancelledError, KeyboardInterrupt, StorageIOError):
                 raise
             except Exception as error:
                 row.update(reason='common_preparation_error', error_type=type(error).__name__,
@@ -216,7 +230,9 @@ async def prepare_pool(args, root, selected, models, locks, obtain_checkpoint):
                                    'error_type': type(error).__name__})
             finally:
                 heartbeat.cancel()
-                await asyncio.gather(heartbeat, return_exceptions=True)
+                heartbeat_results = await asyncio.gather(heartbeat, return_exceptions=True)
+                if sys.exc_info()[0] is None and isinstance(heartbeat_results[0], Exception):
+                    raise heartbeat_results[0]
             write_json(folder / 'eligibility.json', row)
             rows.append(row)
             progress.complete(row)
@@ -226,7 +242,10 @@ async def prepare_pool(args, root, selected, models, locks, obtain_checkpoint):
         raise
     except Exception as error:
         progress.state.update(state='error', error_type=type(error).__name__)
-        progress.persist()
+        try:
+            progress.persist()
+        except OSError:
+            pass  # Do not replace the original persistence error with another one.
         raise
     # A control experiment is eligible only as a complete registered group.
     gates = {(r['case_id'], r['repeat']): r for r in rows}

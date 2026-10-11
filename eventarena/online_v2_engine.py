@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import copy
+import difflib
 import hashlib
 import inspect
 import json
@@ -19,10 +20,12 @@ from urllib.parse import urlparse
 from .browser import Browser, checkpoint_policy_hash, validate_checkpoint_policy
 from .online_engine import capture_observation, match_trigger as legacy_match_trigger
 from .json_protocol import extract_object, JSONEnvelopeError
+from .storage_io import atomic_write_json, StorageIOError
 
 VIEWS = ("event-only", "goal", "state", "trajectory")
 DECISIONS = ("IGNORE", "DEFER", "INTERRUPT")
 FOLLOW_UPS = ("HANDLE", "REPLAN", "TERMINATE")
+ACTOR_REPRESENTATION_POLICY = "readable_current_and_lossless_shared_history_v2"
 BROWSER_OPS = {"GOTO", "CLICK", "TYPE", "SELECT", "BACK", "SCROLL", "WAIT"}
 TASK_OPS = {"SWITCH_TASK", "OPEN_TASK", "FOCUS_TASK", "SAVE_RESULT", "COMPLETE_TASK",
             "ACCEPT_EVENT", "ACK_EVENT", "STOP_TASK", "ANSWER"}
@@ -33,10 +36,16 @@ CLICK(node_id), TYPE(node_id,value), SELECT(node_id,value), BACK,
 SCROLL(pixels), WAIT(seconds). Use fresh observed controls. Do not purchase,
 send messages, log in, or submit external applications.
 Workspace tools: SWITCH_TASK(task_id) opens/focuses a task tab; tasks are A and
-delivered event IDs. It does not complete a task. ACCEPT_EVENT(event_id) accepts
+delivered event IDs. A new tab starts at about:blank: use GOTO with that task's
+listed URL to navigate. Switching to the already active task is a no-op, not
+navigation or task execution. Read tool_feedback for the last action result.
+It does not complete a task. ACCEPT_EVENT(event_id) accepts
 an authorized goal revision or cancellation. ACK_EVENT(event_id) only records
 receipt. SAVE_RESULT(text,sources) saves the active task's result; sources must
 be [{"url":"observed URL","quote":"verbatim observed supporting text"}].
+Copy a contiguous passage from observed page text; do not insert ellipses,
+paraphrase, or invent punctuation inside the quoted evidence. A rejected
+SAVE_RESULT stores no result; correct the citation before claiming completion.
 COMPLETE_TASK marks an active task completion claim, checked independently.
 STOP_TASK(task_id) stops a task. ANSWER(answer) ends the episode; it is not a
 success check. A result without observed evidence cannot establish success.
@@ -56,10 +65,10 @@ REFERENCE_INSTRUCTIONS = ''' In full_trajectory, states map state IDs to field I
 and fields contains each complete original field value. In nested v3, descriptors
 use {"$ref":valueID} to refer to values. Values are ["dict",fields],
 ["list",items], ["string",fullText] or ["overlay",baseRef,overrides]; resolve
-references recursively and overlay overrides on the base dictionary. This preserves every original value. Resolve observation.state_ref
-through states and fields to read the current full text and controls. Every action
+references recursively and overlay overrides on the base dictionary. This preserves every original value. Resolve historical observation.state_ref
+through states and fields to read its full text and controls. Current actor observations are supplied directly. Every action
 and observation remains in records. References share values; they do not omit history.'''
-REFERENCE_INSTRUCTIONS += '\nThe actor payload shares one fields/values/states pool in full_trajectory across all authorized components. A boundary trajectory with encoding lossless_shared_references_v4 reads that same pool; only its own records are its history. Any {"$ref":"V..."} in other actor components reads the same values pool. Resolve observation.state_ref and combine observation.metadata to read the exact current capture. Sharing grants no additional history. A value [\"splice\",baseRef,start,remove,replacement] resolves the full base string, replaces remove Unicode codepoints starting at zero-based start with the complete replacement string, and preserves every other codepoint.'
+REFERENCE_INSTRUCTIONS += '\nThe actor payload shares one fields/values/states pool in full_trajectory across authorized components. A boundary trajectory with encoding lossless_shared_references_v4 reads that same pool; only its own records are its history. Any {"$ref":"V..."} reads the same values pool. The current observation is provided directly as readable text and controls, with fresh node_id values. Legacy observation.state_ref resolves through states/fields plus metadata. Sharing grants no additional history. A value ["row",keysRef,items] maps the keys list to the equally ordered item values. A value ["splice",baseRef,start,remove,replacement] replaces one range of the full base string. ["text_patch",baseRef,edits] replaces several nonoverlapping ranges, each [start,remove,replacement], measured in Unicode codepoints of the original base. All other codepoints remain unchanged.'
 ACTOR_SYSTEM += REFERENCE_INSTRUCTIONS
 DECISION_SYSTEM = """Choose IGNORE (no event action), DEFER (finish the active
 original task first, then handle this event), or INTERRUPT (handle this event
@@ -81,11 +90,7 @@ Any ordering that satisfies authorized requirements may be valid."""
 
 
 def _write(path, value):
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temp = path.with_suffix(path.suffix + ".tmp")
-    temp.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8")
-    temp.replace(path)
+    atomic_write_json(path, value)
 
 
 def _hash(value):
@@ -182,7 +187,7 @@ def semantic_projection(observation, relevant=None):
     This is intentionally conservative. No arbitrary text/banner is removed.
     Differing page text, URL, control values or labels are meaningful mismatches.
     """
-    controls = [{k: copy.deepcopy(v) for k, v in c.items() if k not in {"node_id", "id"}}
+    controls = [{k: copy.deepcopy(v) for k, v in c.items() if k not in {"node_id", "id", "dom_path"}}
                 for c in observation.get("candidates", [])]
     if relevant:
         matches = relevant.get("controls", [])
@@ -221,7 +226,7 @@ def replay_checkpoint_audit(expected, observed, relevant=None, policy=None):
                 if not isinstance(item, dict) or not isinstance(item.get('text'), str) or not isinstance(item.get('controls'), list):
                     raise ValueError('Invalid registered checkpoint content')
                 content.append({'selector': item.get('selector'), 'text': item['text'],
-                                'controls': [{k: copy.deepcopy(v) for k, v in c.items() if k not in {'node_id', 'id'}}
+                                'controls': [{k: copy.deepcopy(v) for k, v in c.items() if k not in {'node_id', 'id', 'dom_path'}}
                                              for c in item['controls']]})
             return {'url': value.get('url'), 'title': value.get('title'), 'content': content}
         a, b = (projection(p) for p in projected)
@@ -231,7 +236,7 @@ def replay_checkpoint_audit(expected, observed, relevant=None, policy=None):
     a, b = semantic_projection(expected), semantic_projection(observed)
     return {'matches': a == b, 'available': True, 'different_fields': [k for k in a if a[k] != b[k]],
             'shared_sha256': _hash(a), 'replayed_sha256': _hash(b),
-            'policy': 'ignore_node_ids_and_html_ids_only; retain_observable_semantic_state'}
+            'policy': 'ignore_node_ids_html_ids_and_dom_locator_paths; retain_observable_semantic_state'}
 
 
 def context_for_view(checkpoint, view):
@@ -420,6 +425,32 @@ def _common_string_edge(first, second, suffix=False, limit=None):
     return low
 
 
+def _line_text_edits(base, value):
+    """Exact, shallow edits; no normalization or line/character is dropped."""
+    first, second = base.splitlines(keepends=True), value.splitlines(keepends=True)
+    first_offsets, second_offsets = [0], [0]
+    for line in first:
+        first_offsets.append(first_offsets[-1] + len(line))
+    for line in second:
+        second_offsets.append(second_offsets[-1] + len(line))
+    edits = []
+    # autojunk bounds matching time on pages with many repeated blank/price
+    # lines. It only changes which exact replacement is stored, never content.
+    matcher = difflib.SequenceMatcher(None, first, second, autojunk=True)
+    for kind, i, end_i, j, end_j in matcher.get_opcodes():
+        if kind == 'equal':
+            continue
+        old = base[first_offsets[i]:first_offsets[end_i]]
+        new = value[second_offsets[j]:second_offsets[end_j]]
+        prefix = _common_string_edge(old, new)
+        suffix = _common_string_edge(old, new, suffix=True,
+                                     limit=min(len(old), len(new)) - prefix)
+        end = len(new) - suffix if suffix else len(new)
+        edits.append([first_offsets[i] + prefix, len(old) - prefix - suffix,
+                      new[prefix:end]])
+    return edits
+
+
 class _PayloadReferences:
     """One lossless pool for exactly the actor's authorized visible components."""
     def __init__(self):
@@ -438,12 +469,21 @@ class _PayloadReferences:
                 ids = {k: v for k, v in value.items() if k in {'node_id', 'id'}}
                 descriptor = ['overlay', self.nested({k: v for k, v in value.items() if k not in ids}), ids]
             elif isinstance(value, dict):
-                descriptor = ['dict', {k: self.nested(v) for k, v in value.items()}]
+                # Observed controls share a schema. Store its keys once rather
+                # than repeating twelve mostly unchanged names on every row.
+                # The item order is exact, including nulls and empty values.
+                if len(value) >= 6:
+                    descriptor = ['row', self.nested(list(value)),
+                                  [self.nested(v) for v in value.values()]]
+                else:
+                    descriptor = ['dict', {k: self.nested(v) for k, v in value.items()}]
             elif isinstance(value, list):
                 descriptor = ['list', [self.nested(v) for v in value]]
             else:
                 descriptor = self.string_descriptor(value)
-                if len(value) >= 1024:
+                if len(value) >= 1024 and descriptor[0] == 'string':
+                    # Patches always refer directly to a complete string, not
+                    # to a growing chain of historical patches.
                     self._strings.append((key, value))
             self.values[key] = descriptor
         return {'$ref': self._values[digest]}
@@ -452,17 +492,36 @@ class _PayloadReferences:
         # Repeated captures can differ at a price, clock or form value. Store
         # every changed character while referencing the unchanged full text.
         # This changes serialization only, never the actor's observed evidence.
-        best, savings = ['string', value], 256
+        best = ['string', value]
+        best_size = len(json.dumps(best, ensure_ascii=False))
+        complete_size = best_size
+        bases = []
         if len(value) >= 1024:
             for key, base in self._strings[-48:]:
                 prefix = _common_string_edge(base, value)
                 suffix = _common_string_edge(base, value, suffix=True,
                                              limit=min(len(base), len(value)) - prefix)
-                if prefix + suffix > savings:
+                if prefix + suffix > 256:
                     end = len(value) - suffix if suffix else len(value)
-                    best = ['splice', {'$ref': key}, prefix, len(base) - prefix - suffix, value[prefix:end]]
-                    savings = prefix + suffix
-        return best
+                    candidate = ['splice', {'$ref': key}, prefix, len(base) - prefix - suffix, value[prefix:end]]
+                    size = len(json.dumps(candidate, ensure_ascii=False))
+                    if size < best_size:
+                        best, best_size = candidate, size
+                bases.append((prefix + suffix, key, base))
+            # Changing clocks/prices at distant positions makes a single
+            # prefix/suffix replacement repeat nearly the entire page. Match
+            # complete lines and refine only changed runs. The resulting edits
+            # reconstruct every character and have one reference level.
+            for _, key, base in sorted(bases, key=lambda row: row[0], reverse=True)[:3]:
+                edits = _line_text_edits(base, value)
+                candidate = ['text_patch', {'$ref': key}, edits]
+                size = len(json.dumps(candidate, ensure_ascii=False))
+                if size + 256 < best_size:
+                    best, best_size = candidate, size
+        # A mostly rewritten page is a useful new complete base. Keeping a
+        # tiny saving here would force every later capture to patch an older,
+        # unrelated page and repeat the same new content on every state.
+        return best if best_size <= complete_size / 3 else ['string', value]
 
     def visible(self, value):
         # Keep the component structure readable; share complete repeated bodies,
@@ -536,6 +595,15 @@ def _resolve_payload_value(pool, value, active=None):
             return {k: _resolve_payload_value(pool, v, active) for k, v in data.items()}
         if kind == 'list':
             return [_resolve_payload_value(pool, v, active) for v in data]
+        if kind == 'row':
+            keys = _resolve_payload_value(pool, data, active)
+            items = descriptor[2]
+            if (not isinstance(keys, list) or not all(isinstance(k, str) for k in keys)
+                    or len(set(keys)) != len(keys) or not isinstance(items, list)
+                    or len(keys) != len(items)):
+                raise ValueError('Invalid lossless payload row schema')
+            return {key: _resolve_payload_value(pool, item, active)
+                    for key, item in zip(keys, items)}
         if kind == 'splice':
             base = _resolve_payload_value(pool, data, active)
             start, remove, replacement = descriptor[2:]
@@ -544,6 +612,24 @@ def _resolve_payload_value(pool, value, active=None):
                     or not isinstance(replacement, str) or start < 0 or remove < 0 or start + remove > len(base)):
                 raise ValueError('Invalid lossless payload string splice')
             return base[:start] + replacement + base[start + remove:]
+        if kind == 'text_patch':
+            base = _resolve_payload_value(pool, data, active)
+            edits = descriptor[2]
+            if not isinstance(base, str) or not isinstance(edits, list):
+                raise ValueError('Invalid lossless payload text patch')
+            parts, end = [], 0
+            for edit in edits:
+                if not isinstance(edit, list) or len(edit) != 3:
+                    raise ValueError('Invalid lossless payload text patch')
+                start, remove, replacement = edit
+                if (not isinstance(start, int) or isinstance(start, bool)
+                        or not isinstance(remove, int) or isinstance(remove, bool)
+                        or not isinstance(replacement, str) or start < end
+                        or remove < 0 or start + remove > len(base)):
+                    raise ValueError('Invalid lossless payload text patch')
+                parts.extend((base[end:start], replacement))
+                end = start + remove
+            return ''.join(parts) + base[end:]
         if kind == 'overlay':
             base = _resolve_payload_value(pool, data, active)
             if not isinstance(base, dict):
@@ -564,7 +650,7 @@ def _decode_visible_payload(pool, value):
     return copy.deepcopy(value)
 
 
-def share_actor_payload(content):
+def share_actor_payload(content, readable_current=False):
     """Intern all visible components together, retaining each history's records.
 
     Only the supplied content enters the pool. In particular, event-only, goal
@@ -585,14 +671,20 @@ def share_actor_payload(content):
     result = pool.visible(source)
     if boundary_history is not None:
         result['event_boundary_information']['full_trajectory'] = boundary_history
-    result.update(observation=observation_ref, full_trajectory=history,
-                  payload_encoding='lossless_actor_shared_v1')
+    if readable_current and 'checkpoint_projection' in observation:
+        # This audit projection repeats main text/controls already present in
+        # the readable current capture. Its exact values remain available in
+        # the common pool; current text/candidates/node IDs are always direct.
+        observation['checkpoint_projection'] = pool.visible(observation['checkpoint_projection'])
+    result.update(observation=observation if readable_current else observation_ref,
+                  full_trajectory=history,
+                  payload_encoding='lossless_actor_shared_v2' if readable_current else 'lossless_actor_shared_v1')
     return result
 
 
 def decode_actor_payload(payload):
     """Recover exact visible values; trajectories become original source arrays."""
-    if payload.get('payload_encoding') != 'lossless_actor_shared_v1':
+    if payload.get('payload_encoding') not in {'lossless_actor_shared_v1', 'lossless_actor_shared_v2'}:
         raise ValueError('Unsupported actor payload encoding')
     pool = payload['full_trajectory']
     source = {k: v for k, v in payload.items() if k not in {'full_trajectory', 'observation', 'payload_encoding'}}
@@ -604,6 +696,12 @@ def decode_actor_payload(payload):
     result['full_trajectory'] = decode_lossless_trajectory(pool)
     if boundary is not None:
         result['event_boundary_information']['full_trajectory'] = decode_lossless_trajectory(boundary, pool)
+    if payload['payload_encoding'] == 'lossless_actor_shared_v2':
+        result['observation'] = copy.deepcopy(payload['observation'])
+        if 'checkpoint_projection' in result['observation']:
+            result['observation']['checkpoint_projection'] = _decode_visible_payload(
+                pool, result['observation']['checkpoint_projection'])
+        return result
     reference = payload['observation']
     try:
         observation = {name: _resolve_payload_value(pool, pool['fields'][ref])
@@ -632,6 +730,13 @@ def actor_payload(engine, observation):
                'delivered_events': [public_event(e, True) for e in engine.events if engine.episode['events'][e['id']]['delivered']],
                'reported_decisions': engine.episode['decisions'], 'reported_follow_ups': engine.episode['follow_ups'],
                'full_trajectory': lossless_trajectory(history_source)}
+    if history_source.get('actions'):
+        previous = history_source['actions'][-1]
+        content['tool_feedback'] = {'action': copy.deepcopy(previous.get('action')),
+                                   'error': previous.get('error'),
+                                   'result': copy.deepcopy(previous.get('tool_result')),
+                                   'active_task': engine.active,
+                                   'current_url': observation.get('url')}
     if engine.preparing_task:
         current = engine.tasks[engine.preparing_task]
         content.update(original_user_task=current['goal'],
@@ -644,7 +749,7 @@ def actor_payload(engine, observation):
     elif engine.opts.get('execution_prefix') is not None:
         content['event_boundary_information'] = copy.deepcopy(engine.opts['execution_prefix'])
         content['execution_information_policy'] = 'Current authorized task instructions and new live observations are available for action; pre-event memory is only event_boundary_information. Initial decisions remain locked; no decision selects or performs an action.'
-    return share_actor_payload(content)
+    return share_actor_payload(content, readable_current=True)
 
 
 def _checkpoint_expected(checkpoint):
@@ -672,6 +777,13 @@ async def _call(model, messages):
         return await model.call(messages)
     value = await asyncio.to_thread(model.call, messages)
     return await value if inspect.isawaitable(value) else value
+
+
+class _ToolValidationError(ValueError):
+    """Only locally authored tool feedback is safe to expose to the actor."""
+    def __init__(self, code, message):
+        super().__init__(message)
+        self.code, self.message = code, message
 
 
 class AutonomousEpisode:
@@ -739,6 +851,8 @@ class AutonomousEpisode:
                 row.update(api_ok=True, error='invalid_output', format_error=True)
             except (ValueError, TypeError, KeyError):
                 row.update(api_ok=True, error="invalid_output")
+            except StorageIOError:
+                raise
             except Exception as error:
                 # Transport exception text is deliberately excluded.
                 row["error"] = type(error).__name__
@@ -792,21 +906,29 @@ class AutonomousEpisode:
             if op in {"SWITCH_TASK", "OPEN_TASK", "FOCUS_TASK"}:
                 target = str(action.get("task_id", ""))
                 if self.preparing_task and target != self.preparing_task:
-                    raise ValueError('Complete the registered preparation task before switching stages')
+                    raise _ToolValidationError('preparation_task_required', 'Complete the current preparation task before switching stages.')
                 if target not in self.tasks:
-                    raise ValueError("Unknown or undelivered task")
+                    raise _ToolValidationError('task_unavailable', 'The task ID is unknown or its event has not been delivered. Read available_tasks.')
+                already_active = target == self.active and target in self.pages
+                created = target not in self.pages
                 if target not in self.pages:
                     page = await browser.context.new_page()
                     self.pages[target] = page
                 browser.page = self.pages[target]
                 self.active = target
+                row['tool_result'] = {'code': 'already_active' if already_active else 'task_focused',
+                                      'active_task': target, 'new_tab': created,
+                                      'task_entry_url': self.tasks[target].get('url'),
+                                      'navigation_performed': False, 'task_completed': False,
+                                      'message': 'This task is already focused; switching again does not navigate or perform its task.'
+                                                 if already_active else 'The task tab is focused. A new tab is blank; use GOTO with the task entry URL to navigate.'}
                 if target in self.episode["events"] and self.episode["events"][target]["started_index"] is None:
                     self.episode["events"][target]["started_index"] = index
             elif op == "ACCEPT_EVENT":
                 eid = str(action.get("event_id", ""))
                 event = next((e for e in self.events if e["id"] == eid), None)
                 if not event or not self.episode["events"][eid]["delivered"]:
-                    raise ValueError("Event is not delivered")
+                    raise _ToolValidationError('event_unavailable', 'The event ID is unknown or has not been delivered.')
                 execution = event.get("execution", {})
                 kind = execution.get("kind", "none")
                 state = self.episode["events"][eid]
@@ -814,7 +936,7 @@ class AutonomousEpisode:
                     state["accepted_index"] = index
                 if kind == "update_goal":
                     if not execution.get("updated_goal"):
-                        raise ValueError("Registered update missing")
+                        raise _ToolValidationError('event_update_missing', 'The delivered event has no authorized goal revision.')
                     if not state.get("effect_applied"):
                         self.tasks["A"].update(goal=execution["updated_goal"], goal_version=self.tasks["A"]["goal_version"] + 1,
                                                completed=False, completion_index=None)
@@ -829,34 +951,43 @@ class AutonomousEpisode:
                 elif kind == "research_task":
                     state["accepted"] = True
                 else:
-                    raise ValueError("Event contains no authorized task update")
+                    raise _ToolValidationError('event_update_missing', 'The delivered event contains no authorized task update.')
+                row['tool_result'] = {'code': 'event_accepted', 'event_id': eid,
+                                      'effect': kind,
+                                      'message': 'Research-task acceptance records acceptance only; its browser task still requires execution.'
+                                                 if kind == 'research_task' else 'The authorized event effect was applied.'}
             elif op == "ACK_EVENT":
                 eid = str(action.get("event_id", ""))
                 if eid not in self.episode["events"] or not self.episode["events"][eid]["delivered"]:
-                    raise ValueError("Event is not delivered")
+                    raise _ToolValidationError('event_unavailable', 'The event ID is unknown or has not been delivered.')
                 self.episode["events"][eid]["ack_index"] = index
+                row['tool_result'] = {'code': 'receipt_recorded', 'event_id': eid,
+                                      'message': 'Receipt was acknowledged; no browser task or goal update was performed.'}
             elif op == "SAVE_RESULT":
                 text = str(action.get("text", ""))
                 sources = action.get("sources", [])
                 if not text.strip() or not isinstance(sources, list):
-                    raise ValueError("A nonempty result and source list are required")
+                    raise _ToolValidationError('result_invalid', 'SAVE_RESULT requires nonempty text and a sources list. No result was saved.')
                 observed = self.episode["observations"] + [{**before, "task_id": task_id}]
                 citations = []
                 for source in sources:
                     if not isinstance(source, dict) or not source.get("url") or not source.get("quote"):
-                        raise ValueError("Every source requires an observed URL and verbatim quote")
+                        raise _ToolValidationError('source_invalid', 'Every source needs an observed URL and a contiguous verbatim quote. No result was saved.')
                     matches = [o for o in observed if o.get("url") == source["url"] and
                                " ".join(str(source["quote"]).split()) in " ".join(o.get("text", "").split())]
                     if not matches:
-                        raise ValueError("Source citation does not match any observed page")
+                        raise _ToolValidationError('source_not_observed', 'The URL and quote do not match one observed page. Copy a contiguous passage from that page without ellipses or paraphrasing; whitespace differences are allowed. No result was saved.')
                     citations.append({**source, "observation_index": matches[-1].get("index")})
                 result = {"text": text, "sources": citations, "action_index": index,
                           "goal_version": self.tasks[task_id]["goal_version"],
                           "registered_goal": self.tasks[task_id]["goal"]}
                 self.episode["task_outputs"].setdefault(task_id, []).append(result)
+                row['tool_result'] = {'code': 'result_saved', 'task_id': task_id,
+                                      'source_count': len(citations),
+                                      'message': 'The result and observed citations were saved. Saving is not a verified completion.'}
             elif op == "COMPLETE_TASK":
                 if action.get("task_id", task_id) != task_id:
-                    raise ValueError("Only the focused task can be marked complete")
+                    raise _ToolValidationError('task_not_focused', 'Only the currently focused task can be marked complete.')
                 self.tasks[task_id].update(completed=True, completion_index=self.tasks[task_id].get("completion_index")
                                            if self.tasks[task_id].get("completion_index") is not None else index)
                 if task_id in self.episode["events"]:
@@ -864,7 +995,7 @@ class AutonomousEpisode:
             elif op == "STOP_TASK":
                 target = str(action.get("task_id", task_id))
                 if target not in self.tasks:
-                    raise ValueError("Unknown task")
+                    raise _ToolValidationError('task_unavailable', 'The task ID is unknown. Read available_tasks.')
                 self.tasks[target].update(stopped=True, stop_index=index)
             elif op == "ANSWER":
                 self.episode["final_answer"] = str(action.get("answer", ""))
@@ -880,6 +1011,11 @@ class AutonomousEpisode:
                     self.episode["events"][task_id]["started_index"] = index
             if op not in BROWSER_OPS and hasattr(browser, "save"):
                 await browser.save(action, row["phase"])
+        except StorageIOError:
+            raise
+        except _ToolValidationError as error:
+            row['error'] = 'ValueError'
+            row['tool_result'] = {'code': error.code, 'message': error.message}
         except Exception as error:
             # Browser exception messages can contain response details. Retain
             # error type only; all relevant state is independently recorded.
@@ -1152,6 +1288,35 @@ class AutonomousEpisode:
         return self.episode
 
 
+def _replay_control(recorded_before, observed_before, node_id):
+    """Bind an exact control; duplicate labels alone never authorize a click."""
+    old = recorded_before.get('candidates', [])
+    new = observed_before.get('candidates', [])
+    indices = [i for i, c in enumerate(old) if str(c.get('node_id')) == str(node_id)]
+    if len(indices) != 1:
+        raise ValueError('Recorded control unavailable or ambiguous')
+    index, wanted = indices[0], old[indices[0]]
+    def identity(control):
+        return {k: v for k, v in control.items() if k not in {'node_id', 'id', 'dom_path'}}
+    wanted_identity = identity(wanted)
+    if isinstance(wanted.get('dom_path'), str) and wanted['dom_path']:
+        matches = [c for c in new if c.get('dom_path') == wanted['dom_path']
+                   and identity(c) == wanted_identity]
+        if len(matches) == 1:
+            return matches[0]
+        raise ValueError('Recorded DOM path and semantic control cannot be uniquely replayed')
+    matches = [c for c in new if identity(c) == wanted_identity]
+    if len(matches) == 1:
+        return matches[0]
+    # Old captures did not record a path. An exact entire candidate sequence
+    # proves which duplicate occupied this ordinal. Any label/value/order
+    # change makes this fallback invalid; no guessed "first match" is used.
+    if ([identity(c) for c in old] == [identity(c) for c in new]
+            and index < len(new)):
+        return new[index]
+    raise ValueError('Recorded control cannot be uniquely replayed')
+
+
 async def _restore_checkpoint_prefix(engine, browser, checkpoint):
     """Replay a registered factual prefix, then audit the live A state.
 
@@ -1182,14 +1347,8 @@ async def _restore_checkpoint_prefix(engine, browser, checkpoint):
             engine.episode.setdefault('replay_skipped_original_errors', []).append(recorded.get('index'))
             continue
         if action['op'] in {'CLICK','TYPE','SELECT'}:
-            wanted = next((c for c in recorded.get('before',{}).get('candidates',[]) if str(c.get('node_id')) == str(action.get('node_id'))), None)
-            if not wanted:
-                raise ValueError('Recorded control unavailable')
-            identity = ('tag','role','text','name','type','href','placeholder')
-            matching = [c for c in before.get('candidates',[]) if all(c.get(k) == wanted.get(k) for k in identity)]
-            if len(matching) != 1:
-                raise ValueError('Recorded control cannot be uniquely replayed')
-            action['node_id'] = matching[0]['node_id']
+            matching = _replay_control(recorded.get('before', {}), before, action.get('node_id'))
+            action['node_id'] = matching['node_id']
         if action['op'] in BROWSER_OPS:
             await browser.execute(action, 'CHECKPOINT_REPLAY')
         elif action['op'] in {'SWITCH_TASK','OPEN_TASK','FOCUS_TASK'}:
@@ -1313,6 +1472,8 @@ async def run_checkpoint_episode(case, model, checkpoint, view, run_dir, opts=No
                     phase = 'execution'
                     await engine.continue_episode(browser)
             phase = 'browser_close'
+    except StorageIOError:
+        raise
     except (asyncio.CancelledError, KeyboardInterrupt):
         engine.episode['status'] = 'interrupted'
         engine.persist()
@@ -1332,6 +1493,8 @@ async def run_episode(case, model, run_dir, opts=None, browser_factory=Browser, 
     try:
         async with browser_factory(run_dir, headless=(opts or {}).get("headless", False)) as browser:
             episode = await engine.run(browser, (opts or {}).get("prepare_only", False))
+    except StorageIOError:
+        raise
     except (asyncio.CancelledError, KeyboardInterrupt):
         engine.episode["status"] = "interrupted"
         engine.persist()
@@ -1450,6 +1613,8 @@ async def prepare_state_pair(cases, model, run_dir, opts=None, browser_factory=B
                                           setup_evaluation={k: v['verification'] for k, v in engine.episode['prior_results'].items()})
                 result['preparation_episode'] = copy.deepcopy(engine.episode)
             phase = 'browser_close'
+    except StorageIOError:
+        raise
     except (asyncio.CancelledError, KeyboardInterrupt):
         result.update(status='interrupted', checkpoints={}, preparation_episode=copy.deepcopy(engine.episode), failure_phase=phase)
         _write(Path(run_dir) / 'state_pair.json', result)

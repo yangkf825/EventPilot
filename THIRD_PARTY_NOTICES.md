@@ -35,9 +35,15 @@ The official Mind2Web code repository uses the **MIT License**, with `Copyright 
 
 This project does not require the official repository's model-training implementation or a `vendor/Mind2Web` checkout to run the v2 online experiments. Its upstream MIT license applies to that upstream software; it does **not** replace the separate CC BY 4.0 license of the Mind2Web data, and it does not automatically license this project's newly authored code.
 
-## This project's license status
+## Official Online-Mind2Web task source
 
-At the time this source package was prepared, the project owner had not selected a distribution license for the newly authored EventArena code and author annotations. This notice does not grant an MIT license or any other additional rights to those materials. The owner should select and add an appropriate root `LICENSE` before representing the project as licensed open-source software. Do not assume that the upstream Mind2Web code license covers newly authored EventArena materials.
+The current official event extension uses the task file `Online_Mind2Web.json` from [osunlp/Online-Mind2Web](https://huggingface.co/datasets/osunlp/Online-Mind2Web), with the task goals and identifiers retained exactly. The upstream project is [OSU-NLP-Group/Online-Mind2Web](https://github.com/OSU-NLP-Group/Online-Mind2Web). This release was constructed using revision `eacad896a84dc5b65e29b0b06e4699ab0544d701`, raw SHA256 `7dedf381531d423dc0fc48d21dc1d425655dd75f38b10211a880fa09102f257f`.
+
+The official task file is gated and is **not redistributed** in this public package. Users must obtain it through the official access workflow and comply with its terms. The author-defined event recipes in `config/official_online/` refer to official task IDs; compilation obtains the source task text from the user's local authorized corpus. The project's MIT license does not relicense official task data, website content, or third-party software. The extension's scores are not official leaderboard scores.
+
+## This project's license
+
+The existing [yangkf825/EventPilot](https://github.com/yangkf825/EventPilot) repository contains an MIT License, copyright (c) 2026 yangkf825. This update preserves that owner's existing root `LICENSE` for newly authored project code. Separate upstream data terms and third-party notices remain applicable; the Mind2Web code license must not be mistaken for the Mind2Web data license.
 
 ## Python and browser dependencies
 

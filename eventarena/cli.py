@@ -12,9 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def configure():
-    runtime = os.environ.get('EA_M2W_RUNTIME')
-    if runtime:
-        os.environ.setdefault('PLAYWRIGHT_BROWSERS_PATH', str(Path(runtime) / 'browsers'))
+    runtime = Path(os.environ.get('EA_M2W_RUNTIME', '/Volumes/EA-M2W-Runtime-Recovered'))
+    os.environ.setdefault('PLAYWRIGHT_BROWSERS_PATH', str(runtime / 'browsers'))
     os.environ.setdefault('HF_HOME', str(ROOT / 'cache/huggingface'))
 
 

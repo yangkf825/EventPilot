@@ -1,0 +1,137 @@
+[
+  {
+    "task_id": "d71be72aa25c3eab8eea47a0e60382e2",
+    "steps": [
+      {
+        "href_regex": "^https://www\\.apple\\.com/macbook-air/$"
+      },
+      {
+        "href_regex": "^https://www\\.apple\\.com/macbook-air/specs/$"
+      }
+    ],
+    "requirements": [
+      {
+        "step": 1,
+        "regex": "Now supercharged by M5",
+        "field": "text"
+      },
+      {
+        "regex": "MacBook Air Technical Specifications",
+        "field": "text"
+      },
+      {
+        "regex": "Apple\\s*M5\\s*chip",
+        "field": "text"
+      },
+      {
+        "regex": "Memory|Storage",
+        "field": "text"
+      }
+    ]
+  },
+  {
+    "task_id": "bf3b311cc8dce16d3de844f4b5875dfd",
+    "steps": [
+      {
+        "href_regex": "^https://www\\.apple\\.com/watch/$"
+      },
+      {
+        "href_regex": "^https://www\\.apple\\.com/apple-watch-ultra-4/$"
+      },
+      {
+        "href_regex": "^https://www\\.apple\\.com/watch/compare/$"
+      }
+    ],
+    "requirements": [
+      {
+        "step": 2,
+        "regex": "Apple Watch Ultra 4",
+        "field": "title"
+      },
+      {
+        "step": 2,
+        "regex": "battery life|Health\\s*Sensing"
+      },
+      {
+        "regex": "Compare Apple\\s*Watch Models"
+      },
+      {
+        "regex": "Apple Watch Series 12"
+      },
+      {
+        "regex": "Apple Watch Ultra 4"
+      }
+    ]
+  },
+  {
+    "task_id": "828c2d98616a9478d5864d847d5a1b28",
+    "steps": [
+      {
+        "href_regex": "^https://www\\.justice\\.gov/agencies/chart/grid$"
+      },
+      {
+        "href_regex": "^https://www\\.justice\\.gov/civil$"
+      },
+      {
+        "href_regex": "^https://www\\.justice\\.gov/civil/documents-and-forms-0$"
+      }
+    ],
+    "requirements": [
+      {
+        "regex": "Civil Division",
+        "field": "title"
+      },
+      {
+        "regex": "Forms|Documents"
+      }
+    ]
+  },
+  {
+    "task_id": "d9a8689393effeed75ea0866e44e1def",
+    "steps": [
+      {
+        "href_regex": "^https://oig\\.justice\\.gov/$"
+      }
+    ],
+    "requirements": [
+      {
+        "regex": "Office of the Inspector General"
+      },
+      {
+        "regex": "950 Pennsylvania Avenue NW"
+      },
+      {
+        "regex": "Washington, DC 20530"
+      },
+      {
+        "regex": "\\(202\\) 514-3435"
+      }
+    ]
+  },
+  {
+    "task_id": "3621b099326c7aebd2e2dac6be3b52d1",
+    "steps": [
+      {
+        "href_regex": "^https://www\\.nvidia\\.com/en-us/research/$"
+      },
+      {
+        "href_regex": "^https://research\\.nvidia\\.com/research-labs$"
+      },
+      {
+        "href_regex": "^https://research\\.nvidia\\.com/labs/lpr/$"
+      },
+      {
+        "href_regex": "^https://jankautz\\.com/$"
+      }
+    ],
+    "requirements": [
+      {
+        "step": 3,
+        "regex": "led by Jan Kautz"
+      },
+      {
+        "regex": "Jan Kautz"
+      }
+    ]
+  }
+]

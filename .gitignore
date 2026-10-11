@@ -1,0 +1,45 @@
+# Credentials and machine-specific configuration
+.env
+.env.*
+!.env.example
+models.json
+models.gateway.json
+models.local.json
+.official_runtime.env
+*.key
+*.pem
+
+# Downloaded/locally reconstructed source data (including test text)
+data/raw/
+data/local/
+data/normalized/
+data/candidates/
+data/online_v2/
+data/online_v2_reviewed/
+data/official_online/
+
+# Runtime binaries, browsing evidence, and experiments
+.venv/
+.venv_*/
+venv/
+runtime/
+cache/
+tmp/
+runs/
+logs/
+artifacts/
+vendor/
+releases/
+reports/
+diagnostics/
+delivery_backups/
+*.har
+*.har.zip
+*.trace.zip
+
+# Tool caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+Thumbs.db

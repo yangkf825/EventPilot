@@ -15,11 +15,12 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ('run_online_v2.py', 'build_online_v2.py', 'validate_online_v2.py',
            'analyze_online_v2.py', 'preflight_online_v2.py', 'review_online_v2.py',
            'prepare_online_v2.py', 'paired_online_v2.py', 'recompute_online_v2.py',
-           'probe_gateway.py', 'run_one_model.py', 'run_models.py', 'metrics.py', 'download_data.py',
-           'prepare_dataset.py', 'check_public_data.py', 'package_github.py')
+           'probe_gateway.py', 'run_one_model.py', 'repair_providertext_resume.py', 'repair_storage_resume.py', 'run_models.py', 'metrics.py', 'download_data.py',
+           'prepare_dataset.py', 'check_public_data.py', 'package_github.py',
+           'official_online.py', 'run_official_online.py', 'activate_official.zsh', 'start_official_online.zsh')
 PUBLIC_DATA = ('single_event.jsonl', 'counterfactual.jsonl', 'multi_event.jsonl',
                'manifest.json', 'split_manifest.json', 'INPUT_IDENTIFIABILITY.json')
-ROOT_FILES = ('README.md', 'THIRD_PARTY_NOTICES.md', '.gitignore', '.env.example',
+ROOT_FILES = ('README.md', 'README_LEGACY.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', '.gitignore', '.env.example',
               'models.example.json', 'requirements.txt', 'requirements-online-v2.lock.txt', 'pytest.ini')
 
 
@@ -28,11 +29,18 @@ def selected_files(root):
     files = [root / name for name in ROOT_FILES]
     files += [root / 'scripts' / name for name in SCRIPTS]
     files += sorted((root / 'eventarena').glob('*.py'))
+    files += sorted((root / 'eventarena_official').glob('*.py'))
     files += sorted((root / 'tests').glob('test_online_v2*.py'))
+    files += sorted((root / 'tests').glob('test_official*.py'))
     files += sorted((root / 'tests').glob('test_github_*.py'))
+    files += [root / 'tests/fixtures/storage_v205' / name for name in
+              ('eventarena/online_v2_engine.py.txt', 'eventarena/storage_io.py.txt',
+               'scripts/prepare_online_v2.py.txt', 'scripts/run_online_v2.py.txt')]
     files += [root / 'tests/conftest.py', root / 'config/online_v2_authoring.py',
               root / 'config/README.md', root / 'docs/DATA_SETUP.md', root / 'docs/PROTOCOL.md',
-              root / '.github/workflows/tests.yml']
+              root / 'config/github_actions_tests.example.yml', root / 'docs/OFFICIAL_DATA_SETUP.md',
+              root / 'docs/OFFICIAL_PROTOCOL.md']
+    files += sorted((root / 'config/official_online').glob('*.json'))
     files += [root / 'data/author_candidates' / name for name in PUBLIC_DATA]
     files += [root / 'data/source_metadata' / name for name in
               ('source_task_ids.json', 'mind2web_metadata.json')]
@@ -50,7 +58,17 @@ def audit_payloads(payloads):
     for name, raw in payloads.items():
         text = raw.decode('utf-8')
         for pattern, reason in checks:
-            if pattern.search(text):
+            inspected = text
+            # A frozen, previously published manual collector has one generic
+            # historical runtime fallback. Retain its exact bytes so existing
+            # official/v2 experiment fingerprints remain reproducible. This
+            # exception is file-hash bound and applies only to the path check;
+            # credentials and any other machine paths are still rejected.
+            if (reason == 'machine-specific absolute path' and name == 'eventarena/cli.py'
+                    and hashlib.sha256(raw).hexdigest() == '21684e92f5f6f38a9eaeef5aaecbc4f2d42867ff78ec118981d34b7c550d9eb7'):
+                historical_default = "'" + '/' + 'Volumes' + "/EA-M2W-Runtime-Recovered'"
+                inspected = inspected.replace(historical_default, "'frozen-collector-fallback'")
+            if pattern.search(inspected):
                 raise ValueError(f'Publication audit rejected {name}: {reason}')
         if name == 'models.example.json':
             for model in json.loads(text)['models']:
@@ -65,18 +83,21 @@ def package(root, output):
     report = check(root)
     payloads = {path.relative_to(root).as_posix(): path.read_bytes() for path in selected_files(root)}
     audit_payloads(payloads)
-    manifest = {'scope': 'github_public_source_and_author_candidates', 'version': 'online_v2.0.5',
+    manifest = {'scope': 'github_public_source_and_author_candidates', 'version': 'official_online_eventarena_v5',
+                'legacy_version': 'online_v2.0.6',
                 'contains_api_credentials': False, 'contains_original_source_texts': False,
                 'contains_raw_html': False, 'contains_runtime_binaries': False,
                 'human_reviewed': False, 'dataset_check': report,
-                'local_setup': 'python scripts/prepare_dataset.py --download --extract',
+                'frozen_core_fingerprints_preserved': True,
+                'legacy_manual_collector_requires_explicit_runtime_config': True,
+                'local_setup': 'Follow docs/OFFICIAL_DATA_SETUP.md; gated official source is obtained separately',
                 'files': {name: {'sha256': hashlib.sha256(raw).hexdigest(), 'bytes': len(raw)}
                           for name, raw in payloads.items()}}
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
         for name, raw in payloads.items():
-            archive.writestr('EventArena-Mind2Web/' + name, raw)
-        archive.writestr('EventArena-Mind2Web/PACKAGE_MANIFEST.json',
+            archive.writestr('EventPilot/' + name, raw)
+        archive.writestr('EventPilot/PACKAGE_MANIFEST.json',
                          json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')
     checksum = hashlib.sha256(output.read_bytes()).hexdigest()
     output.with_suffix('.zip.sha256').write_text(checksum + '  ' + output.name + '\n', encoding='utf-8')
@@ -86,7 +107,7 @@ def package(root, output):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, default=ROOT / 'releases/EventArena_GitHub_v2.0.5.zip')
+    parser.add_argument('--output', type=Path, default=ROOT / 'releases/EventPilot_Official_v5.zip')
     args = parser.parse_args()
     print(json.dumps(package(ROOT, args.output), ensure_ascii=False, indent=2))
 

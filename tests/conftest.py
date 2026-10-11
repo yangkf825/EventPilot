@@ -4,6 +4,11 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 
 def pytest_collection_modifyitems(items):
+    official_ready = (ROOT/'data/official_online/events_pilot/manifest.json').is_file()
+    for item in items:
+        if (not official_ready and Path(str(item.fspath)).name == 'test_official_evaluation.py'
+                and item.originalname == 'test_all_shipped_specs_and_registered_experiments_have_valid_evaluator_contract'):
+            item.add_marker(pytest.mark.skip(reason='Gated official corpus is not bundled; import Online_Mind2Web.json and build events locally.'))
     ready = all((ROOT/'data/online_v2'/name).is_file() for name in
                 ('single_event.jsonl','counterfactual.jsonl','multi_event.jsonl','source_task_index.jsonl'))
     if ready:

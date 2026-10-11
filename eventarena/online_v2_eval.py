@@ -10,9 +10,10 @@ import inspect
 import hashlib
 import json
 import re
+from collections.abc import Mapping
 from urllib.parse import urlparse
 
-from .online_eval import evaluate_phase, JUDGE_SYSTEM
+from .online_eval import evaluate_phase, parse_judge, JUDGE_SYSTEM
 from .json_protocol import extract_object, JSONEnvelopeError
 
 JUDGE_SYSTEM_V2 = JUDGE_SYSTEM + '''
@@ -24,7 +25,58 @@ only when missing/corrupt evidence, inaccessible sources, or another evaluation
 limitation prevents a determination. Never turn an incomplete answer into true
 because its citations happen to match a homepage. For a scoped requirement,
 grade that registered requirement independently of other task requirements.
+For each positive evidence citation, copy a short, contiguous passage from the
+decoded text of the cited actual_observations row. Do not summarize, add an
+ellipsis, join separated passages, or write literal backslash-n characters in
+place of observed line breaks. If multiple passages are needed, cite them as
+separate evidence entries. Prefer a short quotation (approximately 280
+characters or fewer); this is a formatting aid, not a limit on the evidence
+available to you. Only quote text actually supporting the registered goal.
+The copied quotation must still match the observed text after whitespace
+normalization. Never substitute a homepage title for evidence of task adequacy.
 '''
+
+JUDGE_CITATION_POLICY = "verbatim_citations_v1"
+JUDGE_FORMAT_RETRIES = 1
+OUTCOME_EVIDENCE_POLICY = "observed_evidence_integrity_v1"
+
+
+def _validate_judge_reply(raw, phase):
+    """Classify structural failures without changing their outcome semantics."""
+    try:
+        parsed = extract_object(raw)
+    except JSONEnvelopeError:
+        return None, "invalid_json"
+    if "success" not in parsed or (parsed["success"] is not None and
+                                    not isinstance(parsed["success"], bool)):
+        return None, "invalid_schema"
+    checked = parse_judge(parsed, phase)
+    if parsed["success"] is True and checked["success"] is not True:
+        return parsed, "ungrounded_positive_citation"
+    # A negative or explicitly unknown judgment is an evaluation, not a format
+    # failure. In particular, never request a second chance after a valid false.
+    return parsed, "valid"
+
+
+def _citation_repair_message(failure):
+    return {
+        "role": "user",
+        "content": json.dumps({
+            "judge_response_validation": failure,
+            "instruction": (
+                "Reissue exactly one JSON evaluation of the same registered goal "
+                "and unchanged evidence above. This is the only format repair. "
+                "Your earlier response failed JSON/schema validation or lacked a "
+                "matching citation for a positive claim. Recheck answer adequacy; "
+                "do not preserve a positive claim if it is unsupported. For true, "
+                "copy actual_observations[*].citation_index and its exact URL and "
+                "a short contiguous verbatim text passage. Use separate entries "
+                "for separate passages. Do not insert ellipses or double-escape "
+                "observed newlines. Return false when the available trace shows "
+                "a task failure, or null if a determination is unavailable."
+            ),
+        }, ensure_ascii=False),
+    }
 
 MODEL_FAILURES = {"invalid_output", "context_overflow", "output_truncated", "checkpoint_setup_failed", "step_budget_exhausted", "loop_guard_exhausted"}
 ENV_FAILURES = {"provider_error", "website_unavailable", "browser_error", "interrupted", "checkpoint_setup_unverified",
@@ -43,7 +95,7 @@ def _and(values):
 
 
 def _successful_actions(episode, task_id=None):
-    return [r for r in episode.get("actions", []) if not r.get("error") and
+    return [r for r in episode.get("actions", []) if isinstance(r, Mapping) and not r.get("error") and
             (task_id is None or r.get("task_id") == task_id)]
 
 
@@ -51,7 +103,9 @@ def _task_phase(episode, task_id, goal_version=None):
     # Source-validation events may provide legitimate evidence for A. Include
     # their real observations for the Judge, while placing the task's own final
     # capture last so deterministic DOM checks remain task-local.
-    observations = list(episode.get("observations", []))
+    supplied = episode.get("observations", [])
+    evidence_incomplete = not isinstance(supplied, list)
+    observations = list(supplied) if isinstance(supplied, list) else []
     actions = _successful_actions(episode, task_id)
     # 'after' observations cover the final action even if the process stopped
     # before the next actor call. They are real captures, not model statements.
@@ -60,9 +114,17 @@ def _task_phase(episode, task_id, goal_version=None):
         if after and row.get("active_task_after", task_id) == task_id:
             observations.append(after)
     unique, seen = [], set()
+    final_capture_unavailable = False
     # Remove identical recaptures, retaining complete observed page states and
     # a task-local final observation. No page text is shortened or invented.
-    for observation in reversed(observations):
+    for position, observation in enumerate(reversed(observations)):
+        if (not isinstance(observation, Mapping) or
+                not isinstance(observation.get("url"), str) or not observation.get("url") or
+                not isinstance(observation.get("text"), str)):
+            evidence_incomplete = True
+            if position == 0:
+                final_capture_unavailable = True
+            continue
         state = {k: v for k, v in observation.items()
                  if k not in {'index', 'action_index', 'task_id', 'provenance'}}
         signature = json.dumps(state, ensure_ascii=False, sort_keys=True)
@@ -75,7 +137,8 @@ def _task_phase(episode, task_id, goal_version=None):
     result = outputs[-1] if outputs else {}
     return {"status": "agent_claimed_done", "answer": result.get("text", ""),
             "actions": actions, "observations": observations,
-            "result_observation": observations[-1] if observations else {},
+            "result_observation": observations[-1] if observations and not final_capture_unavailable else {},
+            "observation_evidence_incomplete": evidence_incomplete,
             "saved_output": result, "task_state": episode.get("task_states", {}).get(task_id, {})}
 
 
@@ -90,9 +153,25 @@ def _output_check(check, phase):
     if kind == "saved_sources_observed":
         sources = output.get("sources", [])
         observations = phase["observations"]
-        return bool(sources) and all(isinstance(s, dict) and s.get("url") and s.get("quote") and
-                    any(o.get("url") == s["url"] and " ".join(s["quote"].split()) in " ".join(o.get("text", "").split())
-                        for o in observations) for s in sources)
+        if not isinstance(sources, list) or not sources or not all(
+                isinstance(s, dict) and isinstance(s.get("url"), str) and s["url"]
+                and isinstance(s.get("quote"), str) and s["quote"].strip() for s in sources):
+            return False
+        # Lost/corrupt captures cannot establish that an actor invented a
+        # quotation. A complete observed trace with no match does establish an
+        # unsupported saved citation. Do not conflate the two outcomes.
+        usable = [o for o in observations if isinstance(o.get("url"), str) and o["url"]
+                  and isinstance(o.get("text"), str)]
+        incomplete = (phase.get("observation_evidence_incomplete", False)
+                      or len(usable) != len(observations))
+        if not usable:
+            return None
+        matches = [any(o["url"] == s["url"] and
+                       " ".join(s["quote"].split()) in " ".join(o["text"].split())
+                       for o in usable) for s in sources]
+        if all(matches):
+            return True
+        return None if incomplete else False
     if kind == "saved_source_host":
         host = str(value)
         return any((urlparse(s.get("url", "")).hostname or "") == host or
@@ -109,10 +188,6 @@ async def evaluate_task(goal, verification, episode, task_id="A", judge=None, go
     cached = episode.get("verified_tasks", {}).get(task_id, {})
     output_hash = hashlib.sha256(json.dumps(episode.get("task_outputs", {}).get(task_id, []), sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     verifier_hash = hashlib.sha256(json.dumps(verification, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
-    if (cached.get("output_hash") == output_hash and cached.get("goal_version") == goal_version
-            and cached.get('goal') == goal and cached.get('verification_sha256') == verifier_hash
-            and cached.get("result")):
-        return {**cached["result"], "reused_independent_verification": True}
     if not phase["saved_output"]:
         return _result(False, "No durable result for the effective task version")
     if not phase["saved_output"].get("sources"):
@@ -126,24 +201,60 @@ async def evaluate_task(goal, verification, episode, task_id="A", judge=None, go
     custom.append(_output_check({"type": "saved_sources_observed"}, phase))
     if any(v is False for v in custom):
         return _result(False, "Registered durable-output or source-grounding check failed", checks=custom)
+    if any(v is None for v in custom):
+        return _result(None, "Required observed source evidence is missing or corrupt",
+                       checks=custom, evidence_policy=OUTCOME_EVIDENCE_POLICY)
+    # Never let a prior positive judgment bypass a currently missing/corrupt
+    # source capture. This check uses only executed observations and saved data.
+    if (cached.get("output_hash") == output_hash and cached.get("goal_version") == goal_version
+            and cached.get('goal') == goal and cached.get('verification_sha256') == verifier_hash
+            and cached.get("result")):
+        return {**cached["result"], "reused_independent_verification": True}
     remaining = [c for c in checks if c.get("type") not in custom_types]
     method = verification.get("method", "llm_judge")
     if method == "deterministic" and not remaining:
         if not checks:
             return _result(None, "Grounding alone does not prove answer adequacy")
         return _result(True, "Registered durable output and grounded citations verified", checks=custom)
+    judge_validation = {"policy": JUDGE_CITATION_POLICY,
+                        "max_format_retries": JUDGE_FORMAT_RETRIES,
+                        "request_count": 0, "attempts": []}
+
     async def policy_judge(messages):
         messages = [dict(m) for m in messages]
         messages[0]['content'] = JUDGE_SYSTEM_V2
-        result = judge(messages)
-        result = await result if inspect.isawaitable(result) else result
-        try:
-            return extract_object(result)
-        except JSONEnvelopeError:
-            return {}  # Independent Judge remains unverified; never guess prose.
+        # Repair only malformed independent evaluations. The observations and
+        # task requirements stay identical and neither request receives Gold.
+        # Transport errors are not format errors and use no extra request here.
+        for attempt in range(JUDGE_FORMAT_RETRIES + 1):
+            audit = {"attempt": attempt + 1}
+            judge_validation["attempts"].append(audit)
+            judge_validation["request_count"] += 1
+            try:
+                raw = judge(messages)
+                raw = await raw if inspect.isawaitable(raw) else raw
+            except Exception as error:
+                audit.update(validation="request_error", error_type=type(error).__name__)
+                raise
+            parsed, failure = _validate_judge_reply(raw, phase)
+            audit["validation"] = failure
+            if failure == "valid":
+                return parsed
+            if attempt < JUDGE_FORMAT_RETRIES:
+                # Retain the original actual-observations message; no invented
+                # quotation or automatically selected evidence is supplied.
+                messages = messages + [_citation_repair_message(failure)]
+                audit["repair_requested"] = True
+            else:
+                return {"success": None, "evidence": [],
+                        "reason": "Independent Judge response remains invalid after "
+                                  "the registered format repair: " + failure}
+
     result = await evaluate_phase(goal, phase, {**verification, "checks": remaining},
                                   judge=policy_judge if judge is not None else None)
     result["durable_output_checks"] = custom
+    if judge_validation["request_count"]:
+        result["judge_validation"] = judge_validation
     return result
 
 
