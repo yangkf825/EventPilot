@@ -16,7 +16,7 @@ FILES = ('single_event.jsonl','counterfactual.jsonl','multi_event.jsonl')
 LABELS = {'IGNORE','DEFER','INTERRUPT'}
 FOLLOWUPS = {'HANDLE','REPLAN','TERMINATE'}
 PREDICATES = {'url_host','url_contains','text_contains','text_any','control_present','control_value',
-              'action_occurred','task_output_contains','url_path_not_in'}
+              'action_occurred','task_output_contains','url_path_not_in','event_stage'}
 SAFE_ID = re.compile(r'^[A-Za-z0-9_-]+$')
 
 
@@ -51,6 +51,8 @@ def compile_case(spec, index):
                 task_family_id='official:' + task['task_id'], source_family_id='official:' + task['task_id'],
                 trigger=copy.deepcopy(spec.get('trigger')), events=[],
                 difficulty=spec.get('difficulty','unreviewed'),
+                difficulty_mechanisms=copy.deepcopy(spec.get('difficulty_mechanisms',[])),
+                split=spec.get('split','heldout_candidate'),
                 annotation={'human_reviewed':spec.get('human_reviewed') is True,
                             'reviewers':spec.get('reviewers',[]), 'review_evidence':spec.get('review_evidence',[]),
                             'full_trajectory_origin':'runtime_browser_observations_and_actions_only'})
@@ -128,6 +130,9 @@ def compile_case(spec, index):
     case['evaluation_registration']={'eligibility_must_not_use_actor_scores':True,
                                     'task_goal_policy':'unchanged_official_A_until_authorized_event_revision'}
     case['author_spec']=copy.deepcopy(spec)
+    if spec.get('checkpoint_group_id'):
+        require(SAFE_ID.fullmatch(spec['checkpoint_group_id']),cid+': unsafe checkpoint group')
+        case['checkpoint_group_id']=spec['checkpoint_group_id']
     if spec.get('group_type'):
         case.update(group_type=spec['group_type'],group_id=spec['group_id'],cf=copy.deepcopy(spec.get('cf',{})))
         for key in ('checkpoint_group_id','checkpoint_navigation_goal','controlled_user_history','state_variant'):
@@ -142,6 +147,14 @@ def compile_case(spec, index):
             case['setup_tasks'].append({'id':setup['id'],'goal':t['goal'],'url':t['url'],
                                        'source_task':source(t),'alias_event_id':setup['alias_event_id'],
                                        'verification':{'method':'llm_judge','goal':t['goal'],'checks':[]}})
+    if spec.get('multi_arrival_mode'):
+        case['multi_arrival_mode']=spec['multi_arrival_mode']
+        require(case['multi_arrival_mode'] in {'batch','stream'}, cid+': unknown arrival mode')
+        if case['multi_arrival_mode']=='stream':
+            require(any(e.get('trigger',{}).get('type')=='event_stage' for e in case['events']),
+                    cid+': streaming cases require registered later event triggers')
+        case['runtime_protocol']={'multi_case':True,'report_all_known_events':True,
+                                  'future_event_goals_not_visible':True}
     return case
 
 
@@ -225,7 +238,9 @@ def validate_extension(directory, strict_review=False):
         elif kind=='state':
             require(members[0]['goal']==members[1]['goal'] and members[0]['events'][0]['text']==members[1]['events'][0]['text'] and
                     members[0]['events'][0]['execution']==members[1]['events'][0]['execution'],gid+': state pair changed goal/event')
-            require(sum(bool(c.get('setup_tasks')) for c in members)==1,gid+': state pair needs one genuine prior task execution')
+            hard_pair={c.get('state_variant') for c in members}=={'target_completed','related_completed'}
+            require(all(c.get('setup_tasks') for c in members) if hard_pair else
+                    sum(bool(c.get('setup_tasks')) for c in members)==1,gid+': state pair requires genuine controlled prior lookups')
             require(all(c['cf'].get('state_fields')==['prior_results'] for c in members),gid+': unsupported state intervention')
         else:
             require(len({c['goal'] for c in members})==1 and all(c['gold']==members[0]['gold'] and

@@ -12,6 +12,8 @@ import json
 import os
 from pathlib import Path
 import sys
+import hashlib
+import tempfile
 import time
 
 RETRY_DELAYS = (0.25, 0.75, 1.5)
@@ -62,14 +64,37 @@ def atomic_write_json(path, value):
     path = Path(path)
     # Serialize before touching the file; serialization errors are not I/O.
     text = json.dumps(value, ensure_ascii=False, indent=2)
-    temporary = path.with_suffix(path.suffix + '.tmp')
-
     def commit():
         path.parent.mkdir(parents=True, exist_ok=True)
-        with temporary.open('w', encoding='utf-8') as stream:
-            stream.write(text)
-            stream.flush()
-            os.fsync(stream.fileno())
-        temporary.replace(path)
-
-    retry_io(commit, path)
+        fd,name=tempfile.mkstemp(prefix='.'+path.name+'.',suffix='.tmp',dir=path.parent)
+        temporary=Path(name)
+        try:
+            with os.fdopen(fd,'w',encoding='utf-8') as stream:
+                stream.write(text);stream.flush();os.fsync(stream.fileno())
+            temporary.replace(path)
+        finally:
+            try:temporary.unlink(missing_ok=True)
+            except OSError:pass
+    try:
+        retry_io(commit, path)
+    except StorageIOError as error:
+        # A failed external write must stop execution. Preserve the exact value
+        # locally, rather than dropping a paid response or silently scoring it.
+        journal=os.environ.get('EP_STORAGE_JOURNAL')
+        if journal:
+          try:
+            target=path.resolve();root=os.environ.get('EP_RUN_ROOT')
+            if root and target.is_relative_to(Path(root).resolve()):
+                spool=Path(journal);spool.mkdir(parents=True,exist_ok=True)
+                key=hashlib.sha256(os.fsencode(target)).hexdigest()
+                record={'target':str(target),'sha256':hashlib.sha256(text.encode()).hexdigest(),
+                        'payload':text,'errno':error.errno,'format':'exact_pending_atomic_json_v1'}
+                destination=spool/(key+'.pending.json')
+                fd,name=tempfile.mkstemp(prefix=key+'.',dir=spool)
+                with os.fdopen(fd,'w',encoding='utf-8') as stream:
+                    json.dump(record,stream,ensure_ascii=False);stream.flush();os.fsync(stream.fileno())
+                Path(name).replace(destination)
+                print('[STORAGE JOURNAL] Exact pending value retained locally; execution stopped.',file=sys.stderr,flush=True)
+          except OSError:
+            print('[STORAGE JOURNAL] Local retention also failed; original storage error preserved.',file=sys.stderr,flush=True)
+        raise

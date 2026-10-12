@@ -94,6 +94,12 @@ async def execute(args, root, selected, names):
     async def worker():
         nonlocal done
         while not queue.empty():
+            blocked={name:wrapper.model.blocked.diagnostics for name,wrapper in models.items()
+                     if getattr(wrapper.model,'blocked',None) is not None}
+            if blocked:
+                write_json(root/'provider_pause.json',{'stage':'actors','providers':blocked,
+                    'resume':'Restore provider access and use the same run with --resume --retry-infra.'})
+                raise RuntimeError('Provider access/quota unavailable; run paused before sampling further jobs')
             try:
                 job = queue.get_nowait()
             except asyncio.QueueEmpty:
@@ -126,10 +132,11 @@ async def execute(args, root, selected, names):
             judge_records = []
 
             async def judge(messages):
-                row = {'messages': messages, 'api_ok': False}
+                row = {'messages': messages, 'api_ok': False,'context_access_records':[]}
                 progress({'stage': 'judge', 'state': 'calling'})
                 try:
-                    row['raw'] = await models[args.judge_model].call(messages)
+                    from eventarena_official.judge_context import call_evidence_judge
+                    row['raw'] = await call_evidence_judge(models[args.judge_model],messages,row['context_access_records'])
                     row['api_ok'] = True
                     return row['raw']
                 except Exception as error:

@@ -17,7 +17,9 @@ SCRIPTS = ('run_online_v2.py', 'build_online_v2.py', 'validate_online_v2.py',
            'prepare_online_v2.py', 'paired_online_v2.py', 'recompute_online_v2.py',
            'probe_gateway.py', 'run_one_model.py', 'repair_providertext_resume.py', 'repair_storage_resume.py', 'run_models.py', 'metrics.py', 'download_data.py',
            'prepare_dataset.py', 'check_public_data.py', 'package_github.py',
-           'official_online.py', 'run_official_online.py', 'activate_official.zsh', 'start_official_online.zsh')
+           'official_online.py', 'run_official_online.py', 'activate_official.zsh', 'start_official_online.zsh',
+           'build_publication_dataset.py','audit_publication_dataset.py','run_publication.py',
+           'start_publication.zsh','configure_api_keys.zsh','recover_pending_storage.py','export_publication.py')
 PUBLIC_DATA = ('single_event.jsonl', 'counterfactual.jsonl', 'multi_event.jsonl',
                'manifest.json', 'split_manifest.json', 'INPUT_IDENTIFIABILITY.json')
 ROOT_FILES = ('README.md', 'README_LEGACY.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', '.gitignore', '.env.example',
@@ -26,6 +28,15 @@ ROOT_FILES = ('README.md', 'README_LEGACY.md', 'LICENSE', 'THIRD_PARTY_NOTICES.m
 
 def selected_files(root):
     root = Path(root)
+    if (root/'config/publication_v6_source_registry.json').exists():
+        files=[root/name for name in ROOT_FILES if name!='pytest.ini']
+        files+=[root/'scripts'/name for name in SCRIPTS]
+        files+=sorted((root/'eventarena').glob('*.py'))+sorted((root/'eventarena_official').glob('*.py'))
+        files+=[root/name for name in ('config/publication_v6.json','config/publication_v6_source_registry.json',
+                'docs/PUBLICATION_V6.md','docs/ARCHIVE_V5_README.md','docs/OFFICIAL_DATA_SETUP.md',
+                'docs/OFFICIAL_PROTOCOL.md','docs/DATA_SETUP.md','docs/PROTOCOL.md','config/online_v2_authoring.py')]
+        if any(not p.is_file() or p.is_symlink() for p in files):raise ValueError('Missing or linked v6 source file')
+        return sorted(set(files))
     files = [root / name for name in ROOT_FILES]
     files += [root / 'scripts' / name for name in SCRIPTS]
     files += sorted((root / 'eventarena').glob('*.py'))
@@ -83,12 +94,15 @@ def package(root, output):
     report = check(root)
     payloads = {path.relative_to(root).as_posix(): path.read_bytes() for path in selected_files(root)}
     audit_payloads(payloads)
-    manifest = {'scope': 'github_public_source_and_author_candidates', 'version': 'official_online_eventarena_v5',
+    v6=(root/'config/publication_v6_source_registry.json').exists()
+    manifest = {'scope': 'github_public_source_recipe_and_source_ids' if v6 else 'github_public_source_and_author_candidates', 'version': 'official_online_eventarena_v6' if v6 else 'official_online_eventarena_v5',
                 'legacy_version': 'online_v2.0.6',
                 'contains_api_credentials': False, 'contains_original_source_texts': False,
                 'contains_raw_html': False, 'contains_runtime_binaries': False,
                 'human_reviewed': False, 'dataset_check': report,
-                'frozen_core_fingerprints_preserved': True,
+                'frozen_core_fingerprints_preserved': not v6,
+                'new_protocol_does_not_resume_old_runs':v6,
+                'legacy_regression_results_are_not_v6_validation':v6,
                 'legacy_manual_collector_requires_explicit_runtime_config': True,
                 'local_setup': 'Follow docs/OFFICIAL_DATA_SETUP.md; gated official source is obtained separately',
                 'files': {name: {'sha256': hashlib.sha256(raw).hexdigest(), 'bytes': len(raw)}
@@ -107,7 +121,7 @@ def package(root, output):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, default=ROOT / 'releases/EventPilot_Official_v5.zip')
+    parser.add_argument('--output', type=Path, default=ROOT / 'releases/EventPilot_v6_GitHub.zip')
     args = parser.parse_args()
     print(json.dumps(package(ROOT, args.output), ensure_ascii=False, indent=2))
 

@@ -43,3 +43,10 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 Thumbs.db
+
+.credentials.env
+.credentials.env.*
+.storage_journal/
+.credential_file.env
+publication_local.json
+.model_overrides/

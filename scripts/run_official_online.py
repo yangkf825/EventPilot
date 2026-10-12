@@ -20,6 +20,7 @@ from eventarena_official.browser import REPLAY_POLICY
 from eventarena_official.preparation_import import plan_import, materialize_import
 from eventarena_official.evaluation import POLICY as EVALUATION_SCHEMA_POLICY
 from eventarena_official.evaluation_recovery import migrate_constraint_schema
+from eventarena_official.judge_context import POLICY as JUDGE_CONTEXT_POLICY, MAX_INLINE_CHARS
 
 
 def fingerprint():
@@ -79,6 +80,7 @@ def main(argv=None):
                     context_access_policy=CONTEXT_POLICY,context_read_limits=LIMITS,
                     checkpoint_replay_policy=REPLAY_POLICY,
                     evaluation_schema_policy=EVALUATION_SCHEMA_POLICY,
+                    judge_context_policy=JUDGE_CONTEXT_POLICY,judge_max_inline_chars=MAX_INLINE_CHARS,
                     official_source=legacy.read_json(args.data_dir/'manifest.json')['source'],
                     extension_validation=validation,official_leaderboard_comparable=False)
     import_plan=plan_import(args.preparation_from_run, manifest) if args.preparation_from_run else None
