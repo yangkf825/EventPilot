@@ -76,6 +76,10 @@ async def execute(args, root, selected, names):
     if args.retry_infra:
         recover_failed_checkpoints(root)
     eligibility = None
+    provider=None
+    if args.preparation_mode=='casewise':
+        from .casewise import EligibilityProvider
+        provider=EligibilityProvider(args,root,selected,models,locks,obtain_checkpoint)
     if getattr(args,'preparation_mode','on-demand') == 'before-actors':
         from eventarena_official.preparation import prepare_pool
         eligibility = await prepare_pool(args,root,selected,models,locks,obtain_checkpoint)
@@ -166,7 +170,8 @@ async def execute(args, root, selected, names):
                 elif job['experiment'] in {'main', 'ablation', 'counterfactual', 'baseline', 'multi'}:
                     source_case = original_by_id[case['original_case_id']] if job['experiment'] == 'baseline' else case
                     source_pool = selected['counterfactual'] if job['experiment'] == 'counterfactual' else single_cases
-                    gate = eligibility.get((source_case['case_id'],job['repeat'])) if eligibility is not None else None
+                    gate = (await provider.ensure(source_case,job['repeat']) if provider is not None else
+                            eligibility.get((source_case['case_id'],job['repeat'])) if eligibility is not None else None)
                     if gate is not None and gate['eligible'] is not True:
                         # A frozen failed gate cannot be repaired by a tested
                         # view/model. Do not issue preparer calls per skipped job.
@@ -273,6 +278,14 @@ async def execute(args, root, selected, names):
                 if done % 20 == 0 or queue.empty():
                     summarize(root, selected, names, args)
 
-    await asyncio.gather(*(worker() for _ in range(args.workers)))
+    tasks=[asyncio.create_task(worker()) for _ in range(args.workers)]
+    try:
+        await asyncio.gather(*tasks)
+    except BaseException:
+        for task in tasks:task.cancel()
+        await asyncio.gather(*tasks,return_exceptions=True)
+        raise
+    finally:
+        if provider is not None:provider.finish()
 
 

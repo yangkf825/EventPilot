@@ -1,5 +1,5 @@
 {
-  "protocol": "official_online_eventarena_v6",
+  "protocol": "official_online_eventarena_v6_casewise",
   "data_dir": "data/official_online/events_v6_final",
   "experiments": "all",
   "single_limit": 200,
@@ -8,6 +8,7 @@
   "repeats": 1,
   "seed": 20261012,
   "workers": 2,
+  "prep_workers": 2,
   "prep_model": "gateway_ds",
   "judge_model": "gateway_gpt",
   "max_steps": 90,
@@ -17,7 +18,7 @@
   "loop_limit": 4,
   "format_retries": 1,
   "min_preparation_coverage": 0.9,
-  "preparation_mode": "before-actors",
+  "preparation_mode": "casewise",
   "headless": true,
   "publication_policy": "No gold adjustment or case selection based on tested-model accuracy. Report candidate coverage, unknown outcomes and domain-clustered uncertainty. Human label and Judge audits are required before scientific publication."
 }

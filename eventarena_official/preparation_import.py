@@ -12,6 +12,7 @@ from eventarena.storage_io import retry_io, atomic_write_json
 
 # The frozen v4 source delivered on 2026-10-10 and verified before this repair.
 KNOWN_SOURCE_CODES = {'8c1ec74a82e47e787be5628551bddb0edbdcbc4607ccca93747a1e6240159c61'}
+KNOWN_V6_CODES={'1ac7ad31aac3680c6849ae82a17d960aad156e5cf4f594d4b914ee93deb12681'}
 PREPARATION_ARGUMENTS = ('repeats', 'prep_model', 'judge_model', 'pre_steps', 'setup_steps',
                          'max_context_chars', 'loop_limit', 'format_retries', 'headless')
 
@@ -50,8 +51,11 @@ def plan_import(source, target_manifest):
     manifest_path = source / 'manifest.json'
     original_bytes = manifest_path.read_bytes()
     original = json.loads(original_bytes)
-    if original.get('protocol_version') != 'official_online_eventarena_v4' or original.get('code_sha256') not in KNOWN_SOURCE_CODES:
-        raise ValueError('Preparation import requires the verified frozen v4 source')
+    legacy_source=original.get('protocol_version')=='official_online_eventarena_v4' and original.get('code_sha256') in KNOWN_SOURCE_CODES
+    v6_source=original.get('protocol_version')=='official_online_eventarena_v6' and original.get('code_sha256') in KNOWN_V6_CODES
+    same_casewise=original.get('protocol_version')=='official_online_eventarena_v6_casewise' and original.get('code_sha256')==target_manifest.get('code_sha256')
+    if not (legacy_source or v6_source or same_casewise):
+        raise ValueError('Preparation import requires a registered compatible frozen source')
     for key in ('dataset_sha256', 'official_source', 'context_access_policy', 'context_read_limits'):
         if original.get(key) != target_manifest.get(key):
             raise ValueError('Preparation import differs in ' + key)
@@ -70,8 +74,17 @@ def plan_import(source, target_manifest):
         if p.name not in {'episode.json', 'state_pair.json', 'checkpoint_case.json'}:
             continue
         data = p.read_bytes()
+        record=json.loads(data)
+        # Only terminal preparations can be imported from a partially running
+        # source. A started browser capture is not a durable checkpoint.
+        if record.get('status') not in {'checkpoint_ready','website_unavailable','checkpoint_setup_failed','checkpoint_setup_unverified','checkpoint_restoration_mismatch','checkpoint_capture_unavailable','provider_error','browser_error','invalid_output','context_overflow','loop_guard_exhausted','step_budget_exhausted'}:
+            continue
+        if p.name=='checkpoint_case.json':continue
+        captures=list(_captures(record))
+        if record.get('status')=='checkpoint_ready' and not captures:
+            continue
         files[str(p.relative_to(source))] = digest(data)
-        for capture in _captures(json.loads(data)):
+        for capture in captures:
             har = Path(capture['har_path']).resolve()
             if not har.is_relative_to(source / 'checkpoints'):
                 raise ValueError('Recorded HAR must belong to the source preparation run')
@@ -84,10 +97,26 @@ def plan_import(source, target_manifest):
                 raise ValueError('Source archive has conflicting registrations')
     if not files or not archives:
         raise ValueError('No factual captured preparation available to import')
-    return {'policy': 'verified_v4_factual_prefix_new_v5_reset_audit_v1', 'source_run': str(source),
+    reuse_eligibility=bool(v6_source or same_casewise)
+    if reuse_eligibility:
+        registered={c['case_id']:c for f in (source/'registered_data').glob('*.jsonl')
+                    for line in f.read_text().splitlines() if line.strip() for c in [json.loads(line)]
+                    if not c.get('original_case_id')}
+        # Main/Ablation definitions are equal; skip transformed baselines.
+        for p in sorted((source/'preparation_eligibility').glob('repeat_*/*/eligibility.json')):
+            data=p.read_bytes();row=json.loads(data);case=registered.get(row['case_id'])
+            if case is None or row.get('case_sha256')!=digest(json.dumps(case,sort_keys=True,ensure_ascii=False).encode()):
+                raise ValueError('Source qualification does not bind the exact registered case')
+            if row.get('checkpoint_key') and not any(name.startswith('checkpoints/'+row['checkpoint_key']+'/') for name in files):
+                continue
+            if row.get('eligible') is True and (row.get('reset_audit',{}).get('matches') is not True or row.get('reset_audit',{}).get('available') is not True):
+                raise ValueError('Source qualification lacks a successful independent reset audit')
+            files[str(p.relative_to(source))]=digest(data)
+    return {'policy': 'compatible_factual_prefixes_and_verified_qualification_no_actor_scores_v2' if reuse_eligibility else 'verified_v4_factual_prefix_new_v5_reset_audit_v1', 'source_run': str(source),
             'source_manifest_sha256': digest(original_bytes), 'source_code_sha256': original['code_sha256'],
-            'files': files, 'archives': archives, 'reuse_eligibility': False,
-            'reuse_tested_actor_results': False, 'all_reset_audits_required': True}
+            'files': files, 'archives': archives, 'reuse_eligibility': reuse_eligibility,
+            'reuse_tested_actor_results': False, 'all_reset_audits_required':not reuse_eligibility,
+            'reused_reset_audits_must_bind_identical_cases_and_policies':reuse_eligibility}
 
 
 def materialize_import(root, plan):

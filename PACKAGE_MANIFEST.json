@@ -1,6 +1,6 @@
 {
   "scope": "github_public_source_recipe_and_source_ids",
-  "version": "official_online_eventarena_v6",
+  "version": "official_online_eventarena_v6_casewise",
   "legacy_version": "online_v2.0.6",
   "contains_api_credentials": false,
   "contains_original_source_texts": false,
@@ -37,8 +37,8 @@
       "bytes": 1066
     },
     "README.md": {
-      "sha256": "23c2d796eae341f50a881a1fcdb7161b45044af3b8e1c00b6daab67423757b8a",
-      "bytes": 7037
+      "sha256": "1fb18a2d52ba90c094aeefeda50a161a6e15230bc9d9d2d1afbedfb2608c055b",
+      "bytes": 7496
     },
     "README_LEGACY.md": {
       "sha256": "263f2c59adc39ac4e73f7d6affa1a2179958d194d852d52549252a85c71511fb",
@@ -53,8 +53,8 @@
       "bytes": 30282
     },
     "config/publication_v6.json": {
-      "sha256": "df9046889866eeb35b72598c6d226f346ac64d087b5868e030bc4707a0521e73",
-      "bytes": 778
+      "sha256": "0f45626feef9bd698e14ed11f2cbd9375987d3bdc4fa9f54f0362c2b00038158",
+      "bytes": 803
     },
     "config/publication_v6_source_registry.json": {
       "sha256": "e6fb4a8fcd5dfc4aaeb9e16718e191d034d3898cc7fd374ce43244f0585d6070",
@@ -63,6 +63,10 @@
     "docs/ARCHIVE_V5_README.md": {
       "sha256": "ca17a9cdecd903d0c50d61ab893feb1e7a268d227f5eb6a63baef991fb2ea5c1",
       "bytes": 11969
+    },
+    "docs/CASEWISE.md": {
+      "sha256": "b6608ff2197e99a3d6ce73531745a8b43f48850f29c2bb908a84d1c3a150d32d",
+      "bytes": 4747
     },
     "docs/DATA_SETUP.md": {
       "sha256": "2bbe2cb7c7a34419e06f0e0622b51b70d7f495c8689ff1411e3238dbaf32fd76",
@@ -157,12 +161,16 @@
       "bytes": 4257
     },
     "eventarena_official/__init__.py": {
-      "sha256": "954e98d0d443ccdd0f72c370b2817c681c6f3ab00c3026d1c4f9501de9927d24",
-      "bytes": 130
+      "sha256": "8d1dbd43e6d8c9ac9d613835cd16a378b0b261ca60ce69cb2d4fa6cd0ae55da3",
+      "bytes": 139
     },
     "eventarena_official/availability.py": {
       "sha256": "2b725bb562469e56ae91781f9a88c7d89f973483ae08abed70ec3ae4d95d82ee",
       "bytes": 10799
+    },
+    "eventarena_official/availability_report.py": {
+      "sha256": "3cc4bd1735a96b8717b6c0496b4dc2013b8365a1d8f21e8c51800a7b46013465",
+      "bytes": 7247
     },
     "eventarena_official/baseline.py": {
       "sha256": "b58a6a33be778b29572b745aaad56020978b452af431c0a3f23f628e0daa9679",
@@ -171,6 +179,10 @@
     "eventarena_official/browser.py": {
       "sha256": "a489589e004c815e77c1a90f651b7550a0cb22aad11f66e01e494537dd19afd8",
       "bytes": 8670
+    },
+    "eventarena_official/casewise.py": {
+      "sha256": "1145d7c640c8b6250c3f72046d68f2274d886105839f4193e8e8d9bde21bc1b8",
+      "bytes": 7822
     },
     "eventarena_official/context_access.py": {
       "sha256": "5adf3be2f69f676bd3ce8633a83f0b4f413b1fdb4d047164c5dd1d4ffcfb2de1",
@@ -193,8 +205,8 @@
       "bytes": 8872
     },
     "eventarena_official/execution.py": {
-      "sha256": "34167f58b4d61ea0b0a87faca1453ac33472b1deb75de6c4602927dd62faa49b",
-      "bytes": 17876
+      "sha256": "6cdf5a3b68fd4c045fc1d9ab29cefa263a61991298900b27219a2dbd9bd11754",
+      "bytes": 18435
     },
     "eventarena_official/feasibility.py": {
       "sha256": "ff84b977185d3472eb83d58a0037e155f50b46689bae5b7c6403d87c52de2cc1",
@@ -209,8 +221,8 @@
       "bytes": 17660
     },
     "eventarena_official/preparation_import.py": {
-      "sha256": "7f31763bcf0bee697d2a0c8f6880e71f40b34f799e88eab1c42c76a9042a506f",
-      "bytes": 5274
+      "sha256": "05a8de4acb3fe1262740076fe3155ef2d97b17332ba3574ce4d60cbe21e206cb",
+      "bytes": 7915
     },
     "eventarena_official/registration.py": {
       "sha256": "3dad96e4de2e12d47a09b02571e38b7265129ba3c8f6046e861d2435e4e51188",
@@ -269,8 +281,8 @@
       "bytes": 5291
     },
     "scripts/export_publication.py": {
-      "sha256": "363a4df0462442e23e62b2679cdbf47ac5aec1c0097e4ffddafca41b215da5e3",
-      "bytes": 5799
+      "sha256": "4fca0d5e0e172220ee3618b4381117c8e24d9754ae3f1b3f2c0bef428ffcd74c",
+      "bytes": 7100
     },
     "scripts/metrics.py": {
       "sha256": "8d9b321d2ca3be7f17da346ba780f9204a5a7ce0524dfaaae042802c54127f63",
@@ -281,8 +293,8 @@
       "bytes": 6729
     },
     "scripts/package_github.py": {
-      "sha256": "c8db2194c99b9cf46c0adf8418f3539c93ffbd65bebb5fb7855b1996d7c0dce9",
-      "bytes": 8110
+      "sha256": "de011b084b1cf1be7f39f64b8b1224fac600e0cb62134a6e1250a75545144f47",
+      "bytes": 8300
     },
     "scripts/paired_online_v2.py": {
       "sha256": "f1fbf1b96059fb9729ee813e2fc389921284582bc704e1ea9685bfeb4854c56e",
@@ -329,28 +341,28 @@
       "bytes": 39449
     },
     "scripts/run_official_online.py": {
-      "sha256": "fd3b83f86d98e766bcf7653066054a334045be16da13356489800c983875e0c8",
-      "bytes": 7595
+      "sha256": "953721a558fbacaa3bddd61263a995765d57375aa87c0191fe0f4ad7a1ed2829",
+      "bytes": 9127
     },
     "scripts/run_one_model.py": {
       "sha256": "1afb3d1d1a01a29f185e422dba4e084690d7a0b578c20d279480d17e57bd9758",
       "bytes": 14583
     },
     "scripts/run_online_v2.py": {
-      "sha256": "08402fe53faf219b41d7372da21dbdbb15dccae97dfca543d7335e7100cc1d3a",
-      "bytes": 56551
+      "sha256": "f7a0dfcb9c535a4b92867b5555c94f4c5781bfa2000d6e2bbafed3d3afc774e5",
+      "bytes": 57011
     },
     "scripts/run_publication.py": {
-      "sha256": "68da950fb25a9bff69c94862215800931474b8615cb54f7d9ea41cb5a0aa3f96",
-      "bytes": 3285
+      "sha256": "394ac35046bd235763fea1d5e4dda5872b1ce9c2d0496500c24b8fe77f5315bf",
+      "bytes": 3573
     },
     "scripts/start_official_online.zsh": {
       "sha256": "faee0197ec28dd39ecb48f79a04d6b71da5464fcd849f4a342f7c70244e1313e",
       "bytes": 3275
     },
     "scripts/start_publication.zsh": {
-      "sha256": "49d483752edb495b96d5725df219841ff7d99f2194593df8a469d305dc3fd8d4",
-      "bytes": 1775
+      "sha256": "e3a5ec5f649a03d4ca83bba797fdad11b39126a6a0add6bee01dadc06ab64d47",
+      "bytes": 1982
     },
     "scripts/validate_online_v2.py": {
       "sha256": "129fb8652b8ac9cacb92be4337cf2784730175dbe052a90f8007662ce91c0934",
