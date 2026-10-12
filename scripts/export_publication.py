@@ -16,18 +16,30 @@ def export(root):
  if not manifest:raise ValueError('No registered run; no experimental scores can be exported')
  dest=root/'paper_tables';dest.mkdir(exist_ok=True)
  tables={};intervals=[];strata=[]
+ conditional=bool(manifest.get('availability_policy'))
+ conditional_rows=[]
+ if conditional:
+  with (root/'runnable_comparison.csv').open() as stream:conditional_rows=list(csv.DictReader(stream))
  for experiment in manifest['counts']:
   source=root/experiment/'comparison.csv'
   if source.exists():
    with source.open() as stream:rows=list(csv.DictReader(stream))
+   if conditional and experiment!='final_intent':
+    write_csv(dest/(experiment+'_all_registered.csv'),rows)
+    rows=[r for r in conditional_rows if r['experiment']==experiment]
    tables[experiment]=rows;write_csv(dest/(experiment+'.csv'),rows)
   if experiment=='counterfactual':
    for kind in ('goal','state','semantic'):
-    source=root/experiment/(kind+'_comparison.csv')
+    source=root/(f'runnable_counterfactual_{kind}.csv') if conditional else root/experiment/(kind+'_comparison.csv')
     if source.exists():
      with source.open() as stream:rows=list(csv.DictReader(stream))
      tables['counterfactual_'+kind]=rows;write_csv(dest/('counterfactual_'+kind+'.csv'),rows)
   cases=read_cases(root/'registered_data'/(experiment+'.jsonl'))
+  scope='all_registered; unknowns suppress interval'
+  if conditional and experiment!='final_intent':
+   from eventarena_official.casewise import qualified
+   cases=[c for c in cases if qualified(read_json(root/'preparation_eligibility'/'repeat_0'/c.get('original_case_id',c['case_id'])/'eligibility.json'))]
+   scope='common_initially_qualified_cases; runtime unknowns suppress interval'
   for model in manifest['models']:
    for view in job_views(experiment):
     episodes=[]
@@ -48,12 +60,12 @@ def export(root):
                        ('MicroESR',[{**r,'value':_actual_success(r['case'],r['episode'])} for r in records])]:
      ci=cluster_bootstrap_ci(values,cluster_key='cluster',n_resamples=2000,seed=20261012)
      intervals.append({'experiment':experiment,'model':model,'view':view,'metric':key,
-        **ci,'cluster_scope':'source_A_website','scope':'all_registered; unknowns suppress interval'})
+        **ci,'cluster_scope':'source_A_website','scope':scope})
     if decision_rows:
      def f1(sample):return _classification(sample)['macro_f1']
      ci=cluster_bootstrap_ci(decision_rows,cluster_key='cluster',n_resamples=2000,seed=20261012,statistic=f1)
      intervals.append({'experiment':experiment,'model':model,'view':view,'metric':'MacroF1',**ci,
-        'cluster_scope':'source_A_website','scope':'all_registered; unknowns suppress interval'})
+        'cluster_scope':'source_A_website','scope':scope})
     for field in ('split','difficulty','multi_arrival_mode'):
      labels=sorted({c[field] for c in cases if field in c})
      for label in labels:
@@ -67,6 +79,8 @@ def export(root):
   '空值或 NA 表示不可判定，不能当成 0。比例以百分比报告；N、known、unknown 等计数保持整数。',
   '主实验与 Full Trajectory 消融共享同一 episode。跨表不可重复累加为独立样本。',
   'Follow-up 仅评价 Gold 与预测均为 INTERRUPT 的案例，同时报告其分母和 JointFUAcc。','']
+ if conditional:
+  output+=['这些主表按所有模型共享的已验证起点案例计算，同时报告 RunnableCoverage。运行阶段 unknown 保留在可运行案例分母；DeterminateEligibleSuccessRate 是结果已判定子集的成功率，必须连同 OutcomeCoverage 解读。Final-intent 保留全部登记样本。','']
  for name,rows in tables.items():
   output+=['## '+name,'']
   if not rows:output+=['尚无结果。',''];continue
@@ -76,7 +90,7 @@ def export(root):
    for key in keys:
     v=row.get(key,'')
     if v=='' or v is None:values.append('NA');continue
-    if key not in {'cases','repeats','case_N','group_N','group_known','Gold_interrupt_N','Followup_eligible_N'} and not any(key.endswith('_'+x) for x in ('n','N','known','unknown')):
+    if key not in {'cases','repeats','case_N','group_N','group_known','Gold_interrupt_N','Followup_eligible_N','RegisteredCases','QualificationChecked','EligibleCases','QualificationPending','SuccessfulEligibleCases','FailedEligibleCases','UnknownEligibleOutcomes','EligibleGroups','TaskCompletionN','UnknownTaskCompletions'} and not any(key.endswith('_'+x) for x in ('n','N','known','unknown')):
      try:v=f'{float(v)*100:.2f}'
      except ValueError:pass
     values.append(str(v).replace('|','\\|'))

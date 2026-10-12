@@ -1,5 +1,7 @@
 # EventPilot v6
 
+当前目录是 **Casewise 逐案例运行版**，协议为 `official_online_eventarena_v6_casewise`。通过共同起点检查的案例立即开始实验，失败案例保留原因；不再用全局 90% 门槛阻止整批实验。原任务 / 事件 / Gold 保持不变。默认 2 路独立准备、同网站 preparation 串行。详细命令和比例定义：[CASEWISE.md](docs/CASEWISE.md)。下面旧说明中的全局准备门槛只适用于存档 v6。
+
 基于官方 [Online-Mind2Web](https://github.com/OSU-NLP-Group/Online-Mind2Web) 的在线网页事件扩展。保留原任务的官方 ID、目标、入口；新增事件、授权、依赖与 Gold 是作者设定。网页动作、状态、结果和 Full Trajectory 必须来自真实执行。
 
 本版提供全规模数据构建与实验代码，**不附带尚未运行的成绩，不声称完成人工审核或保证论文接收**。旧版说明见 [v5 存档](docs/ARCHIVE_V5_README.md)，旧版成绩不能混入 v6。

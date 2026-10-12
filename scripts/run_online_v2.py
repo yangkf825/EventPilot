@@ -316,6 +316,7 @@ def status(root):
         if state == 'running':
             active.append({**job, 'updated_at': saved.get('updated_at'), 'progress': saved.get('progress')})
     preparation = read_json(root / 'preparation_state.json')
+    casewise=read_json(root/'casewise_preparation_state.json')
     gate = read_json(root / 'preparation_gate.json')
     phase = 'evaluation'
     if preparation and preparation.get('state') != 'finished':
@@ -324,9 +325,11 @@ def status(root):
         phase = 'blocked_preparation'
     elif not active and states.get('finished', 0) == len(manifest['jobs']):
         phase = 'finished'
+    if manifest.get('availability_policy'):
+        phase='finished' if not active and states.get('finished',0)==len(manifest['jobs']) else 'casewise_execution'
     return {'run_root': str(root), 'registered': True, 'total': len(manifest['jobs']),
             'states': states, 'active': active, 'phase': phase, 'preparation': preparation,
-            'preparation_gate': gate}
+            'preparation_gate': gate,'casewise_preparation':casewise}
 
 
 def metric_record(episode):
@@ -491,6 +494,9 @@ def summarize(root, selected, models, args, source_root=None):
     # A correct plan followed by failed execution must not disappear from Case D.
     (root / 'case_studies.jsonl').write_text(''.join(json.dumps(c, ensure_ascii=False) + '\n' for c in case_studies), encoding='utf-8')
     write_json(root / 'status.json', status(read_root))
+    if getattr(args,'preparation_mode',None)=='casewise':
+        from eventarena_official.availability_report import export_availability
+        export_availability(root,selected,models,args)
 
 
 class LimitedModel:
@@ -824,7 +830,7 @@ def parser():
                    help='Required eligibility coverage in each registered experiment before tested actors start (default 0.9); 0 is diagnostic only and still requires an eligible case')
     p.add_argument('--dry-run', action='store_true')
     p.add_argument('--strict-review', action='store_true')
-    p.add_argument('--preparation-mode',choices=('before-actors','on-demand'),default='before-actors',
+    p.add_argument('--preparation-mode',choices=('before-actors','on-demand','casewise'),default='before-actors',
                    help='Freeze shared preparation and browser replay eligibility before any tested actor call')
     return p
 

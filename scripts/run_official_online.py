@@ -35,7 +35,8 @@ def main(argv=None):
     cli.description=__doc__
     cli.set_defaults(data_dir=ROOT/'data/official_online/events_pilot')
     cli.add_argument('--preparation-from-run', type=Path,
-                     help='Import verified v4 factual prefixes into a new run; redo all v5 reset audits, import no actor scores')
+                     help='Reuse compatible factual preparation from an unchanged source with no tested actors started')
+    cli.add_argument('--prep-workers',type=int,default=2,help='Parallel preparation units; each website is prepared serially')
     args=cli.parse_args(argv)
     root=args.run_root.expanduser().resolve()
     if args.command=='status':
@@ -49,8 +50,12 @@ def main(argv=None):
             selected={e:legacy.read_cases(root/'registered_data'/(e+'.jsonl')) for e in saved['counts']}
             legacy.summarize(root,selected,saved['models'],args)
         return
-    if args.preparation_mode!='before-actors':
-        raise ValueError('Shared preparation and independent reset eligibility are required')
+    if args.preparation_mode not in {'before-actors','casewise'}:
+        raise ValueError('Shared qualification is required before each tested case/group')
+    if args.prep_workers<1 or args.prep_workers>4:
+        raise ValueError('prep-workers must be between 1 and 4')
+    if args.preparation_mode=='casewise' and args.repeats!=1:
+        raise ValueError('The casewise reporting protocol requires repeats=1')
     args.config=args.config.resolve();args.data_dir=args.data_dir.resolve()
     validation=validate_extension(args.data_dir,strict_review=args.strict_review)
     args.experiments=list(legacy.EXPERIMENTS) if args.experiments=='all' else args.experiments.split(',')
@@ -75,6 +80,7 @@ def main(argv=None):
         raise ValueError('No registered cases for '+','.join(empty)+'; select only built experiment sets. Empty sets cannot silently count as completed experiments.')
     jobs=legacy.make_jobs(selected,names,args.repeats,args.seed)
     manifest=legacy.make_manifest(args,selected,names,configured,jobs)
+    manifest['arguments']['prep_workers']=args.prep_workers
     manifest.update(schema_version=PROTOCOL,protocol_version=PROTOCOL,code_sha256=fingerprint(),
                     input_transport_policy=POLICY,
                     context_access_policy=CONTEXT_POLICY,context_read_limits=LIMITS,
@@ -83,10 +89,23 @@ def main(argv=None):
                     judge_context_policy=JUDGE_CONTEXT_POLICY,judge_max_inline_chars=MAX_INLINE_CHARS,
                     official_source=legacy.read_json(args.data_dir/'manifest.json')['source'],
                     extension_validation=validation,official_leaderboard_comparable=False)
-    import_plan=plan_import(args.preparation_from_run, manifest) if args.preparation_from_run else None
+    if args.preparation_mode=='casewise':
+        from eventarena_official.casewise import POLICY as AVAILABILITY_POLICY
+        manifest.update(availability_policy=AVAILABILITY_POLICY,global_coverage_abort=False,
+                        primary_score_scope='common_qualified_cases; runtime_unknowns_and_coverage_reported_separately')
+    saved_import=legacy.read_json(root/'manifest.json') if args.resume else None
+    if saved_import and saved_import.get('preparation_import'):
+        import_plan=saved_import['preparation_import']
+        if not args.preparation_from_run or Path(import_plan['source_run']).resolve()!=args.preparation_from_run.resolve():
+            raise ValueError('Resume must retain the registered preparation source')
+    else:
+        import_plan=plan_import(args.preparation_from_run, manifest) if args.preparation_from_run else None
     manifest['preparation_import']=import_plan
     print(json.dumps({'protocol':PROTOCOL,'models':names,'counts':manifest['counts'],
                       'registered_jobs':len(jobs),'repeats':args.repeats,'no_api_call':args.dry_run,
+                      'preparation_mode':args.preparation_mode,'prep_workers':args.prep_workers,
+                      'global_coverage_abort':args.preparation_mode=='before-actors',
+                      'imported_preparation_files':len(import_plan['files']) if import_plan else 0,
                       'gold_human_reviewed':manifest['gold_human_reviewed'],
                       'original_A_goals':'preserved_exactly','metrics':'existing_EventArena_v2'},ensure_ascii=False,indent=2),flush=True)
     if args.dry_run:return
@@ -109,7 +128,7 @@ def main(argv=None):
         legacy.write_json(root/'manifest.json',manifest)
         if import_plan:
             materialize_import(root, import_plan)
-            print('[PREP IMPORT] Reusing factual captured prefixes; all reset audits will run again. No tested actor scores imported.',flush=True)
+            print('[PREP IMPORT] Reusing compatible factual preparation; verified qualification is reused only for identical cases/policies. No tested actor scores imported.',flush=True)
         from eventarena_official.corpus import write_jsonl
         for e,cases in selected.items():write_jsonl(root/'registered_data'/(e+'.jsonl'),cases)
         runtime=os.environ.get('EA_M2W_RUNTIME')

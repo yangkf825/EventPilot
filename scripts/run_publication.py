@@ -19,6 +19,8 @@ def main():
  p.add_argument('--settings',type=Path,default=ROOT/'config/publication_v6.json')
  p.add_argument('--run-root',type=Path,required=True)
  p.add_argument('--prep-model');p.add_argument('--judge-model')
+ p.add_argument('--preparation-from-run',type=Path)
+ p.add_argument('--prep-workers',type=int)
  p.add_argument('--model-id',help='Override the exact model ID for one selected model, before creating a new run')
  p.add_argument('--resume',action='store_true');p.add_argument('--retry-infra',action='store_true')
  p.add_argument('--register-only',action='store_true',help='Freeze/check the entire job selection without calling models')
@@ -44,6 +46,8 @@ def main():
  argv=['run','--config',str(config),'--data-dir',str(ROOT/s['data_dir']),
        '--only',a.only,'--run-root',str(a.run_root),
        '--prep-model','publication_preparer','--judge-model','publication_judge']
+ argv+=['--prep-workers',str(a.prep_workers if a.prep_workers is not None else s.get('prep_workers',2))]
+ if a.preparation_from_run:argv+=['--preparation-from-run',str(a.preparation_from_run)]
  for k in ('experiments','single_limit','cf_groups','multi_limit','repeats','seed','workers',
            'max_steps','pre_steps','setup_steps','max_context_chars','loop_limit','format_retries',
            'min_preparation_coverage','preparation_mode'):

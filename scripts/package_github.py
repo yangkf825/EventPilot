@@ -35,6 +35,7 @@ def selected_files(root):
         files+=[root/name for name in ('config/publication_v6.json','config/publication_v6_source_registry.json',
                 'docs/PUBLICATION_V6.md','docs/ARCHIVE_V5_README.md','docs/OFFICIAL_DATA_SETUP.md',
                 'docs/OFFICIAL_PROTOCOL.md','docs/DATA_SETUP.md','docs/PROTOCOL.md','config/online_v2_authoring.py')]
+        if (root/'docs/CASEWISE.md').exists():files.append(root/'docs/CASEWISE.md')
         if any(not p.is_file() or p.is_symlink() for p in files):raise ValueError('Missing or linked v6 source file')
         return sorted(set(files))
     files = [root / name for name in ROOT_FILES]
@@ -95,7 +96,8 @@ def package(root, output):
     payloads = {path.relative_to(root).as_posix(): path.read_bytes() for path in selected_files(root)}
     audit_payloads(payloads)
     v6=(root/'config/publication_v6_source_registry.json').exists()
-    manifest = {'scope': 'github_public_source_recipe_and_source_ids' if v6 else 'github_public_source_and_author_candidates', 'version': 'official_online_eventarena_v6' if v6 else 'official_online_eventarena_v5',
+    casewise=(root/'docs/CASEWISE.md').exists()
+    manifest = {'scope': 'github_public_source_recipe_and_source_ids' if v6 else 'github_public_source_and_author_candidates', 'version': 'official_online_eventarena_v6_casewise' if casewise else 'official_online_eventarena_v6' if v6 else 'official_online_eventarena_v5',
                 'legacy_version': 'online_v2.0.6',
                 'contains_api_credentials': False, 'contains_original_source_texts': False,
                 'contains_raw_html': False, 'contains_runtime_binaries': False,
