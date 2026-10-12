@@ -1,0 +1,360 @@
+{
+  "scope": "github_public_source_recipe_and_source_ids",
+  "version": "official_online_eventarena_v6",
+  "legacy_version": "online_v2.0.6",
+  "contains_api_credentials": false,
+  "contains_original_source_texts": false,
+  "contains_raw_html": false,
+  "contains_runtime_binaries": false,
+  "human_reviewed": false,
+  "dataset_check": {
+    "status": "ok",
+    "scope": "v6 reproducible recipe and identifiers; gated tasks obtained separately",
+    "registered_cases": {
+      "main": 200,
+      "counterfactual": 140,
+      "multi": 40
+    },
+    "human_reviewed": false,
+    "model_results_included": false
+  },
+  "frozen_core_fingerprints_preserved": false,
+  "new_protocol_does_not_resume_old_runs": true,
+  "legacy_regression_results_are_not_v6_validation": true,
+  "legacy_manual_collector_requires_explicit_runtime_config": true,
+  "local_setup": "Follow docs/OFFICIAL_DATA_SETUP.md; gated official source is obtained separately",
+  "files": {
+    ".env.example": {
+      "sha256": "c607eca052f97d41c6e0549989afd0441ce1ce2e19b6ee972e7829316d389ccd",
+      "bytes": 222
+    },
+    ".gitignore": {
+      "sha256": "036bb63e187696541c07c9882ebfd6684791346d37755706e42574812859a3fa",
+      "bytes": 746
+    },
+    "LICENSE": {
+      "sha256": "1f0bdadb54e8996daddf5a965046de12671b24b3d630a962bdf5fb66ea2cbbb1",
+      "bytes": 1066
+    },
+    "README.md": {
+      "sha256": "23c2d796eae341f50a881a1fcdb7161b45044af3b8e1c00b6daab67423757b8a",
+      "bytes": 7037
+    },
+    "README_LEGACY.md": {
+      "sha256": "263f2c59adc39ac4e73f7d6affa1a2179958d194d852d52549252a85c71511fb",
+      "bytes": 20142
+    },
+    "THIRD_PARTY_NOTICES.md": {
+      "sha256": "b2fe624978e1480e8efc99da563e1f4b5f205c5af8ad67da91d60062f342e5a6",
+      "bytes": 5063
+    },
+    "config/online_v2_authoring.py": {
+      "sha256": "2a3472f06f0f977fef03ab8a2109f39989c3d2e65ea4b9c2e35c24a7502bf999",
+      "bytes": 30282
+    },
+    "config/publication_v6.json": {
+      "sha256": "df9046889866eeb35b72598c6d226f346ac64d087b5868e030bc4707a0521e73",
+      "bytes": 778
+    },
+    "config/publication_v6_source_registry.json": {
+      "sha256": "e6fb4a8fcd5dfc4aaeb9e16718e191d034d3898cc7fd374ce43244f0585d6070",
+      "bytes": 167234
+    },
+    "docs/ARCHIVE_V5_README.md": {
+      "sha256": "ca17a9cdecd903d0c50d61ab893feb1e7a268d227f5eb6a63baef991fb2ea5c1",
+      "bytes": 11969
+    },
+    "docs/DATA_SETUP.md": {
+      "sha256": "2bbe2cb7c7a34419e06f0e0622b51b70d7f495c8689ff1411e3238dbaf32fd76",
+      "bytes": 7707
+    },
+    "docs/OFFICIAL_DATA_SETUP.md": {
+      "sha256": "ed4a8f11892a0eb4637d647bebf40143dc1992146f5058e29aa53d76d485d5a4",
+      "bytes": 3852
+    },
+    "docs/OFFICIAL_PROTOCOL.md": {
+      "sha256": "02018b1cb2e9220e32adda5de4f1ec6a1ca084c1b7e1a9713e805e3c7208ca2e",
+      "bytes": 4021
+    },
+    "docs/PROTOCOL.md": {
+      "sha256": "b1e528d21e22e2615ba525cd7a87eaa1cd75b1cf8ed832b8271f88819492afdd",
+      "bytes": 9748
+    },
+    "docs/PUBLICATION_V6.md": {
+      "sha256": "3513ad9ad22c69d08d7eafd1ff20675e2518c6883f938810acb0db0070c7cd8e",
+      "bytes": 5848
+    },
+    "eventarena/__init__.py": {
+      "sha256": "8e29c8797e7e4a7e90546be3326361f1dec4c8b4d3647573843a7e59c77964bf",
+      "bytes": 75
+    },
+    "eventarena/action_eval.py": {
+      "sha256": "d54d18cc5ebd38c3246f231f71892a9d7fda20cb4f127ce6ceeb746a58624db6",
+      "bytes": 3342
+    },
+    "eventarena/agent.py": {
+      "sha256": "e3beeeb97593d0f0c5745a1d86ede4ff9d9c011d4014ac109b74ca76f673353a",
+      "bytes": 9523
+    },
+    "eventarena/browser.py": {
+      "sha256": "b27eed6bafbdce82c4e34204fd94cdaa0e3204f537eb2ecd4e3504a0435a80c8",
+      "bytes": 32678
+    },
+    "eventarena/cli.py": {
+      "sha256": "21684e92f5f6f38a9eaeef5aaecbc4f2d42867ff78ec118981d34b7c550d9eb7",
+      "bytes": 8255
+    },
+    "eventarena/corpus.py": {
+      "sha256": "22b347765c0f65f78f7729ddb57b847b0d75cdea2679c45eb2d794407949530a",
+      "bytes": 8925
+    },
+    "eventarena/json_protocol.py": {
+      "sha256": "5e563da72dc7621ca133b5c0837bedc4afbd8227fe6b2ef00e79a26a4c441028",
+      "bytes": 2277
+    },
+    "eventarena/online_engine.py": {
+      "sha256": "ebacc2d517ccd3818618e1294e487be06f3871f280a6bc6eb3797436964fca55",
+      "bytes": 35789
+    },
+    "eventarena/online_eval.py": {
+      "sha256": "80ead6b442e89ade7f240c5f84229c820fba298c43b947357b2d1f6e52af6afe",
+      "bytes": 20668
+    },
+    "eventarena/online_v2_engine.py": {
+      "sha256": "435dd6a556f22373fa72a7df2072f59f71fb439c0e164b96014f5fc21c07e7fb",
+      "bytes": 106866
+    },
+    "eventarena/online_v2_eval.py": {
+      "sha256": "4457253c770b58d1080652b18429c4e4e8c5d2021e8a36bf32f97b6787c68c3a",
+      "bytes": 38041
+    },
+    "eventarena/online_v2_metrics.py": {
+      "sha256": "b6383758b99b7a5c4474eb23eccc2680765cf0fe31a5b9be2eb0abf60a94cf13",
+      "bytes": 57792
+    },
+    "eventarena/online_workbench.py": {
+      "sha256": "21d91c10ccb0d8e370ceb023e63c35ecd2092e9a8d7971989fb737a9bda71572",
+      "bytes": 8605
+    },
+    "eventarena/preparation_gate.py": {
+      "sha256": "454eb022a61128ababd912a4c67473dda781d15cb2b21e4c5a08831a7ebb90fc",
+      "bytes": 2722
+    },
+    "eventarena/protocol.py": {
+      "sha256": "e1dd81d0f9c98ae53d7e39dc5204af0f54f01032115e338e2d67e56e547b4de1",
+      "bytes": 5142
+    },
+    "eventarena/providers.py": {
+      "sha256": "9bcfc98d5079088e638af37742e3eb702f5986f9232144c447e30006c4ca6346",
+      "bytes": 8327
+    },
+    "eventarena/run_lock.py": {
+      "sha256": "5e722db005eb710709742e1bffa7ac3c4fd6422ce7fb8dc7b7bb84f03e11df1c",
+      "bytes": 1607
+    },
+    "eventarena/storage_io.py": {
+      "sha256": "371ba7c9c17cfc5163b53a6ca46ff618be306a2772f585a609d9d71f0c151e82",
+      "bytes": 4257
+    },
+    "eventarena_official/__init__.py": {
+      "sha256": "954e98d0d443ccdd0f72c370b2817c681c6f3ab00c3026d1c4f9501de9927d24",
+      "bytes": 130
+    },
+    "eventarena_official/availability.py": {
+      "sha256": "2b725bb562469e56ae91781f9a88c7d89f973483ae08abed70ec3ae4d95d82ee",
+      "bytes": 10799
+    },
+    "eventarena_official/baseline.py": {
+      "sha256": "b58a6a33be778b29572b745aaad56020978b452af431c0a3f23f628e0daa9679",
+      "bytes": 8577
+    },
+    "eventarena_official/browser.py": {
+      "sha256": "a489589e004c815e77c1a90f651b7550a0cb22aad11f66e01e494537dd19afd8",
+      "bytes": 8670
+    },
+    "eventarena_official/context_access.py": {
+      "sha256": "5adf3be2f69f676bd3ce8633a83f0b4f413b1fdb4d047164c5dd1d4ffcfb2de1",
+      "bytes": 12400
+    },
+    "eventarena_official/corpus.py": {
+      "sha256": "5fe7108581001eb1990a666a17384b08c32ff00657ee97ea3468130368b59a82",
+      "bytes": 5279
+    },
+    "eventarena_official/engine.py": {
+      "sha256": "fe2cb5655b8175044c587f75a07c4c32d6afc25afb1d8ab6fce43318223c7f04",
+      "bytes": 18998
+    },
+    "eventarena_official/evaluation.py": {
+      "sha256": "6cc9a49333117841955ec8822611169ea5b78f7f67b10a43325f8633a94fed6a",
+      "bytes": 4839
+    },
+    "eventarena_official/evaluation_recovery.py": {
+      "sha256": "c39e6e9173aecbdacdce878599a46c099fb2a39215f4547f91e8615d5a4e917a",
+      "bytes": 8872
+    },
+    "eventarena_official/execution.py": {
+      "sha256": "34167f58b4d61ea0b0a87faca1453ac33472b1deb75de6c4602927dd62faa49b",
+      "bytes": 17876
+    },
+    "eventarena_official/feasibility.py": {
+      "sha256": "ff84b977185d3472eb83d58a0037e155f50b46689bae5b7c6403d87c52de2cc1",
+      "bytes": 6619
+    },
+    "eventarena_official/judge_context.py": {
+      "sha256": "07834df91e905978d4e72ed7bcf2a8404544d620936aeab61e48b4de7fd83638",
+      "bytes": 2284
+    },
+    "eventarena_official/preparation.py": {
+      "sha256": "f2d1c9a97e99d4c9a164360a115a4043f6b1ef2ccdd783335ee31e775056f3ad",
+      "bytes": 17660
+    },
+    "eventarena_official/preparation_import.py": {
+      "sha256": "7f31763bcf0bee697d2a0c8f6880e71f40b34f799e88eab1c42c76a9042a506f",
+      "bytes": 5274
+    },
+    "eventarena_official/registration.py": {
+      "sha256": "3dad96e4de2e12d47a09b02571e38b7265129ba3c8f6046e861d2435e4e51188",
+      "bytes": 17594
+    },
+    "eventarena_official/storage.py": {
+      "sha256": "52937ee845d2d312abd4ecc324b67f3390bb8714acef7239241ff24ca8dcd0df",
+      "bytes": 546
+    },
+    "eventarena_official/transport.py": {
+      "sha256": "663dd77e6703eda4feeffda990fb9f5c131236ce6b68ebbd21809fd8e61b949f",
+      "bytes": 18113
+    },
+    "models.example.json": {
+      "sha256": "b3dbee9aaca1957f55db28f28d187c320be78fd88d4719284978d9dfd097b86b",
+      "bytes": 1425
+    },
+    "requirements-online-v2.lock.txt": {
+      "sha256": "fcbc0ffd2c83ceabec3ac39af1560c4e65782dcd297c8cfb490087828b735fa8",
+      "bytes": 162
+    },
+    "requirements.txt": {
+      "sha256": "d5cd65777e82e80e4f0634eab0d658713b67b8347e30e7b82572997d4a1dd80c",
+      "bytes": 82
+    },
+    "scripts/activate_official.zsh": {
+      "sha256": "f6b6d296601cc5fd4428421b2c2bba28918e060422ab157325b7a8e896217efe",
+      "bytes": 997
+    },
+    "scripts/analyze_online_v2.py": {
+      "sha256": "4af026d13c737db25c5e311bbdc125eb93efe96ecbe1b3baa2335a0c24e088f8",
+      "bytes": 7554
+    },
+    "scripts/audit_publication_dataset.py": {
+      "sha256": "b82c0acbbdfd89f296329a6e2a7b6155ec0e53da3073130666093f35c918096a",
+      "bytes": 4113
+    },
+    "scripts/build_online_v2.py": {
+      "sha256": "91f253eff0570cc0ea1889c609e233efd38ddebeef494fa6bb081d45f1253adf",
+      "bytes": 47739
+    },
+    "scripts/build_publication_dataset.py": {
+      "sha256": "9cacb9030e4cd331b08a8e1c80fe271f9ea531ab16c31c35ba42d83e0d420d8f",
+      "bytes": 19839
+    },
+    "scripts/check_public_data.py": {
+      "sha256": "4b3a19c25e7960be651ff234ad5ec4a5447d2fe3e92c4b489655d9782de088e6",
+      "bytes": 7049
+    },
+    "scripts/configure_api_keys.zsh": {
+      "sha256": "2c74450a8325ae87bc7db4facfa2e9098c744821b9a45608648a411a46e52875",
+      "bytes": 1095
+    },
+    "scripts/download_data.py": {
+      "sha256": "095e42ae5f72fb33102f3ccac01f08f14dfe76d714e24020c6b6796b62e0f93c",
+      "bytes": 5291
+    },
+    "scripts/export_publication.py": {
+      "sha256": "363a4df0462442e23e62b2679cdbf47ac5aec1c0097e4ffddafca41b215da5e3",
+      "bytes": 5799
+    },
+    "scripts/metrics.py": {
+      "sha256": "8d9b321d2ca3be7f17da346ba780f9204a5a7ce0524dfaaae042802c54127f63",
+      "bytes": 10935
+    },
+    "scripts/official_online.py": {
+      "sha256": "21f94a8d2856500e978cfbc31393aa1cd1c01469c6fd15a2977cf8cd0165cb47",
+      "bytes": 6729
+    },
+    "scripts/package_github.py": {
+      "sha256": "c8db2194c99b9cf46c0adf8418f3539c93ffbd65bebb5fb7855b1996d7c0dce9",
+      "bytes": 8110
+    },
+    "scripts/paired_online_v2.py": {
+      "sha256": "f1fbf1b96059fb9729ee813e2fc389921284582bc704e1ea9685bfeb4854c56e",
+      "bytes": 3096
+    },
+    "scripts/preflight_online_v2.py": {
+      "sha256": "838fa7608699f480af3487c1bcdfc0e38aa0db2ddae3654b8286829829efc848",
+      "bytes": 17748
+    },
+    "scripts/prepare_dataset.py": {
+      "sha256": "43ed42217ff8c5b6ca6c7c1681fc485bbafb5de5fc77ba37d6fa46a8fe628f33",
+      "bytes": 10227
+    },
+    "scripts/prepare_online_v2.py": {
+      "sha256": "9e67859098c3ca857d2d3b73ace2334bc484be63a4c39d1e375583b1faaf96cd",
+      "bytes": 16421
+    },
+    "scripts/probe_gateway.py": {
+      "sha256": "83366b5c8d9a423b598f771f2316dd0dc3e57d20a228fde6138558fe337ff5cf",
+      "bytes": 7010
+    },
+    "scripts/recompute_online_v2.py": {
+      "sha256": "0b4078e8614bb1fdc62ce14e6af72e3931493196d5e524e072cdf7222551e2c2",
+      "bytes": 1710
+    },
+    "scripts/recover_pending_storage.py": {
+      "sha256": "e6cdc43261a01930b7f07e341d37f72b88f567b34dfc84858abf5bfaa2eff653",
+      "bytes": 1631
+    },
+    "scripts/repair_providertext_resume.py": {
+      "sha256": "06d9115a47eebf95d20757c00fd079fe62a7d5e4ecde9b3a850d0eb4472aeb34",
+      "bytes": 8911
+    },
+    "scripts/repair_storage_resume.py": {
+      "sha256": "1e8c626d243bb378884fe1d0052f8bbe46b701c08081b9402693c0e334ba7a58",
+      "bytes": 15735
+    },
+    "scripts/review_online_v2.py": {
+      "sha256": "8fa3e750ae968d09aee519a18e6eabf7bea4cad4b6bd126b141355e97e94f9a0",
+      "bytes": 7148
+    },
+    "scripts/run_models.py": {
+      "sha256": "560d1e6b3a7a5edf797c031c4f6fe216458a2c69f16950c4945e6025198ec8df",
+      "bytes": 39449
+    },
+    "scripts/run_official_online.py": {
+      "sha256": "fd3b83f86d98e766bcf7653066054a334045be16da13356489800c983875e0c8",
+      "bytes": 7595
+    },
+    "scripts/run_one_model.py": {
+      "sha256": "1afb3d1d1a01a29f185e422dba4e084690d7a0b578c20d279480d17e57bd9758",
+      "bytes": 14583
+    },
+    "scripts/run_online_v2.py": {
+      "sha256": "08402fe53faf219b41d7372da21dbdbb15dccae97dfca543d7335e7100cc1d3a",
+      "bytes": 56551
+    },
+    "scripts/run_publication.py": {
+      "sha256": "68da950fb25a9bff69c94862215800931474b8615cb54f7d9ea41cb5a0aa3f96",
+      "bytes": 3285
+    },
+    "scripts/start_official_online.zsh": {
+      "sha256": "faee0197ec28dd39ecb48f79a04d6b71da5464fcd849f4a342f7c70244e1313e",
+      "bytes": 3275
+    },
+    "scripts/start_publication.zsh": {
+      "sha256": "49d483752edb495b96d5725df219841ff7d99f2194593df8a469d305dc3fd8d4",
+      "bytes": 1775
+    },
+    "scripts/validate_online_v2.py": {
+      "sha256": "129fb8652b8ac9cacb92be4337cf2784730175dbe052a90f8007662ce91c0934",
+      "bytes": 17336
+    }
+  }
+}

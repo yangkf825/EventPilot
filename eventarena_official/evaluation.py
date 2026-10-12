@@ -6,7 +6,7 @@ import json
 
 from eventarena.online_v2_eval import evaluate_episode as frozen_evaluate_episode
 
-POLICY = 'exact_text_requirement_alias_v1'
+POLICY = 'joint_goal_constraints_with_exact_text_alias_v6'
 
 
 def digest(value):

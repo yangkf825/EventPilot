@@ -147,13 +147,16 @@ async def prepare_pool(args, root, selected, models, locks, obtain_checkpoint):
             async def judge(messages):
                 progress.progress({'stage': 'judge', 'state': 'calling'})
                 api_ok = False
+                access_records=[]
                 try:
-                    result = await models[args.judge_model].call(messages)
+                    from eventarena_official.judge_context import call_evidence_judge
+                    result = await call_evidence_judge(models[args.judge_model],messages,access_records)
                     api_ok = True
-                    judge_rows.append({'messages': messages, 'raw': str(result)})
-                    write_json(folder / 'judge_responses.json', judge_rows)
                     return result
                 finally:
+                    judge_rows.append({'messages':messages,'raw':str(result) if api_ok else None,
+                                       'api_ok':api_ok,'context_access_records':access_records})
+                    write_json(folder / 'judge_responses.json', judge_rows)
                     progress.progress({'stage': 'judge', 'state': 'returned', 'api_ok': api_ok})
 
             opts = {k: getattr(args, k) for k in ('headless', 'max_steps', 'pre_steps', 'setup_steps',
@@ -240,6 +243,12 @@ async def prepare_pool(args, root, selected, models, locks, obtain_checkpoint):
             write_json(folder / 'eligibility.json', row)
             rows.append(row)
             progress.complete(row)
+            blocked={name:wrapper.model.blocked.diagnostics for name,wrapper in models.items()
+                     if getattr(wrapper.model,'blocked',None) is not None}
+            if blocked:
+                write_json(root/'provider_pause.json',{'stage':'preparation','providers':blocked,
+                    'resume':'Restore provider access and use the same run with --resume --retry-infra.'})
+                raise RuntimeError('Provider access/quota unavailable; preparation paused without sampling further cases')
     except (asyncio.CancelledError, KeyboardInterrupt):
         progress.state.update(state='interrupted', interrupted_at=progress.now())
         progress.persist()

@@ -1,0 +1,6881 @@
+{
+  "protocol": "official_online_eventarena_v6",
+  "raw_sha256": "7dedf381531d423dc0fc48d21dc1d425655dd75f38b10211a880fa09102f257f",
+  "revision": "eacad896a84dc5b65e29b0b06e4699ab0544d701",
+  "compiled_files": {
+    "single_event.jsonl": {
+      "sha256": "3bfb7c0126353b1d7a70036ce652b9679474672aa34e280581c67cca3e81867b",
+      "count": 200
+    },
+    "counterfactual.jsonl": {
+      "sha256": "4b11f601da6284fad060b49affe3a95cf0765a7f0b976b048bcbb48ba04f2da4",
+      "count": 140
+    },
+    "multi_event.jsonl": {
+      "sha256": "500c7797058aeebc490841cd4bcc74340bc6be06e2995ef937552059bac00205",
+      "count": 40
+    }
+  },
+  "human_reviewed": false,
+  "original_source_texts_included": false,
+  "cases": [
+    {
+      "case_id": "EP6_MG01_A",
+      "experiment": "main",
+      "task_a_id": "828c2d98616a9478d5864d847d5a1b28",
+      "task_b_ids": [
+        "d9a8689393effeed75ea0866e44e1def"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG01_B",
+      "experiment": "main",
+      "task_a_id": "4f903626f632586fe4728d6664947bab",
+      "task_b_ids": [
+        "d9a8689393effeed75ea0866e44e1def"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG02_A",
+      "experiment": "main",
+      "task_a_id": "ec78d3a635e417bc2a80d03ca93d7165",
+      "task_b_ids": [
+        "6ca20f1da01edeb49a7a42c816d8c6fe"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG02_B",
+      "experiment": "main",
+      "task_a_id": "0170ca95038b05fa58d463fe627ac605",
+      "task_b_ids": [
+        "6ca20f1da01edeb49a7a42c816d8c6fe"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG03_A",
+      "experiment": "main",
+      "task_a_id": "512fd4deab099b8dc0dcfc0ec48a3c63",
+      "task_b_ids": [
+        "1c3b747ae12ccee895745f82e3f2ef8a"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG03_B",
+      "experiment": "main",
+      "task_a_id": "d9d8b7d84a3f8d057e368254fe8d65e2",
+      "task_b_ids": [
+        "1c3b747ae12ccee895745f82e3f2ef8a"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG04_A",
+      "experiment": "main",
+      "task_a_id": "d71be72aa25c3eab8eea47a0e60382e2",
+      "task_b_ids": [
+        "ab6ee3b83aab6cd283320f5e01003cff"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG04_B",
+      "experiment": "main",
+      "task_a_id": "bf3b311cc8dce16d3de844f4b5875dfd",
+      "task_b_ids": [
+        "ab6ee3b83aab6cd283320f5e01003cff"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG05_A",
+      "experiment": "main",
+      "task_a_id": "a11ecdff735b51372d536c866011af6f",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG05_B",
+      "experiment": "main",
+      "task_a_id": "ba2a469af584f16da93ce6a7430cf7e5_070826",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG06_A",
+      "experiment": "main",
+      "task_a_id": "c09721cc937d4dcfb391a0bc2c574b28",
+      "task_b_ids": [
+        "502e864440283214e0180645015f568b_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG06_B",
+      "experiment": "main",
+      "task_a_id": "e3ab665e01e7632ce33ac1aeca14aff6",
+      "task_b_ids": [
+        "502e864440283214e0180645015f568b_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG07_A",
+      "experiment": "main",
+      "task_a_id": "48c73f3f53e2611c4a1052457c1033db",
+      "task_b_ids": [
+        "38203be65401943aea2179c4c680059a"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG07_B",
+      "experiment": "main",
+      "task_a_id": "4091bdd3fa64a5b0d912bc08eaf9c824",
+      "task_b_ids": [
+        "38203be65401943aea2179c4c680059a"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG08_A",
+      "experiment": "main",
+      "task_a_id": "853afd530c72f4b00ffc32ae854efaf8",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG08_B",
+      "experiment": "main",
+      "task_a_id": "4e0f5561a76478da87995dee00b09572",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG09_A",
+      "experiment": "main",
+      "task_a_id": "b4aa7315e31dfcdc52baf7771be260c9",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG09_B",
+      "experiment": "main",
+      "task_a_id": "3621b099326c7aebd2e2dac6be3b52d1",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG10_A",
+      "experiment": "main",
+      "task_a_id": "ade4c09ad3fdb1607209750924cd232f",
+      "task_b_ids": [
+        "949dc965a6c23a95663b3bc2ca2c3a8a"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG10_B",
+      "experiment": "main",
+      "task_a_id": "046138801a05ddf56ad94e8672942496_070826",
+      "task_b_ids": [
+        "949dc965a6c23a95663b3bc2ca2c3a8a"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG11_A",
+      "experiment": "main",
+      "task_a_id": "bbbc243b4f18a7a897f0bc84e11d293f",
+      "task_b_ids": [
+        "6b2cfae0ef25c73d1224b6ab74cb8b63"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG11_B",
+      "experiment": "main",
+      "task_a_id": "627f7a18d85f29a687234f1ade4585c2",
+      "task_b_ids": [
+        "6b2cfae0ef25c73d1224b6ab74cb8b63"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG12_A",
+      "experiment": "main",
+      "task_a_id": "c801d1c951f59297f526bab84fa86c6e",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG12_B",
+      "experiment": "main",
+      "task_a_id": "62c8d970b3d13891f355911e5a8f4030",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG13_A",
+      "experiment": "main",
+      "task_a_id": "16200f51d63f0a47a58fa17acd49e368",
+      "task_b_ids": [
+        "0632e496d37badee0350dad358f047c5"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG13_B",
+      "experiment": "main",
+      "task_a_id": "a69d2934fe54fef165490a5a2d95bf38_070826",
+      "task_b_ids": [
+        "0632e496d37badee0350dad358f047c5"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG14_A",
+      "experiment": "main",
+      "task_a_id": "c03ee2be3d73556ab789c0ad1cbd3451",
+      "task_b_ids": [
+        "415bf9da6f3db3a735ecbba3b0c76c15"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG14_B",
+      "experiment": "main",
+      "task_a_id": "f2be37a9a60fbc25b6b11cf622d17352_110325",
+      "task_b_ids": [
+        "415bf9da6f3db3a735ecbba3b0c76c15"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG15_A",
+      "experiment": "main",
+      "task_a_id": "c00437fd76a7a83b57f3dc4e5dbc41f8",
+      "task_b_ids": [
+        "d8e2a81fa621ce4737e5ea85671b630e_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG15_B",
+      "experiment": "main",
+      "task_a_id": "7211af65d266402f99499053924262e9",
+      "task_b_ids": [
+        "d8e2a81fa621ce4737e5ea85671b630e_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG16_A",
+      "experiment": "main",
+      "task_a_id": "a6f0434ce6aff5f9b03681241b03ad82",
+      "task_b_ids": [
+        "690d7b4a285fdb1e9dabf973bf46ae4d"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG16_B",
+      "experiment": "main",
+      "task_a_id": "6b5be1764692d1dc8f17dc4375b2daa8",
+      "task_b_ids": [
+        "690d7b4a285fdb1e9dabf973bf46ae4d"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG17_A",
+      "experiment": "main",
+      "task_a_id": "cfafe3771369d1d261e9f7ecd44c296d",
+      "task_b_ids": [
+        "ef289e34a2f59a707cb07e2a6229ff03"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG17_B",
+      "experiment": "main",
+      "task_a_id": "fcf4952d2a1d80ea505c555c3c3b54e7",
+      "task_b_ids": [
+        "ef289e34a2f59a707cb07e2a6229ff03"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG18_A",
+      "experiment": "main",
+      "task_a_id": "7b182a5087347d494b48a29dbc0f1d3e",
+      "task_b_ids": [
+        "cad62d2be0c53f08a416457486b3db23"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG18_B",
+      "experiment": "main",
+      "task_a_id": "75146b7b67388b9244e0f21a1527c022",
+      "task_b_ids": [
+        "cad62d2be0c53f08a416457486b3db23"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG19_A",
+      "experiment": "main",
+      "task_a_id": "7be8cd8dba885cddd9af5320f49bc41b",
+      "task_b_ids": [
+        "0b838cd54f826c59c71f600c56b89a11_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG19_B",
+      "experiment": "main",
+      "task_a_id": "3ec0f6138d37fadcb989347a6088ec45",
+      "task_b_ids": [
+        "0b838cd54f826c59c71f600c56b89a11_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG20_A",
+      "experiment": "main",
+      "task_a_id": "8ae510355d978424f490798f900bfa2c_051526",
+      "task_b_ids": [
+        "9d090a15c214eb070d9caa8a034d03c1_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MG20_B",
+      "experiment": "main",
+      "task_a_id": "85b284c18d7e78c9b5a9e074e7aa3b98_051526",
+      "task_b_ids": [
+        "9d090a15c214eb070d9caa8a034d03c1_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS01_A",
+      "experiment": "main",
+      "task_a_id": "78f397336b6fd1cbba0127db7a8cd502",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "aa4b5cb7114fcc138ade82b4b9716d24"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS01_B",
+      "experiment": "main",
+      "task_a_id": "78f397336b6fd1cbba0127db7a8cd502",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS02_A",
+      "experiment": "main",
+      "task_a_id": "f05e87c5b92d9869e08806103c1c15a1",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "aa4b5cb7114fcc138ade82b4b9716d24"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS02_B",
+      "experiment": "main",
+      "task_a_id": "f05e87c5b92d9869e08806103c1c15a1",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS03_A",
+      "experiment": "main",
+      "task_a_id": "bb518416a786fdb9b9bbf0c78515595e",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS03_B",
+      "experiment": "main",
+      "task_a_id": "bb518416a786fdb9b9bbf0c78515595e",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS04_A",
+      "experiment": "main",
+      "task_a_id": "b99c02965196d51e80ac7539e33f335b",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS04_B",
+      "experiment": "main",
+      "task_a_id": "b99c02965196d51e80ac7539e33f335b",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS05_A",
+      "experiment": "main",
+      "task_a_id": "aa4b5cb7114fcc138ade82b4b9716d24",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526"
+      ],
+      "setup_task_ids": [
+        "85b284c18d7e78c9b5a9e074e7aa3b98_051526"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS05_B",
+      "experiment": "main",
+      "task_a_id": "aa4b5cb7114fcc138ade82b4b9716d24",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526"
+      ],
+      "setup_task_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS06_A",
+      "experiment": "main",
+      "task_a_id": "0059adc6b12a3822305deb68929b2de8",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS06_B",
+      "experiment": "main",
+      "task_a_id": "0059adc6b12a3822305deb68929b2de8",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS07_A",
+      "experiment": "main",
+      "task_a_id": "871e7771cecb989972f138ecc373107b",
+      "task_b_ids": [
+        "2207bb4f21786690cfed20b37253fb8b"
+      ],
+      "setup_task_ids": [
+        "4e3f6a538cc1f7321cfc50260db9545d"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS07_B",
+      "experiment": "main",
+      "task_a_id": "871e7771cecb989972f138ecc373107b",
+      "task_b_ids": [
+        "2207bb4f21786690cfed20b37253fb8b"
+      ],
+      "setup_task_ids": [
+        "2207bb4f21786690cfed20b37253fb8b"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS08_A",
+      "experiment": "main",
+      "task_a_id": "bd1e3770b7181f6fce9c35e18caa9785",
+      "task_b_ids": [
+        "330cd04c773ac498f51afa4665461ec8"
+      ],
+      "setup_task_ids": [
+        "690d7b4a285fdb1e9dabf973bf46ae4d"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS08_B",
+      "experiment": "main",
+      "task_a_id": "bd1e3770b7181f6fce9c35e18caa9785",
+      "task_b_ids": [
+        "330cd04c773ac498f51afa4665461ec8"
+      ],
+      "setup_task_ids": [
+        "330cd04c773ac498f51afa4665461ec8"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS09_A",
+      "experiment": "main",
+      "task_a_id": "d5c34bf39eb6096ae5d439325cde4d32",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS09_B",
+      "experiment": "main",
+      "task_a_id": "d5c34bf39eb6096ae5d439325cde4d32",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS10_A",
+      "experiment": "main",
+      "task_a_id": "fb7b4f784cfde003e2548fdf4e8d6b4f",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS10_B",
+      "experiment": "main",
+      "task_a_id": "fb7b4f784cfde003e2548fdf4e8d6b4f",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS11_A",
+      "experiment": "main",
+      "task_a_id": "f158345f8489e0d1d91e28768c39bca1",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS11_B",
+      "experiment": "main",
+      "task_a_id": "f158345f8489e0d1d91e28768c39bca1",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS12_A",
+      "experiment": "main",
+      "task_a_id": "aafd1fddea1558466ac6133934d35156",
+      "task_b_ids": [
+        "c0fa2c0e622971955cabf5bcf7b777e8"
+      ],
+      "setup_task_ids": [
+        "547f5729c59d5d12a457a3ebb74c31c6_010226"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS12_B",
+      "experiment": "main",
+      "task_a_id": "aafd1fddea1558466ac6133934d35156",
+      "task_b_ids": [
+        "c0fa2c0e622971955cabf5bcf7b777e8"
+      ],
+      "setup_task_ids": [
+        "c0fa2c0e622971955cabf5bcf7b777e8"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS13_A",
+      "experiment": "main",
+      "task_a_id": "2c20d87a046fadcb6ff07ee877bfbf37",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS13_B",
+      "experiment": "main",
+      "task_a_id": "2c20d87a046fadcb6ff07ee877bfbf37",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS14_A",
+      "experiment": "main",
+      "task_a_id": "123e8c2fc453f55fadd1d0b9aaf94df4",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS14_B",
+      "experiment": "main",
+      "task_a_id": "123e8c2fc453f55fadd1d0b9aaf94df4",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS15_A",
+      "experiment": "main",
+      "task_a_id": "75a1b5dcd2c28508a971d98d51fe5767",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS15_B",
+      "experiment": "main",
+      "task_a_id": "75a1b5dcd2c28508a971d98d51fe5767",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS16_A",
+      "experiment": "main",
+      "task_a_id": "59b7b990b4828bc305ab0d7ed6071b55",
+      "task_b_ids": [
+        "9ef1a8972f375db59c0e6329e11b7939"
+      ],
+      "setup_task_ids": [
+        "255bf27c43fd3f9254d6b81a5f36d3a9"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS16_B",
+      "experiment": "main",
+      "task_a_id": "59b7b990b4828bc305ab0d7ed6071b55",
+      "task_b_ids": [
+        "9ef1a8972f375db59c0e6329e11b7939"
+      ],
+      "setup_task_ids": [
+        "9ef1a8972f375db59c0e6329e11b7939"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS17_A",
+      "experiment": "main",
+      "task_a_id": "82eb3bfedd78456a0230b389f4e7a938",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS17_B",
+      "experiment": "main",
+      "task_a_id": "82eb3bfedd78456a0230b389f4e7a938",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS18_A",
+      "experiment": "main",
+      "task_a_id": "5d542a7ec1fa142ba73cc87d970caf39",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS18_B",
+      "experiment": "main",
+      "task_a_id": "5d542a7ec1fa142ba73cc87d970caf39",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS19_A",
+      "experiment": "main",
+      "task_a_id": "9c97bab9c2abfb90a426cbe9addae8d0_110325",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS19_B",
+      "experiment": "main",
+      "task_a_id": "9c97bab9c2abfb90a426cbe9addae8d0_110325",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS20_A",
+      "experiment": "main",
+      "task_a_id": "3f312ae3efc3c3e90ababe050dd4e7ae",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MS20_B",
+      "experiment": "main",
+      "task_a_id": "3f312ae3efc3c3e90ababe050dd4e7ae",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI01",
+      "experiment": "main",
+      "task_a_id": "a96fca87a17d792644e736d1d10d3cbe",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI02",
+      "experiment": "main",
+      "task_a_id": "8ea6c3a2ea3f59150619935261a76d19",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI03",
+      "experiment": "main",
+      "task_a_id": "354b4ddf048815f8fd4163d0d7e1aaa3",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI04",
+      "experiment": "main",
+      "task_a_id": "4464a8421f8bc8786524a499258dfad3",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI05",
+      "experiment": "main",
+      "task_a_id": "b922508886ded315c9835457a6eb43ea",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI06",
+      "experiment": "main",
+      "task_a_id": "7abdceee212151f187ee1a1744c57606",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI07",
+      "experiment": "main",
+      "task_a_id": "9d46ccb915eff39ee1ae1e7328f5f20d",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI08",
+      "experiment": "main",
+      "task_a_id": "1b867afecf072cb877ebfa4069263746",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI09",
+      "experiment": "main",
+      "task_a_id": "95cad96f2e43f3c0d8efad1331c77c8c",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI10",
+      "experiment": "main",
+      "task_a_id": "47186fac8e7c7277af01144644eb4e0b_070826",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI11",
+      "experiment": "main",
+      "task_a_id": "c3a333968fc3c43d7f2688f425a0d633",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI12",
+      "experiment": "main",
+      "task_a_id": "c2153fc053112e89c2f103869c4d6890",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI13",
+      "experiment": "main",
+      "task_a_id": "f389398d2eeb29e5571e00439c57eb76",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI14",
+      "experiment": "main",
+      "task_a_id": "5dec0e6620849459f29e6465982c597e",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI15",
+      "experiment": "main",
+      "task_a_id": "3c1ffc3f494e423b3c434c79e35da8f3_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI16",
+      "experiment": "main",
+      "task_a_id": "dd44c665cec1e9c929a4c5f074e7844a_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI17",
+      "experiment": "main",
+      "task_a_id": "87f4c5128e36cdb9366a138a7b61bb00",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI18",
+      "experiment": "main",
+      "task_a_id": "c073ac1bcf40f84c599affc97edbc396",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI19",
+      "experiment": "main",
+      "task_a_id": "6db4a0e346976f2729ba9afcd3208941",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MI20",
+      "experiment": "main",
+      "task_a_id": "515f2e5811cfdd5e0e669e40f17886d8",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "easy",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD01",
+      "experiment": "main",
+      "task_a_id": "bbbc243b4f18a7a897f0bc84e11d293f",
+      "task_b_ids": [
+        "6b2cfae0ef25c73d1224b6ab74cb8b63"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD02",
+      "experiment": "main",
+      "task_a_id": "627f7a18d85f29a687234f1ade4585c2",
+      "task_b_ids": [
+        "6b2cfae0ef25c73d1224b6ab74cb8b63"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD03",
+      "experiment": "main",
+      "task_a_id": "c801d1c951f59297f526bab84fa86c6e",
+      "task_b_ids": [
+        "62c8d970b3d13891f355911e5a8f4030"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD04",
+      "experiment": "main",
+      "task_a_id": "62c8d970b3d13891f355911e5a8f4030",
+      "task_b_ids": [
+        "c801d1c951f59297f526bab84fa86c6e"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD05",
+      "experiment": "main",
+      "task_a_id": "16200f51d63f0a47a58fa17acd49e368",
+      "task_b_ids": [
+        "a69d2934fe54fef165490a5a2d95bf38_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD06",
+      "experiment": "main",
+      "task_a_id": "a69d2934fe54fef165490a5a2d95bf38_070826",
+      "task_b_ids": [
+        "0632e496d37badee0350dad358f047c5"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD07",
+      "experiment": "main",
+      "task_a_id": "c03ee2be3d73556ab789c0ad1cbd3451",
+      "task_b_ids": [
+        "415bf9da6f3db3a735ecbba3b0c76c15"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD08",
+      "experiment": "main",
+      "task_a_id": "f2be37a9a60fbc25b6b11cf622d17352_110325",
+      "task_b_ids": [
+        "eb2db4b769c145dbe6ba4f74f3e0de98"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD09",
+      "experiment": "main",
+      "task_a_id": "c00437fd76a7a83b57f3dc4e5dbc41f8",
+      "task_b_ids": [
+        "7211af65d266402f99499053924262e9"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD10",
+      "experiment": "main",
+      "task_a_id": "7211af65d266402f99499053924262e9",
+      "task_b_ids": [
+        "c00437fd76a7a83b57f3dc4e5dbc41f8"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD11",
+      "experiment": "main",
+      "task_a_id": "a6f0434ce6aff5f9b03681241b03ad82",
+      "task_b_ids": [
+        "6b5be1764692d1dc8f17dc4375b2daa8"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD12",
+      "experiment": "main",
+      "task_a_id": "6b5be1764692d1dc8f17dc4375b2daa8",
+      "task_b_ids": [
+        "a6f0434ce6aff5f9b03681241b03ad82"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD13",
+      "experiment": "main",
+      "task_a_id": "cfafe3771369d1d261e9f7ecd44c296d",
+      "task_b_ids": [
+        "ef289e34a2f59a707cb07e2a6229ff03"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD14",
+      "experiment": "main",
+      "task_a_id": "fcf4952d2a1d80ea505c555c3c3b54e7",
+      "task_b_ids": [
+        "84ef883a37af638c3bcf7561f28ce80a"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD15",
+      "experiment": "main",
+      "task_a_id": "7b182a5087347d494b48a29dbc0f1d3e",
+      "task_b_ids": [
+        "cad62d2be0c53f08a416457486b3db23"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD16",
+      "experiment": "main",
+      "task_a_id": "75146b7b67388b9244e0f21a1527c022",
+      "task_b_ids": [
+        "0a54069a0ef542e571d1fee7f39c93d5"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD17",
+      "experiment": "main",
+      "task_a_id": "7be8cd8dba885cddd9af5320f49bc41b",
+      "task_b_ids": [
+        "0b838cd54f826c59c71f600c56b89a11_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD18",
+      "experiment": "main",
+      "task_a_id": "3ec0f6138d37fadcb989347a6088ec45",
+      "task_b_ids": [
+        "05483c50cc9b04c8ac44c574758fb2bd"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD19",
+      "experiment": "main",
+      "task_a_id": "8ae510355d978424f490798f900bfa2c_051526",
+      "task_b_ids": [
+        "85b284c18d7e78c9b5a9e074e7aa3b98_051526"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD20",
+      "experiment": "main",
+      "task_a_id": "85b284c18d7e78c9b5a9e074e7aa3b98_051526",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD21",
+      "experiment": "main",
+      "task_a_id": "78f397336b6fd1cbba0127db7a8cd502",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD22",
+      "experiment": "main",
+      "task_a_id": "f05e87c5b92d9869e08806103c1c15a1",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD23",
+      "experiment": "main",
+      "task_a_id": "bb518416a786fdb9b9bbf0c78515595e",
+      "task_b_ids": [
+        "b99c02965196d51e80ac7539e33f335b"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD24",
+      "experiment": "main",
+      "task_a_id": "b99c02965196d51e80ac7539e33f335b",
+      "task_b_ids": [
+        "bb518416a786fdb9b9bbf0c78515595e"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD25",
+      "experiment": "main",
+      "task_a_id": "aa4b5cb7114fcc138ade82b4b9716d24",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD26",
+      "experiment": "main",
+      "task_a_id": "0059adc6b12a3822305deb68929b2de8",
+      "task_b_ids": [
+        "f158345f8489e0d1d91e28768c39bca1"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD27",
+      "experiment": "main",
+      "task_a_id": "871e7771cecb989972f138ecc373107b",
+      "task_b_ids": [
+        "f389398d2eeb29e5571e00439c57eb76"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD28",
+      "experiment": "main",
+      "task_a_id": "bd1e3770b7181f6fce9c35e18caa9785",
+      "task_b_ids": [
+        "690d7b4a285fdb1e9dabf973bf46ae4d"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD29",
+      "experiment": "main",
+      "task_a_id": "d5c34bf39eb6096ae5d439325cde4d32",
+      "task_b_ids": [
+        "c8d7f2aa7eb5dd074c48c9f76f8659ad"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD30",
+      "experiment": "main",
+      "task_a_id": "fb7b4f784cfde003e2548fdf4e8d6b4f",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD31",
+      "experiment": "main",
+      "task_a_id": "f158345f8489e0d1d91e28768c39bca1",
+      "task_b_ids": [
+        "a7a73c8fa75441fc76df9746c327bdd6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD32",
+      "experiment": "main",
+      "task_a_id": "aafd1fddea1558466ac6133934d35156",
+      "task_b_ids": [
+        "367d843c640637745e8fafa741cca13b"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD33",
+      "experiment": "main",
+      "task_a_id": "2c20d87a046fadcb6ff07ee877bfbf37",
+      "task_b_ids": [
+        "c3a333968fc3c43d7f2688f425a0d633"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD34",
+      "experiment": "main",
+      "task_a_id": "123e8c2fc453f55fadd1d0b9aaf94df4",
+      "task_b_ids": [
+        "f27c0a7b8b0bb33d37698dff227fc8d7"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD35",
+      "experiment": "main",
+      "task_a_id": "75a1b5dcd2c28508a971d98d51fe5767",
+      "task_b_ids": [
+        "59912927c1fddee6ded8a49986896bc2_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD36",
+      "experiment": "main",
+      "task_a_id": "59b7b990b4828bc305ab0d7ed6071b55",
+      "task_b_ids": [
+        "2dd41b1d0e8f389d0683f4a4627abfe6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD37",
+      "experiment": "main",
+      "task_a_id": "82eb3bfedd78456a0230b389f4e7a938",
+      "task_b_ids": [
+        "fa9adb815b85d259f943d81874a052e5"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD38",
+      "experiment": "main",
+      "task_a_id": "5d542a7ec1fa142ba73cc87d970caf39",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD39",
+      "experiment": "main",
+      "task_a_id": "9c97bab9c2abfb90a426cbe9addae8d0_110325",
+      "task_b_ids": [
+        "864244b6969e0f8733b0eb1ca06cd51f"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD40",
+      "experiment": "main",
+      "task_a_id": "3f312ae3efc3c3e90ababe050dd4e7ae",
+      "task_b_ids": [
+        "b6d10e9bd19b4009a02dea0e98f4e1ae"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD41",
+      "experiment": "main",
+      "task_a_id": "a96fca87a17d792644e736d1d10d3cbe",
+      "task_b_ids": [
+        "95cad96f2e43f3c0d8efad1331c77c8c"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD42",
+      "experiment": "main",
+      "task_a_id": "8ea6c3a2ea3f59150619935261a76d19",
+      "task_b_ids": [
+        "608c595eec271fa5dc03506923519994"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD43",
+      "experiment": "main",
+      "task_a_id": "354b4ddf048815f8fd4163d0d7e1aaa3",
+      "task_b_ids": [
+        "b3f8bd9198d9d157e0848109563c4b23"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD44",
+      "experiment": "main",
+      "task_a_id": "4464a8421f8bc8786524a499258dfad3",
+      "task_b_ids": [
+        "5dec0e6620849459f29e6465982c597e"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD45",
+      "experiment": "main",
+      "task_a_id": "b922508886ded315c9835457a6eb43ea",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD46",
+      "experiment": "main",
+      "task_a_id": "7abdceee212151f187ee1a1744c57606",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD47",
+      "experiment": "main",
+      "task_a_id": "9d46ccb915eff39ee1ae1e7328f5f20d",
+      "task_b_ids": [
+        "3084bc225219fcb73dc1cb0f97276c1c"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD48",
+      "experiment": "main",
+      "task_a_id": "1b867afecf072cb877ebfa4069263746",
+      "task_b_ids": [
+        "d4fb78b7e74508cd3b33f01cf9200997"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD49",
+      "experiment": "main",
+      "task_a_id": "95cad96f2e43f3c0d8efad1331c77c8c",
+      "task_b_ids": [
+        "a96fca87a17d792644e736d1d10d3cbe"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD50",
+      "experiment": "main",
+      "task_a_id": "47186fac8e7c7277af01144644eb4e0b_070826",
+      "task_b_ids": [
+        "f27b393bbd2082f92b566270c4b74fe6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD51",
+      "experiment": "main",
+      "task_a_id": "c3a333968fc3c43d7f2688f425a0d633",
+      "task_b_ids": [
+        "2c20d87a046fadcb6ff07ee877bfbf37"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD52",
+      "experiment": "main",
+      "task_a_id": "c2153fc053112e89c2f103869c4d6890",
+      "task_b_ids": [
+        "5916018d1cad999881018cac1216a692"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD53",
+      "experiment": "main",
+      "task_a_id": "f389398d2eeb29e5571e00439c57eb76",
+      "task_b_ids": [
+        "871e7771cecb989972f138ecc373107b"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD54",
+      "experiment": "main",
+      "task_a_id": "5dec0e6620849459f29e6465982c597e",
+      "task_b_ids": [
+        "4464a8421f8bc8786524a499258dfad3"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD55",
+      "experiment": "main",
+      "task_a_id": "3c1ffc3f494e423b3c434c79e35da8f3_110325",
+      "task_b_ids": [
+        "046138801a05ddf56ad94e8672942496_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD56",
+      "experiment": "main",
+      "task_a_id": "dd44c665cec1e9c929a4c5f074e7844a_110325",
+      "task_b_ids": [
+        "871e7771cecb989972f138ecc373107b"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD57",
+      "experiment": "main",
+      "task_a_id": "87f4c5128e36cdb9366a138a7b61bb00",
+      "task_b_ids": [
+        "4464a8421f8bc8786524a499258dfad3"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD58",
+      "experiment": "main",
+      "task_a_id": "c073ac1bcf40f84c599affc97edbc396",
+      "task_b_ids": [
+        "aafd1fddea1558466ac6133934d35156"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD59",
+      "experiment": "main",
+      "task_a_id": "6db4a0e346976f2729ba9afcd3208941",
+      "task_b_ids": [
+        "8ea6c3a2ea3f59150619935261a76d19"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MD60",
+      "experiment": "main",
+      "task_a_id": "515f2e5811cfdd5e0e669e40f17886d8",
+      "task_b_ids": [
+        "271b36efd4346721b5542488ff997042"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR01",
+      "experiment": "main",
+      "task_a_id": "9b5dfe54a1c14c5c6336bae7374c3bb5",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR02",
+      "experiment": "main",
+      "task_a_id": "eb323dc584156d0eb3a2b90bb8c4b791_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR03",
+      "experiment": "main",
+      "task_a_id": "3dca7cbe7d086619d837ff9f5312cebc_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR04",
+      "experiment": "main",
+      "task_a_id": "180ed2ec377ef3a4af9035a21522091a",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR05",
+      "experiment": "main",
+      "task_a_id": "79f0bd7df6e685f30f20025cc6755c0a_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR06",
+      "experiment": "main",
+      "task_a_id": "fa9adb815b85d259f943d81874a052e5",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR07",
+      "experiment": "main",
+      "task_a_id": "59912927c1fddee6ded8a49986896bc2_070826",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR08",
+      "experiment": "main",
+      "task_a_id": "690d7b4a285fdb1e9dabf973bf46ae4d",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR09",
+      "experiment": "main",
+      "task_a_id": "1c3b747ae12ccee895745f82e3f2ef8a",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR10",
+      "experiment": "main",
+      "task_a_id": "78baf9dbe7c3532f7d7ef4cc22a7f065_051526",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR11",
+      "experiment": "main",
+      "task_a_id": "2fc51dd3febd447f0fdcdabca8d944ce_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR12",
+      "experiment": "main",
+      "task_a_id": "e7301bb694871429bf2eb36c3a72186c_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR13",
+      "experiment": "main",
+      "task_a_id": "330cd04c773ac498f51afa4665461ec8",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR14",
+      "experiment": "main",
+      "task_a_id": "96afb3c51146b0c2a9c55f039a5ea6d6",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR15",
+      "experiment": "main",
+      "task_a_id": "157f4a79d55e8fa3fd55ba772ba40fbc_070826",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR16",
+      "experiment": "main",
+      "task_a_id": "f27b393bbd2082f92b566270c4b74fe6",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR17",
+      "experiment": "main",
+      "task_a_id": "367d843c640637745e8fafa741cca13b",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR18",
+      "experiment": "main",
+      "task_a_id": "6ebde509dca8f15c0fa1bd74f071e8d6",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR19",
+      "experiment": "main",
+      "task_a_id": "b7258ee05d75e6c50673a59914db412e_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MR20",
+      "experiment": "main",
+      "task_a_id": "92a3d4236f167af4afdc08876a902ba6",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "REPLAN"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT01",
+      "experiment": "main",
+      "task_a_id": "a96fca87a17d792644e736d1d10d3cbe",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT02",
+      "experiment": "main",
+      "task_a_id": "8ea6c3a2ea3f59150619935261a76d19",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT03",
+      "experiment": "main",
+      "task_a_id": "354b4ddf048815f8fd4163d0d7e1aaa3",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT04",
+      "experiment": "main",
+      "task_a_id": "4464a8421f8bc8786524a499258dfad3",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT05",
+      "experiment": "main",
+      "task_a_id": "b922508886ded315c9835457a6eb43ea",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT06",
+      "experiment": "main",
+      "task_a_id": "7abdceee212151f187ee1a1744c57606",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT07",
+      "experiment": "main",
+      "task_a_id": "9d46ccb915eff39ee1ae1e7328f5f20d",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT08",
+      "experiment": "main",
+      "task_a_id": "1b867afecf072cb877ebfa4069263746",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT09",
+      "experiment": "main",
+      "task_a_id": "95cad96f2e43f3c0d8efad1331c77c8c",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT10",
+      "experiment": "main",
+      "task_a_id": "47186fac8e7c7277af01144644eb4e0b_070826",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT11",
+      "experiment": "main",
+      "task_a_id": "c3a333968fc3c43d7f2688f425a0d633",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT12",
+      "experiment": "main",
+      "task_a_id": "c2153fc053112e89c2f103869c4d6890",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT13",
+      "experiment": "main",
+      "task_a_id": "f389398d2eeb29e5571e00439c57eb76",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT14",
+      "experiment": "main",
+      "task_a_id": "5dec0e6620849459f29e6465982c597e",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT15",
+      "experiment": "main",
+      "task_a_id": "3c1ffc3f494e423b3c434c79e35da8f3_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT16",
+      "experiment": "main",
+      "task_a_id": "dd44c665cec1e9c929a4c5f074e7844a_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT17",
+      "experiment": "main",
+      "task_a_id": "87f4c5128e36cdb9366a138a7b61bb00",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT18",
+      "experiment": "main",
+      "task_a_id": "c073ac1bcf40f84c599affc97edbc396",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT19",
+      "experiment": "main",
+      "task_a_id": "6db4a0e346976f2729ba9afcd3208941",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_MT20",
+      "experiment": "main",
+      "task_a_id": "515f2e5811cfdd5e0e669e40f17886d8",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "TERMINATE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G01_A",
+      "experiment": "counterfactual",
+      "task_a_id": "4f903626f632586fe4728d6664947bab",
+      "task_b_ids": [
+        "828c2d98616a9478d5864d847d5a1b28"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G01_B",
+      "experiment": "counterfactual",
+      "task_a_id": "d9a8689393effeed75ea0866e44e1def",
+      "task_b_ids": [
+        "828c2d98616a9478d5864d847d5a1b28"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G02_A",
+      "experiment": "counterfactual",
+      "task_a_id": "0170ca95038b05fa58d463fe627ac605",
+      "task_b_ids": [
+        "ec78d3a635e417bc2a80d03ca93d7165"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G02_B",
+      "experiment": "counterfactual",
+      "task_a_id": "6ca20f1da01edeb49a7a42c816d8c6fe",
+      "task_b_ids": [
+        "ec78d3a635e417bc2a80d03ca93d7165"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G03_A",
+      "experiment": "counterfactual",
+      "task_a_id": "512fd4deab099b8dc0dcfc0ec48a3c63",
+      "task_b_ids": [
+        "fe33894188d20d7469f37a9fd855e7ff_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G03_B",
+      "experiment": "counterfactual",
+      "task_a_id": "d9d8b7d84a3f8d057e368254fe8d65e2",
+      "task_b_ids": [
+        "fe33894188d20d7469f37a9fd855e7ff_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G04_A",
+      "experiment": "counterfactual",
+      "task_a_id": "bf3b311cc8dce16d3de844f4b5875dfd",
+      "task_b_ids": [
+        "d71be72aa25c3eab8eea47a0e60382e2"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G04_B",
+      "experiment": "counterfactual",
+      "task_a_id": "ab6ee3b83aab6cd283320f5e01003cff",
+      "task_b_ids": [
+        "d71be72aa25c3eab8eea47a0e60382e2"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G05_A",
+      "experiment": "counterfactual",
+      "task_a_id": "a11ecdff735b51372d536c866011af6f",
+      "task_b_ids": [
+        "78f397336b6fd1cbba0127db7a8cd502"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G05_B",
+      "experiment": "counterfactual",
+      "task_a_id": "ba2a469af584f16da93ce6a7430cf7e5_070826",
+      "task_b_ids": [
+        "78f397336b6fd1cbba0127db7a8cd502"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G06_A",
+      "experiment": "counterfactual",
+      "task_a_id": "246d654fab7c31d9651007e39e75f74f",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G06_B",
+      "experiment": "counterfactual",
+      "task_a_id": "73d08420706ae205a9c5be28b6d4e80f",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G07_A",
+      "experiment": "counterfactual",
+      "task_a_id": "4091bdd3fa64a5b0d912bc08eaf9c824",
+      "task_b_ids": [
+        "48c73f3f53e2611c4a1052457c1033db"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G07_B",
+      "experiment": "counterfactual",
+      "task_a_id": "38203be65401943aea2179c4c680059a",
+      "task_b_ids": [
+        "48c73f3f53e2611c4a1052457c1033db"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G08_A",
+      "experiment": "counterfactual",
+      "task_a_id": "c521933dad9c0ef9f1dfa2f38b8e4405",
+      "task_b_ids": [
+        "4e0f5561a76478da87995dee00b09572"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G08_B",
+      "experiment": "counterfactual",
+      "task_a_id": "a5c87cc1c94a090c9a8dc2c8b6a125d0",
+      "task_b_ids": [
+        "4e0f5561a76478da87995dee00b09572"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G09_A",
+      "experiment": "counterfactual",
+      "task_a_id": "b4aa7315e31dfcdc52baf7771be260c9",
+      "task_b_ids": [
+        "7211af65d266402f99499053924262e9"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G09_B",
+      "experiment": "counterfactual",
+      "task_a_id": "3621b099326c7aebd2e2dac6be3b52d1",
+      "task_b_ids": [
+        "7211af65d266402f99499053924262e9"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G10_A",
+      "experiment": "counterfactual",
+      "task_a_id": "046138801a05ddf56ad94e8672942496_070826",
+      "task_b_ids": [
+        "ade4c09ad3fdb1607209750924cd232f"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G10_B",
+      "experiment": "counterfactual",
+      "task_a_id": "949dc965a6c23a95663b3bc2ca2c3a8a",
+      "task_b_ids": [
+        "ade4c09ad3fdb1607209750924cd232f"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G11_A",
+      "experiment": "counterfactual",
+      "task_a_id": "627f7a18d85f29a687234f1ade4585c2",
+      "task_b_ids": [
+        "bbbc243b4f18a7a897f0bc84e11d293f"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G11_B",
+      "experiment": "counterfactual",
+      "task_a_id": "6b2cfae0ef25c73d1224b6ab74cb8b63",
+      "task_b_ids": [
+        "bbbc243b4f18a7a897f0bc84e11d293f"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G12_A",
+      "experiment": "counterfactual",
+      "task_a_id": "c801d1c951f59297f526bab84fa86c6e",
+      "task_b_ids": [
+        "75a1b5dcd2c28508a971d98d51fe5767"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G12_B",
+      "experiment": "counterfactual",
+      "task_a_id": "62c8d970b3d13891f355911e5a8f4030",
+      "task_b_ids": [
+        "75a1b5dcd2c28508a971d98d51fe5767"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G13_A",
+      "experiment": "counterfactual",
+      "task_a_id": "a69d2934fe54fef165490a5a2d95bf38_070826",
+      "task_b_ids": [
+        "16200f51d63f0a47a58fa17acd49e368"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G13_B",
+      "experiment": "counterfactual",
+      "task_a_id": "0632e496d37badee0350dad358f047c5",
+      "task_b_ids": [
+        "16200f51d63f0a47a58fa17acd49e368"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G14_A",
+      "experiment": "counterfactual",
+      "task_a_id": "eb2db4b769c145dbe6ba4f74f3e0de98",
+      "task_b_ids": [
+        "b3a7da968de13bbdcaed12ffe4993df6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G14_B",
+      "experiment": "counterfactual",
+      "task_a_id": "415bf9da6f3db3a735ecbba3b0c76c15",
+      "task_b_ids": [
+        "b3a7da968de13bbdcaed12ffe4993df6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G15_A",
+      "experiment": "counterfactual",
+      "task_a_id": "c00437fd76a7a83b57f3dc4e5dbc41f8",
+      "task_b_ids": [
+        "1aeca99e6a60b0e3aefb3ef212bdce79"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G15_B",
+      "experiment": "counterfactual",
+      "task_a_id": "7211af65d266402f99499053924262e9",
+      "task_b_ids": [
+        "1aeca99e6a60b0e3aefb3ef212bdce79"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G16_A",
+      "experiment": "counterfactual",
+      "task_a_id": "a6f0434ce6aff5f9b03681241b03ad82",
+      "task_b_ids": [
+        "92a3d4236f167af4afdc08876a902ba6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G16_B",
+      "experiment": "counterfactual",
+      "task_a_id": "6b5be1764692d1dc8f17dc4375b2daa8",
+      "task_b_ids": [
+        "92a3d4236f167af4afdc08876a902ba6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G17_A",
+      "experiment": "counterfactual",
+      "task_a_id": "2218042362d8fae73756eb309848c2b2",
+      "task_b_ids": [
+        "fcf4952d2a1d80ea505c555c3c3b54e7"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G17_B",
+      "experiment": "counterfactual",
+      "task_a_id": "84ef883a37af638c3bcf7561f28ce80a",
+      "task_b_ids": [
+        "fcf4952d2a1d80ea505c555c3c3b54e7"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G18_A",
+      "experiment": "counterfactual",
+      "task_a_id": "4639a54f3ab549864fd8d60b7398b1e1",
+      "task_b_ids": [
+        "2e4e21cf1449c6894b17d571c47b77ea"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G18_B",
+      "experiment": "counterfactual",
+      "task_a_id": "0a54069a0ef542e571d1fee7f39c93d5",
+      "task_b_ids": [
+        "2e4e21cf1449c6894b17d571c47b77ea"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G19_A",
+      "experiment": "counterfactual",
+      "task_a_id": "9af05e392cf3f5a8ff17aa764ba5bda6",
+      "task_b_ids": [
+        "05483c50cc9b04c8ac44c574758fb2bd"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G19_B",
+      "experiment": "counterfactual",
+      "task_a_id": "0b838cd54f826c59c71f600c56b89a11_070826",
+      "task_b_ids": [
+        "05483c50cc9b04c8ac44c574758fb2bd"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G20_A",
+      "experiment": "counterfactual",
+      "task_a_id": "85b284c18d7e78c9b5a9e074e7aa3b98_051526",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_G20_B",
+      "experiment": "counterfactual",
+      "task_a_id": "9d090a15c214eb070d9caa8a034d03c1_070826",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T01_A",
+      "experiment": "counterfactual",
+      "task_a_id": "a96fca87a17d792644e736d1d10d3cbe",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "aa4b5cb7114fcc138ade82b4b9716d24"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T01_B",
+      "experiment": "counterfactual",
+      "task_a_id": "a96fca87a17d792644e736d1d10d3cbe",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T02_A",
+      "experiment": "counterfactual",
+      "task_a_id": "8ea6c3a2ea3f59150619935261a76d19",
+      "task_b_ids": [
+        "608c595eec271fa5dc03506923519994"
+      ],
+      "setup_task_ids": [
+        "a8b9edd598561d2de901864d5f40fe67"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T02_B",
+      "experiment": "counterfactual",
+      "task_a_id": "8ea6c3a2ea3f59150619935261a76d19",
+      "task_b_ids": [
+        "608c595eec271fa5dc03506923519994"
+      ],
+      "setup_task_ids": [
+        "608c595eec271fa5dc03506923519994"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T03_A",
+      "experiment": "counterfactual",
+      "task_a_id": "354b4ddf048815f8fd4163d0d7e1aaa3",
+      "task_b_ids": [
+        "b3f8bd9198d9d157e0848109563c4b23"
+      ],
+      "setup_task_ids": [
+        "28e7574e7bd6d14f36d2988a5ef2bd23"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T03_B",
+      "experiment": "counterfactual",
+      "task_a_id": "354b4ddf048815f8fd4163d0d7e1aaa3",
+      "task_b_ids": [
+        "b3f8bd9198d9d157e0848109563c4b23"
+      ],
+      "setup_task_ids": [
+        "b3f8bd9198d9d157e0848109563c4b23"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T04_A",
+      "experiment": "counterfactual",
+      "task_a_id": "4464a8421f8bc8786524a499258dfad3",
+      "task_b_ids": [
+        "1df24ec81137386d6476bcf343a79012"
+      ],
+      "setup_task_ids": [
+        "5dec0e6620849459f29e6465982c597e"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T04_B",
+      "experiment": "counterfactual",
+      "task_a_id": "4464a8421f8bc8786524a499258dfad3",
+      "task_b_ids": [
+        "1df24ec81137386d6476bcf343a79012"
+      ],
+      "setup_task_ids": [
+        "1df24ec81137386d6476bcf343a79012"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T05_A",
+      "experiment": "counterfactual",
+      "task_a_id": "b922508886ded315c9835457a6eb43ea",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "aa4b5cb7114fcc138ade82b4b9716d24"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T05_B",
+      "experiment": "counterfactual",
+      "task_a_id": "b922508886ded315c9835457a6eb43ea",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T06_A",
+      "experiment": "counterfactual",
+      "task_a_id": "7abdceee212151f187ee1a1744c57606",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T06_B",
+      "experiment": "counterfactual",
+      "task_a_id": "7abdceee212151f187ee1a1744c57606",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T07_A",
+      "experiment": "counterfactual",
+      "task_a_id": "9d46ccb915eff39ee1ae1e7328f5f20d",
+      "task_b_ids": [
+        "9c04b71bb8db6cf8e743b2290cbc8797"
+      ],
+      "setup_task_ids": [
+        "9b5dfe54a1c14c5c6336bae7374c3bb5"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T07_B",
+      "experiment": "counterfactual",
+      "task_a_id": "9d46ccb915eff39ee1ae1e7328f5f20d",
+      "task_b_ids": [
+        "9c04b71bb8db6cf8e743b2290cbc8797"
+      ],
+      "setup_task_ids": [
+        "9c04b71bb8db6cf8e743b2290cbc8797"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T08_A",
+      "experiment": "counterfactual",
+      "task_a_id": "1b867afecf072cb877ebfa4069263746",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T08_B",
+      "experiment": "counterfactual",
+      "task_a_id": "1b867afecf072cb877ebfa4069263746",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T09_A",
+      "experiment": "counterfactual",
+      "task_a_id": "95cad96f2e43f3c0d8efad1331c77c8c",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "aa4b5cb7114fcc138ade82b4b9716d24"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T09_B",
+      "experiment": "counterfactual",
+      "task_a_id": "95cad96f2e43f3c0d8efad1331c77c8c",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T10_A",
+      "experiment": "counterfactual",
+      "task_a_id": "47186fac8e7c7277af01144644eb4e0b_070826",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "aa4b5cb7114fcc138ade82b4b9716d24"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T10_B",
+      "experiment": "counterfactual",
+      "task_a_id": "47186fac8e7c7277af01144644eb4e0b_070826",
+      "task_b_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "setup_task_ids": [
+        "b320c68bffc1f3c7f2a8dc9d5478fb27"
+      ],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T11_A",
+      "experiment": "counterfactual",
+      "task_a_id": "c3a333968fc3c43d7f2688f425a0d633",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T11_B",
+      "experiment": "counterfactual",
+      "task_a_id": "c3a333968fc3c43d7f2688f425a0d633",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T12_A",
+      "experiment": "counterfactual",
+      "task_a_id": "c2153fc053112e89c2f103869c4d6890",
+      "task_b_ids": [
+        "a7a73c8fa75441fc76df9746c327bdd6"
+      ],
+      "setup_task_ids": [
+        "4e801ba102dfaf22c7cf7a126b107609"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T12_B",
+      "experiment": "counterfactual",
+      "task_a_id": "c2153fc053112e89c2f103869c4d6890",
+      "task_b_ids": [
+        "a7a73c8fa75441fc76df9746c327bdd6"
+      ],
+      "setup_task_ids": [
+        "a7a73c8fa75441fc76df9746c327bdd6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T13_A",
+      "experiment": "counterfactual",
+      "task_a_id": "f389398d2eeb29e5571e00439c57eb76",
+      "task_b_ids": [
+        "2207bb4f21786690cfed20b37253fb8b"
+      ],
+      "setup_task_ids": [
+        "4e3f6a538cc1f7321cfc50260db9545d"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T13_B",
+      "experiment": "counterfactual",
+      "task_a_id": "f389398d2eeb29e5571e00439c57eb76",
+      "task_b_ids": [
+        "2207bb4f21786690cfed20b37253fb8b"
+      ],
+      "setup_task_ids": [
+        "2207bb4f21786690cfed20b37253fb8b"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T14_A",
+      "experiment": "counterfactual",
+      "task_a_id": "5dec0e6620849459f29e6465982c597e",
+      "task_b_ids": [
+        "515f2e5811cfdd5e0e669e40f17886d8"
+      ],
+      "setup_task_ids": [
+        "1df24ec81137386d6476bcf343a79012"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T14_B",
+      "experiment": "counterfactual",
+      "task_a_id": "5dec0e6620849459f29e6465982c597e",
+      "task_b_ids": [
+        "515f2e5811cfdd5e0e669e40f17886d8"
+      ],
+      "setup_task_ids": [
+        "515f2e5811cfdd5e0e669e40f17886d8"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T15_A",
+      "experiment": "counterfactual",
+      "task_a_id": "3c1ffc3f494e423b3c434c79e35da8f3_110325",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T15_B",
+      "experiment": "counterfactual",
+      "task_a_id": "3c1ffc3f494e423b3c434c79e35da8f3_110325",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T16_A",
+      "experiment": "counterfactual",
+      "task_a_id": "dd44c665cec1e9c929a4c5f074e7844a_110325",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "e3ab665e01e7632ce33ac1aeca14aff6"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T16_B",
+      "experiment": "counterfactual",
+      "task_a_id": "dd44c665cec1e9c929a4c5f074e7844a_110325",
+      "task_b_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "setup_task_ids": [
+        "c09721cc937d4dcfb391a0bc2c574b28"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T17_A",
+      "experiment": "counterfactual",
+      "task_a_id": "87f4c5128e36cdb9366a138a7b61bb00",
+      "task_b_ids": [
+        "1df24ec81137386d6476bcf343a79012"
+      ],
+      "setup_task_ids": [
+        "5dec0e6620849459f29e6465982c597e"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T17_B",
+      "experiment": "counterfactual",
+      "task_a_id": "87f4c5128e36cdb9366a138a7b61bb00",
+      "task_b_ids": [
+        "1df24ec81137386d6476bcf343a79012"
+      ],
+      "setup_task_ids": [
+        "1df24ec81137386d6476bcf343a79012"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T18_A",
+      "experiment": "counterfactual",
+      "task_a_id": "c073ac1bcf40f84c599affc97edbc396",
+      "task_b_ids": [
+        "c0fa2c0e622971955cabf5bcf7b777e8"
+      ],
+      "setup_task_ids": [
+        "547f5729c59d5d12a457a3ebb74c31c6_010226"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T18_B",
+      "experiment": "counterfactual",
+      "task_a_id": "c073ac1bcf40f84c599affc97edbc396",
+      "task_b_ids": [
+        "c0fa2c0e622971955cabf5bcf7b777e8"
+      ],
+      "setup_task_ids": [
+        "c0fa2c0e622971955cabf5bcf7b777e8"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T19_A",
+      "experiment": "counterfactual",
+      "task_a_id": "6db4a0e346976f2729ba9afcd3208941",
+      "task_b_ids": [
+        "608c595eec271fa5dc03506923519994"
+      ],
+      "setup_task_ids": [
+        "8ea6c3a2ea3f59150619935261a76d19"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T19_B",
+      "experiment": "counterfactual",
+      "task_a_id": "6db4a0e346976f2729ba9afcd3208941",
+      "task_b_ids": [
+        "608c595eec271fa5dc03506923519994"
+      ],
+      "setup_task_ids": [
+        "608c595eec271fa5dc03506923519994"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T20_A",
+      "experiment": "counterfactual",
+      "task_a_id": "515f2e5811cfdd5e0e669e40f17886d8",
+      "task_b_ids": [
+        "1df24ec81137386d6476bcf343a79012"
+      ],
+      "setup_task_ids": [
+        "5dec0e6620849459f29e6465982c597e"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_T20_B",
+      "experiment": "counterfactual",
+      "task_a_id": "515f2e5811cfdd5e0e669e40f17886d8",
+      "task_b_ids": [
+        "1df24ec81137386d6476bcf343a79012"
+      ],
+      "setup_task_ids": [
+        "1df24ec81137386d6476bcf343a79012"
+      ],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P01_1",
+      "experiment": "counterfactual",
+      "task_a_id": "9b5dfe54a1c14c5c6336bae7374c3bb5",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P01_2",
+      "experiment": "counterfactual",
+      "task_a_id": "9b5dfe54a1c14c5c6336bae7374c3bb5",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P01_3",
+      "experiment": "counterfactual",
+      "task_a_id": "9b5dfe54a1c14c5c6336bae7374c3bb5",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P02_1",
+      "experiment": "counterfactual",
+      "task_a_id": "eb323dc584156d0eb3a2b90bb8c4b791_110325",
+      "task_b_ids": [
+        "2d5a7f95f951a26838289dfd629ae850_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P02_2",
+      "experiment": "counterfactual",
+      "task_a_id": "eb323dc584156d0eb3a2b90bb8c4b791_110325",
+      "task_b_ids": [
+        "2d5a7f95f951a26838289dfd629ae850_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P02_3",
+      "experiment": "counterfactual",
+      "task_a_id": "eb323dc584156d0eb3a2b90bb8c4b791_110325",
+      "task_b_ids": [
+        "2d5a7f95f951a26838289dfd629ae850_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P03_1",
+      "experiment": "counterfactual",
+      "task_a_id": "3dca7cbe7d086619d837ff9f5312cebc_110325",
+      "task_b_ids": [
+        "3adeea7627f4343069f38adae40f73d0_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P03_2",
+      "experiment": "counterfactual",
+      "task_a_id": "3dca7cbe7d086619d837ff9f5312cebc_110325",
+      "task_b_ids": [
+        "3adeea7627f4343069f38adae40f73d0_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P03_3",
+      "experiment": "counterfactual",
+      "task_a_id": "3dca7cbe7d086619d837ff9f5312cebc_110325",
+      "task_b_ids": [
+        "3adeea7627f4343069f38adae40f73d0_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P04_1",
+      "experiment": "counterfactual",
+      "task_a_id": "180ed2ec377ef3a4af9035a21522091a",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P04_2",
+      "experiment": "counterfactual",
+      "task_a_id": "180ed2ec377ef3a4af9035a21522091a",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P04_3",
+      "experiment": "counterfactual",
+      "task_a_id": "180ed2ec377ef3a4af9035a21522091a",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P05_1",
+      "experiment": "counterfactual",
+      "task_a_id": "79f0bd7df6e685f30f20025cc6755c0a_110325",
+      "task_b_ids": [
+        "62f1626ce249c31098854f8b38bdd6cf_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P05_2",
+      "experiment": "counterfactual",
+      "task_a_id": "79f0bd7df6e685f30f20025cc6755c0a_110325",
+      "task_b_ids": [
+        "62f1626ce249c31098854f8b38bdd6cf_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P05_3",
+      "experiment": "counterfactual",
+      "task_a_id": "79f0bd7df6e685f30f20025cc6755c0a_110325",
+      "task_b_ids": [
+        "62f1626ce249c31098854f8b38bdd6cf_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P06_1",
+      "experiment": "counterfactual",
+      "task_a_id": "fa9adb815b85d259f943d81874a052e5",
+      "task_b_ids": [
+        "82eb3bfedd78456a0230b389f4e7a938"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P06_2",
+      "experiment": "counterfactual",
+      "task_a_id": "fa9adb815b85d259f943d81874a052e5",
+      "task_b_ids": [
+        "82eb3bfedd78456a0230b389f4e7a938"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P06_3",
+      "experiment": "counterfactual",
+      "task_a_id": "fa9adb815b85d259f943d81874a052e5",
+      "task_b_ids": [
+        "82eb3bfedd78456a0230b389f4e7a938"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P07_1",
+      "experiment": "counterfactual",
+      "task_a_id": "59912927c1fddee6ded8a49986896bc2_070826",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P07_2",
+      "experiment": "counterfactual",
+      "task_a_id": "59912927c1fddee6ded8a49986896bc2_070826",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P07_3",
+      "experiment": "counterfactual",
+      "task_a_id": "59912927c1fddee6ded8a49986896bc2_070826",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P08_1",
+      "experiment": "counterfactual",
+      "task_a_id": "690d7b4a285fdb1e9dabf973bf46ae4d",
+      "task_b_ids": [
+        "330cd04c773ac498f51afa4665461ec8"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P08_2",
+      "experiment": "counterfactual",
+      "task_a_id": "690d7b4a285fdb1e9dabf973bf46ae4d",
+      "task_b_ids": [
+        "330cd04c773ac498f51afa4665461ec8"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P08_3",
+      "experiment": "counterfactual",
+      "task_a_id": "690d7b4a285fdb1e9dabf973bf46ae4d",
+      "task_b_ids": [
+        "330cd04c773ac498f51afa4665461ec8"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P09_1",
+      "experiment": "counterfactual",
+      "task_a_id": "1c3b747ae12ccee895745f82e3f2ef8a",
+      "task_b_ids": [
+        "47e314cc452c540524ffb7cf520285a3"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P09_2",
+      "experiment": "counterfactual",
+      "task_a_id": "1c3b747ae12ccee895745f82e3f2ef8a",
+      "task_b_ids": [
+        "47e314cc452c540524ffb7cf520285a3"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P09_3",
+      "experiment": "counterfactual",
+      "task_a_id": "1c3b747ae12ccee895745f82e3f2ef8a",
+      "task_b_ids": [
+        "47e314cc452c540524ffb7cf520285a3"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P10_1",
+      "experiment": "counterfactual",
+      "task_a_id": "78baf9dbe7c3532f7d7ef4cc22a7f065_051526",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P10_2",
+      "experiment": "counterfactual",
+      "task_a_id": "78baf9dbe7c3532f7d7ef4cc22a7f065_051526",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P10_3",
+      "experiment": "counterfactual",
+      "task_a_id": "78baf9dbe7c3532f7d7ef4cc22a7f065_051526",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P11_1",
+      "experiment": "counterfactual",
+      "task_a_id": "2fc51dd3febd447f0fdcdabca8d944ce_110325",
+      "task_b_ids": [
+        "9d090a15c214eb070d9caa8a034d03c1_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P11_2",
+      "experiment": "counterfactual",
+      "task_a_id": "2fc51dd3febd447f0fdcdabca8d944ce_110325",
+      "task_b_ids": [
+        "9d090a15c214eb070d9caa8a034d03c1_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P11_3",
+      "experiment": "counterfactual",
+      "task_a_id": "2fc51dd3febd447f0fdcdabca8d944ce_110325",
+      "task_b_ids": [
+        "9d090a15c214eb070d9caa8a034d03c1_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P12_1",
+      "experiment": "counterfactual",
+      "task_a_id": "e7301bb694871429bf2eb36c3a72186c_110325",
+      "task_b_ids": [
+        "816851ff92ff0219acf4364dcc2c4692_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P12_2",
+      "experiment": "counterfactual",
+      "task_a_id": "e7301bb694871429bf2eb36c3a72186c_110325",
+      "task_b_ids": [
+        "816851ff92ff0219acf4364dcc2c4692_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P12_3",
+      "experiment": "counterfactual",
+      "task_a_id": "e7301bb694871429bf2eb36c3a72186c_110325",
+      "task_b_ids": [
+        "816851ff92ff0219acf4364dcc2c4692_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P13_1",
+      "experiment": "counterfactual",
+      "task_a_id": "330cd04c773ac498f51afa4665461ec8",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P13_2",
+      "experiment": "counterfactual",
+      "task_a_id": "330cd04c773ac498f51afa4665461ec8",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P13_3",
+      "experiment": "counterfactual",
+      "task_a_id": "330cd04c773ac498f51afa4665461ec8",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P14_1",
+      "experiment": "counterfactual",
+      "task_a_id": "96afb3c51146b0c2a9c55f039a5ea6d6",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P14_2",
+      "experiment": "counterfactual",
+      "task_a_id": "96afb3c51146b0c2a9c55f039a5ea6d6",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P14_3",
+      "experiment": "counterfactual",
+      "task_a_id": "96afb3c51146b0c2a9c55f039a5ea6d6",
+      "task_b_ids": [
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P15_1",
+      "experiment": "counterfactual",
+      "task_a_id": "157f4a79d55e8fa3fd55ba772ba40fbc_070826",
+      "task_b_ids": [
+        "0b838cd54f826c59c71f600c56b89a11_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P15_2",
+      "experiment": "counterfactual",
+      "task_a_id": "157f4a79d55e8fa3fd55ba772ba40fbc_070826",
+      "task_b_ids": [
+        "0b838cd54f826c59c71f600c56b89a11_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P15_3",
+      "experiment": "counterfactual",
+      "task_a_id": "157f4a79d55e8fa3fd55ba772ba40fbc_070826",
+      "task_b_ids": [
+        "0b838cd54f826c59c71f600c56b89a11_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P16_1",
+      "experiment": "counterfactual",
+      "task_a_id": "f27b393bbd2082f92b566270c4b74fe6",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P16_2",
+      "experiment": "counterfactual",
+      "task_a_id": "f27b393bbd2082f92b566270c4b74fe6",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P16_3",
+      "experiment": "counterfactual",
+      "task_a_id": "f27b393bbd2082f92b566270c4b74fe6",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P17_1",
+      "experiment": "counterfactual",
+      "task_a_id": "367d843c640637745e8fafa741cca13b",
+      "task_b_ids": [
+        "26784156ae9859a0dd6c5920eb106f91"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P17_2",
+      "experiment": "counterfactual",
+      "task_a_id": "367d843c640637745e8fafa741cca13b",
+      "task_b_ids": [
+        "26784156ae9859a0dd6c5920eb106f91"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P17_3",
+      "experiment": "counterfactual",
+      "task_a_id": "367d843c640637745e8fafa741cca13b",
+      "task_b_ids": [
+        "26784156ae9859a0dd6c5920eb106f91"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P18_1",
+      "experiment": "counterfactual",
+      "task_a_id": "6ebde509dca8f15c0fa1bd74f071e8d6",
+      "task_b_ids": [
+        "b64f938af842f6a1b4489d0e49a785a7_121125"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P18_2",
+      "experiment": "counterfactual",
+      "task_a_id": "6ebde509dca8f15c0fa1bd74f071e8d6",
+      "task_b_ids": [
+        "b64f938af842f6a1b4489d0e49a785a7_121125"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P18_3",
+      "experiment": "counterfactual",
+      "task_a_id": "6ebde509dca8f15c0fa1bd74f071e8d6",
+      "task_b_ids": [
+        "b64f938af842f6a1b4489d0e49a785a7_121125"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P19_1",
+      "experiment": "counterfactual",
+      "task_a_id": "b7258ee05d75e6c50673a59914db412e_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P19_2",
+      "experiment": "counterfactual",
+      "task_a_id": "b7258ee05d75e6c50673a59914db412e_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P19_3",
+      "experiment": "counterfactual",
+      "task_a_id": "b7258ee05d75e6c50673a59914db412e_110325",
+      "task_b_ids": [],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "IGNORE",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P20_1",
+      "experiment": "counterfactual",
+      "task_a_id": "92a3d4236f167af4afdc08876a902ba6",
+      "task_b_ids": [
+        "0b51b4fa0295ae80ccd176ebdad6fff6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P20_2",
+      "experiment": "counterfactual",
+      "task_a_id": "92a3d4236f167af4afdc08876a902ba6",
+      "task_b_ids": [
+        "0b51b4fa0295ae80ccd176ebdad6fff6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_P20_3",
+      "experiment": "counterfactual",
+      "task_a_id": "92a3d4236f167af4afdc08876a902ba6",
+      "task_b_ids": [
+        "0b51b4fa0295ae80ccd176ebdad6fff6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "medium",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        }
+      }
+    },
+    {
+      "case_id": "EP6_M01_BATCH",
+      "experiment": "multi",
+      "task_a_id": "bbbc243b4f18a7a897f0bc84e11d293f",
+      "task_b_ids": [
+        "6b2cfae0ef25c73d1224b6ab74cb8b63",
+        "627f7a18d85f29a687234f1ade4585c2"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M01_STREAM",
+      "experiment": "multi",
+      "task_a_id": "bbbc243b4f18a7a897f0bc84e11d293f",
+      "task_b_ids": [
+        "6b2cfae0ef25c73d1224b6ab74cb8b63",
+        "627f7a18d85f29a687234f1ade4585c2"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M02_BATCH",
+      "experiment": "multi",
+      "task_a_id": "627f7a18d85f29a687234f1ade4585c2",
+      "task_b_ids": [
+        "6b2cfae0ef25c73d1224b6ab74cb8b63",
+        "bbbc243b4f18a7a897f0bc84e11d293f"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M02_STREAM",
+      "experiment": "multi",
+      "task_a_id": "627f7a18d85f29a687234f1ade4585c2",
+      "task_b_ids": [
+        "6b2cfae0ef25c73d1224b6ab74cb8b63",
+        "bbbc243b4f18a7a897f0bc84e11d293f"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M03_BATCH",
+      "experiment": "multi",
+      "task_a_id": "c801d1c951f59297f526bab84fa86c6e",
+      "task_b_ids": [
+        "62c8d970b3d13891f355911e5a8f4030",
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M03_STREAM",
+      "experiment": "multi",
+      "task_a_id": "c801d1c951f59297f526bab84fa86c6e",
+      "task_b_ids": [
+        "62c8d970b3d13891f355911e5a8f4030",
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M04_BATCH",
+      "experiment": "multi",
+      "task_a_id": "62c8d970b3d13891f355911e5a8f4030",
+      "task_b_ids": [
+        "c801d1c951f59297f526bab84fa86c6e",
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M04_STREAM",
+      "experiment": "multi",
+      "task_a_id": "62c8d970b3d13891f355911e5a8f4030",
+      "task_b_ids": [
+        "c801d1c951f59297f526bab84fa86c6e",
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M05_BATCH",
+      "experiment": "multi",
+      "task_a_id": "16200f51d63f0a47a58fa17acd49e368",
+      "task_b_ids": [
+        "a69d2934fe54fef165490a5a2d95bf38_070826",
+        "0632e496d37badee0350dad358f047c5"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M05_STREAM",
+      "experiment": "multi",
+      "task_a_id": "16200f51d63f0a47a58fa17acd49e368",
+      "task_b_ids": [
+        "a69d2934fe54fef165490a5a2d95bf38_070826",
+        "0632e496d37badee0350dad358f047c5"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M06_BATCH",
+      "experiment": "multi",
+      "task_a_id": "a69d2934fe54fef165490a5a2d95bf38_070826",
+      "task_b_ids": [
+        "0632e496d37badee0350dad358f047c5",
+        "16200f51d63f0a47a58fa17acd49e368"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M06_STREAM",
+      "experiment": "multi",
+      "task_a_id": "a69d2934fe54fef165490a5a2d95bf38_070826",
+      "task_b_ids": [
+        "0632e496d37badee0350dad358f047c5",
+        "16200f51d63f0a47a58fa17acd49e368"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M07_BATCH",
+      "experiment": "multi",
+      "task_a_id": "c03ee2be3d73556ab789c0ad1cbd3451",
+      "task_b_ids": [
+        "415bf9da6f3db3a735ecbba3b0c76c15",
+        "eb2db4b769c145dbe6ba4f74f3e0de98"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M07_STREAM",
+      "experiment": "multi",
+      "task_a_id": "c03ee2be3d73556ab789c0ad1cbd3451",
+      "task_b_ids": [
+        "415bf9da6f3db3a735ecbba3b0c76c15",
+        "eb2db4b769c145dbe6ba4f74f3e0de98"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M08_BATCH",
+      "experiment": "multi",
+      "task_a_id": "f2be37a9a60fbc25b6b11cf622d17352_110325",
+      "task_b_ids": [
+        "eb2db4b769c145dbe6ba4f74f3e0de98",
+        "b3a7da968de13bbdcaed12ffe4993df6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M08_STREAM",
+      "experiment": "multi",
+      "task_a_id": "f2be37a9a60fbc25b6b11cf622d17352_110325",
+      "task_b_ids": [
+        "eb2db4b769c145dbe6ba4f74f3e0de98",
+        "b3a7da968de13bbdcaed12ffe4993df6"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M09_BATCH",
+      "experiment": "multi",
+      "task_a_id": "c00437fd76a7a83b57f3dc4e5dbc41f8",
+      "task_b_ids": [
+        "7211af65d266402f99499053924262e9",
+        "d8e2a81fa621ce4737e5ea85671b630e_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M09_STREAM",
+      "experiment": "multi",
+      "task_a_id": "c00437fd76a7a83b57f3dc4e5dbc41f8",
+      "task_b_ids": [
+        "7211af65d266402f99499053924262e9",
+        "d8e2a81fa621ce4737e5ea85671b630e_110325"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M10_BATCH",
+      "experiment": "multi",
+      "task_a_id": "7211af65d266402f99499053924262e9",
+      "task_b_ids": [
+        "c00437fd76a7a83b57f3dc4e5dbc41f8",
+        "87f4c5128e36cdb9366a138a7b61bb00"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M10_STREAM",
+      "experiment": "multi",
+      "task_a_id": "7211af65d266402f99499053924262e9",
+      "task_b_ids": [
+        "c00437fd76a7a83b57f3dc4e5dbc41f8",
+        "87f4c5128e36cdb9366a138a7b61bb00"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M11_BATCH",
+      "experiment": "multi",
+      "task_a_id": "a6f0434ce6aff5f9b03681241b03ad82",
+      "task_b_ids": [
+        "6b5be1764692d1dc8f17dc4375b2daa8",
+        "690d7b4a285fdb1e9dabf973bf46ae4d"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M11_STREAM",
+      "experiment": "multi",
+      "task_a_id": "a6f0434ce6aff5f9b03681241b03ad82",
+      "task_b_ids": [
+        "6b5be1764692d1dc8f17dc4375b2daa8",
+        "690d7b4a285fdb1e9dabf973bf46ae4d"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M12_BATCH",
+      "experiment": "multi",
+      "task_a_id": "6b5be1764692d1dc8f17dc4375b2daa8",
+      "task_b_ids": [
+        "a6f0434ce6aff5f9b03681241b03ad82",
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M12_STREAM",
+      "experiment": "multi",
+      "task_a_id": "6b5be1764692d1dc8f17dc4375b2daa8",
+      "task_b_ids": [
+        "a6f0434ce6aff5f9b03681241b03ad82",
+        "a5c87cc1c94a090c9a8dc2c8b6a125d0"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M13_BATCH",
+      "experiment": "multi",
+      "task_a_id": "cfafe3771369d1d261e9f7ecd44c296d",
+      "task_b_ids": [
+        "ef289e34a2f59a707cb07e2a6229ff03",
+        "987bad7c6d4726d64232a8a1c3386888"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M13_STREAM",
+      "experiment": "multi",
+      "task_a_id": "cfafe3771369d1d261e9f7ecd44c296d",
+      "task_b_ids": [
+        "ef289e34a2f59a707cb07e2a6229ff03",
+        "987bad7c6d4726d64232a8a1c3386888"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M14_BATCH",
+      "experiment": "multi",
+      "task_a_id": "fcf4952d2a1d80ea505c555c3c3b54e7",
+      "task_b_ids": [
+        "84ef883a37af638c3bcf7561f28ce80a",
+        "987bad7c6d4726d64232a8a1c3386888"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M14_STREAM",
+      "experiment": "multi",
+      "task_a_id": "fcf4952d2a1d80ea505c555c3c3b54e7",
+      "task_b_ids": [
+        "84ef883a37af638c3bcf7561f28ce80a",
+        "987bad7c6d4726d64232a8a1c3386888"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M15_BATCH",
+      "experiment": "multi",
+      "task_a_id": "7b182a5087347d494b48a29dbc0f1d3e",
+      "task_b_ids": [
+        "cad62d2be0c53f08a416457486b3db23",
+        "0a54069a0ef542e571d1fee7f39c93d5"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M15_STREAM",
+      "experiment": "multi",
+      "task_a_id": "7b182a5087347d494b48a29dbc0f1d3e",
+      "task_b_ids": [
+        "cad62d2be0c53f08a416457486b3db23",
+        "0a54069a0ef542e571d1fee7f39c93d5"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M16_BATCH",
+      "experiment": "multi",
+      "task_a_id": "75146b7b67388b9244e0f21a1527c022",
+      "task_b_ids": [
+        "0a54069a0ef542e571d1fee7f39c93d5",
+        "cad62d2be0c53f08a416457486b3db23"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M16_STREAM",
+      "experiment": "multi",
+      "task_a_id": "75146b7b67388b9244e0f21a1527c022",
+      "task_b_ids": [
+        "0a54069a0ef542e571d1fee7f39c93d5",
+        "cad62d2be0c53f08a416457486b3db23"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M17_BATCH",
+      "experiment": "multi",
+      "task_a_id": "7be8cd8dba885cddd9af5320f49bc41b",
+      "task_b_ids": [
+        "0b838cd54f826c59c71f600c56b89a11_070826",
+        "05483c50cc9b04c8ac44c574758fb2bd"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M17_STREAM",
+      "experiment": "multi",
+      "task_a_id": "7be8cd8dba885cddd9af5320f49bc41b",
+      "task_b_ids": [
+        "0b838cd54f826c59c71f600c56b89a11_070826",
+        "05483c50cc9b04c8ac44c574758fb2bd"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M18_BATCH",
+      "experiment": "multi",
+      "task_a_id": "3ec0f6138d37fadcb989347a6088ec45",
+      "task_b_ids": [
+        "05483c50cc9b04c8ac44c574758fb2bd",
+        "0b838cd54f826c59c71f600c56b89a11_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M18_STREAM",
+      "experiment": "multi",
+      "task_a_id": "3ec0f6138d37fadcb989347a6088ec45",
+      "task_b_ids": [
+        "05483c50cc9b04c8ac44c574758fb2bd",
+        "0b838cd54f826c59c71f600c56b89a11_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "heldout_candidate",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M19_BATCH",
+      "experiment": "multi",
+      "task_a_id": "8ae510355d978424f490798f900bfa2c_051526",
+      "task_b_ids": [
+        "85b284c18d7e78c9b5a9e074e7aa3b98_051526",
+        "9d090a15c214eb070d9caa8a034d03c1_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M19_STREAM",
+      "experiment": "multi",
+      "task_a_id": "8ae510355d978424f490798f900bfa2c_051526",
+      "task_b_ids": [
+        "85b284c18d7e78c9b5a9e074e7aa3b98_051526",
+        "9d090a15c214eb070d9caa8a034d03c1_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    },
+    {
+      "case_id": "EP6_M20_BATCH",
+      "experiment": "multi",
+      "task_a_id": "85b284c18d7e78c9b5a9e074e7aa3b98_051526",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526",
+        "9d090a15c214eb070d9caa8a034d03c1_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "batch"
+    },
+    {
+      "case_id": "EP6_M20_STREAM",
+      "experiment": "multi",
+      "task_a_id": "85b284c18d7e78c9b5a9e074e7aa3b98_051526",
+      "task_b_ids": [
+        "8ae510355d978424f490798f900bfa2c_051526",
+        "9d090a15c214eb070d9caa8a034d03c1_070826"
+      ],
+      "setup_task_ids": [],
+      "difficulty": "hard",
+      "split": "development",
+      "gold": {
+        "E1": {
+          "decision": "DEFER",
+          "follow_up": null
+        },
+        "E2": {
+          "decision": "IGNORE",
+          "follow_up": null
+        },
+        "E3": {
+          "decision": "INTERRUPT",
+          "follow_up": "HANDLE"
+        }
+      },
+      "multi_arrival_mode": "stream"
+    }
+  ]
+}

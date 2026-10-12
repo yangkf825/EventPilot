@@ -29,6 +29,17 @@ def check_projection(value, location='case'):
 
 def check(root=ROOT):
     root = Path(root)
+    registry_path=root/'config/publication_v6_source_registry.json'
+    if registry_path.exists():
+        registry=json.loads(registry_path.read_text())
+        counts=Counter(row['experiment'] for row in registry['cases'])
+        if counts!={'main':200,'counterfactual':140,'multi':40}:raise ValueError('v6 source registry count mismatch')
+        if len({r['case_id'] for r in registry['cases']})!=380:raise ValueError('Duplicate v6 case ID')
+        allowed={'case_id','experiment','task_a_id','task_b_ids','setup_task_ids','difficulty','split','gold','multi_arrival_mode'}
+        for row in registry['cases']:
+            if set(row)-allowed:raise ValueError('Task text/runtime state must not be published in the registry')
+        return {'status':'ok','scope':'v6 reproducible recipe and identifiers; gated tasks obtained separately',
+                'registered_cases':dict(counts),'human_reviewed':False,'model_results_included':False}
     folder = root / 'data/author_candidates'
     manifest = json.loads((folder / 'manifest.json').read_text(encoding='utf-8'))
     if manifest.get('runtime_dataset') is not False or manifest.get('original_source_texts_included') is not False:

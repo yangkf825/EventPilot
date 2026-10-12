@@ -116,7 +116,8 @@ async def run_checkpoint_episode(case, model, checkpoint, view, run_dir, opts=No
                     # preparation. Deliver only after the independent replay audit.
                     triggers = [e.get('trigger') for e in engine.events]
                     for event in engine.events:
-                        event['trigger'] = {'kind':'url_contains','value':observation['url']}
+                        if event.get('trigger',{}).get('type') != 'event_stage':
+                            event['trigger'] = {'kind':'url_contains','value':observation['url']}
                     phase = 'event_delivery'
                     await engine.deliver(browser, observation)
                     for event, trigger in zip(engine.events, triggers):
@@ -195,8 +196,11 @@ async def prepare_state_pair(cases, model, run_dir, opts=None, browser_factory=B
     """Prepare two factual B states and publish them only as one audited pair."""
     if len(cases) != 2:
         raise ValueError('A State pair must contain two cases')
-    completed = next((c for c in cases if c.get('setup_tasks')), None)
-    unfinished = next((c for c in cases if not c.get('setup_tasks')), None)
+    completed = next((c for c in cases if c.get('state_variant')=='target_completed'),None)
+    unfinished = next((c for c in cases if c.get('state_variant')=='related_completed'),None)
+    if completed is None or unfinished is None:
+        completed = next((c for c in cases if c.get('setup_tasks')), None)
+        unfinished = next((c for c in cases if not c.get('setup_tasks')), None)
     if completed is None or unfinished is None:
         raise ValueError('State pair needs one actual B setup and one unfinished B')
     if completed['goal'] != unfinished['goal'] or completed['url'] != unfinished['url']:

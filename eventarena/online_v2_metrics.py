@@ -565,7 +565,8 @@ def _counterfactual_scores(output: dict, rows: Sequence[dict], records: Sequence
                                 "raw_case_accuracy": summarize_tristate(list(raw_correct.values())),
                                 "protocol_validity": summarize_tristate(protocol_values)}
     common_names = ('Acc','MacroF1','FIR','MIR','FollowupAcc','FollowupF1','JointFUAcc',
-                    'I_SR','D_SR','H_SR','R_SR','T_SR','MacroESR','MicroESR','EHS','TaskCompletion','Coverage',
+                    'I_SR','D_SR','H_SR','R_SR','T_SR','MacroESR','MicroESR','EHS','TaskCompletion','PTAR','Coverage',
+                    'MacroF1Supported','FollowupF1Supported',
                     'accuracy','decision_accuracy','macro_f1','decision_valid_rate',
                     'false_interruption_rate','missed_interruption_rate','follow_up_accuracy','FollowUpAcc',
                     'follow_up_macro_f1','joint_follow_up_accuracy','episode_success_rate',
@@ -927,6 +928,10 @@ def score_cases(cases: Sequence[Mapping], episodes: Sequence[Mapping],
     _put(output, "accuracy", [row["decision_correct"] for row in records], "Acc", "decision_accuracy")
     f1 = _classification(records)
     output.update(macro_f1=f1["macro_f1"], MacroF1=f1["macro_f1"], classification=f1)
+    supported=tuple(c for c in DECISIONS if any(r['gold_decision']==c for r in records))
+    output['MacroF1Supported']=_classification(records,supported)['macro_f1'] if supported else None
+    output['macro_f1_policy']={'primary':'fixed_three_classes; absent classes contribute zero',
+                             'gold_supported_classes':list(supported)}
     _put(output, "decision_valid_rate", [None if row["decision_unknown"] else row["decision"] in DECISIONS for row in records])
     non_interrupt = [row for row in records if row["gold_decision"] != "INTERRUPT"]
     interrupt = [row for row in records if row["gold_decision"] == "INTERRUPT"]
@@ -936,6 +941,8 @@ def score_cases(cases: Sequence[Mapping], episodes: Sequence[Mapping],
     _put(output, "follow_up_accuracy", [row["follow_up"] == row["gold_follow_up"] for row in conditional], "FollowupAcc", "FollowUpAcc")
     fu_f1 = _classification(conditional, FOLLOW_UPS, "gold_follow_up", "follow_up")
     output.update(follow_up_macro_f1=fu_f1["macro_f1"], FollowupF1=fu_f1["macro_f1"], follow_up_classification=fu_f1)
+    supported_fu=tuple(c for c in FOLLOW_UPS if any(r['gold_follow_up']==c for r in conditional))
+    output['FollowupF1Supported']=_classification(conditional,supported_fu,'gold_follow_up','follow_up')['macro_f1'] if supported_fu else None
     output["denominators"]["follow_up_macro_f1"] = {"N": len(conditional), "eligible_gold_interrupts": len(interrupt),
                                                       "selection_coverage": _ratio(len(conditional), len(interrupt))}
     _put(output, "joint_follow_up_accuracy", [None if row["decision_unknown"] else row["decision"] == "INTERRUPT" and row["follow_up"] == row["gold_follow_up"] for row in interrupt], "JointFUAcc")

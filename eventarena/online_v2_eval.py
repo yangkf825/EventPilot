@@ -216,6 +216,9 @@ async def evaluate_task(goal, verification, episode, task_id="A", judge=None, go
         if not checks:
             return _result(None, "Grounding alone does not prove answer adequacy")
         return _result(True, "Registered durable output and grounded citations verified", checks=custom)
+    active_constraints=[c for c in verification.get('effective_constraints',[])
+                        if c.get('active') is not False and c.get('removed') is not True]
+    criterion_results={}
     judge_validation = {"policy": JUDGE_CITATION_POLICY,
                         "max_format_retries": JUDGE_FORMAT_RETRIES,
                         "request_count": 0, "attempts": []}
@@ -223,6 +226,14 @@ async def evaluate_task(goal, verification, episode, task_id="A", judge=None, go
     async def policy_judge(messages):
         messages = [dict(m) for m in messages]
         messages[0]['content'] = JUDGE_SYSTEM_V2
+        if active_constraints:
+            payload=json.loads(messages[1]['content'])
+            payload['registered_requirements']=[{'id':c['id'],'requirement':c.get('requirement',c.get('text'))}
+                                                for c in active_constraints]
+            payload['joint_verification_policy']='Overall success requires the original effective goal AND all these requirements.'
+            payload['empty_result_policy']=verification.get('empty_result_policy','A verified no-match result may satisfy a lookup only when observed filters and requested scope are correct. Missing page content is not a no-match result.')
+            messages[1]['content']=json.dumps(payload,ensure_ascii=False)
+            messages[0]['content']+='\nFor this joint verification, also return criterion_results as an object keyed by every registered requirement ID. Each value has success (true/false/null), reason and evidence using the same observation citation schema. Overall success can be true only if every criterion is true. Evaluate the overall goal and criteria in this one response. Correctly reporting an observed empty result is allowed only by the supplied empty-result policy. Never infer a missing page is an empty result.'
         # Repair only malformed independent evaluations. The observations and
         # task requirements stay identical and neither request receives Gold.
         # Transport errors are not format errors and use no extra request here.
@@ -237,13 +248,31 @@ async def evaluate_task(goal, verification, episode, task_id="A", judge=None, go
                 audit.update(validation="request_error", error_type=type(error).__name__)
                 raise
             parsed, failure = _validate_judge_reply(raw, phase)
+            if failure=='valid' and active_constraints:
+                try:
+                    obj=extract_object(raw) if isinstance(raw,str) else raw
+                    values=obj.get('criterion_results')
+                    expected={c['id'] for c in active_constraints}
+                    if not isinstance(values,dict) or set(values)!=expected:
+                        failure='criterion_schema_invalid'
+                    else:
+                        for cid,result in values.items():
+                            _,valid=_validate_judge_reply(json.dumps(result),phase)
+                            if valid!='valid':failure='criterion_evidence_invalid';break
+                        if failure=='valid' and parsed.get('success') is True and not all(v.get('success') is True for v in values.values()):
+                            failure='joint_verdict_inconsistent'
+                        if failure=='valid':criterion_results.update(copy.deepcopy(values))
+                except (ValueError,TypeError,KeyError):failure='criterion_schema_invalid'
             audit["validation"] = failure
             if failure == "valid":
                 return parsed
             if attempt < JUDGE_FORMAT_RETRIES:
                 # Retain the original actual-observations message; no invented
                 # quotation or automatically selected evidence is supplied.
-                messages = messages + [_citation_repair_message(failure)]
+                repair=_citation_repair_message(failure)
+                if active_constraints:
+                    repair['content']+=' Preserve criterion_results for every registered requirement ID with success, reason and grounded evidence. Overall success requires all criteria to be true; do not change requirements or invent observations.'
+                messages = messages + [repair]
                 audit["repair_requested"] = True
             else:
                 return {"success": None, "evidence": [],
@@ -255,6 +284,9 @@ async def evaluate_task(goal, verification, episode, task_id="A", judge=None, go
     result["durable_output_checks"] = custom
     if judge_validation["request_count"]:
         result["judge_validation"] = judge_validation
+    if active_constraints:
+        result['criterion_results']=copy.deepcopy(criterion_results)
+        result['verification_policy']='single_joint_goal_and_constraints_v1'
     return result
 
 
@@ -447,13 +479,11 @@ async def evaluate_episode(case, episode, judge=None):
         for constraint in task_verification.get('effective_constraints', []):
             if constraint.get('active') is False or constraint.get('removed') is True:
                 continue
-            requirement = constraint['requirement']
-            scoped = constraint.get('verification') or {
-                'method': 'llm_judge', 'requirements': [requirement],
-                'checks': [{'type': 'saved_sources_observed'}]}
-            result = await observed_task_result(requirement, scoped, 'A', goal_version)
+            result = task_result.get('criterion_results',{}).get(constraint['id'])
+            if not isinstance(result,dict):
+                result=_result(None,'Joint criterion verdict unavailable')
             base['effective_constraint_results'].append({**constraint, 'success': result['success'],
-                                                        'source': 'independent_requirement_verification',
+                                                        'source': 'single_joint_goal_and_constraints_v1',
                                                         'evaluation': result})
         values = [r['success'] for r in base['effective_constraint_results']]
         base['effective_constraints'] = _and(values) if values else None

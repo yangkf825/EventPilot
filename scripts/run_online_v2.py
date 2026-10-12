@@ -335,11 +335,12 @@ def metric_record(episode):
               'exposed', 'api_ok', 'decision_invalid', 'counterfactual_input_audit',
               'counterfactual_protocol_valid', 'preparation_status', 'checkpoint_key',
               'format_retry_count', 'format_diagnostics', 'navigation_errors', 'checkpoint_replay_audit',
+              'decision_format_diagnostics',
               'shared_episode_file', 'information_policy', 'preparation_failure_status', 'preparation_failure_is_model',
               'environment_capture', 'failure_phase', 'eligibility_status', 'infrastructure_recovery')
     result = {k: copy.deepcopy(episode[k]) for k in fields if k in episode}
     result['responses'] = [{k: r.get(k) for k in ('stage', 'parsed', 'api_ok', 'error')}
-                           for r in episode.get('responses', []) if r.get('stage') == 'decision']
+                           for r in episode.get('responses', []) if r.get('stage') in {'decision','decision_format_retry'}]
     return result
 
 
@@ -373,11 +374,11 @@ def audit_counterfactual_groups(cases, episodes):
 
 CORE_COLUMNS = {
     'main': ('Acc', 'MacroF1', 'FIR', 'MIR', 'FollowupAcc', 'FollowupF1', 'JointFUAcc',
-             'I_SR', 'D_SR', 'H_SR', 'R_SR', 'T_SR', 'MacroESR', 'MicroESR', 'EHS', 'TaskCompletion', 'Coverage'),
-    'ablation': ('Acc', 'MacroF1', 'FIR', 'MIR', 'FollowupAcc', 'FollowupF1', 'JointFUAcc', 'I_SR', 'D_SR', 'H_SR', 'R_SR', 'T_SR', 'MacroESR', 'MicroESR', 'EHS', 'TaskCompletion', 'Coverage'),
-    'counterfactual': ('Acc', 'MacroF1', 'FIR', 'MIR', 'FollowupAcc', 'FollowupF1', 'JointFUAcc', 'I_SR', 'D_SR', 'H_SR', 'R_SR', 'T_SR', 'MacroESR', 'MicroESR', 'EHS', 'TaskCompletion', 'Coverage', 'OverallAcc', 'CFA', 'SFA', 'SemanticRobustAccuracy'),
+             'I_SR', 'D_SR', 'H_SR', 'R_SR', 'T_SR', 'MacroESR', 'MicroESR', 'EHS', 'TaskCompletion', 'PTAR', 'Coverage'),
+    'ablation': ('Acc', 'MacroF1', 'FIR', 'MIR', 'FollowupAcc', 'FollowupF1', 'JointFUAcc', 'I_SR', 'D_SR', 'H_SR', 'R_SR', 'T_SR', 'MacroESR', 'MicroESR', 'EHS', 'TaskCompletion', 'PTAR', 'Coverage'),
+    'counterfactual': ('Acc', 'MacroF1', 'FIR', 'MIR', 'FollowupAcc', 'FollowupF1', 'JointFUAcc', 'I_SR', 'D_SR', 'H_SR', 'R_SR', 'T_SR', 'MacroESR', 'MicroESR', 'EHS', 'TaskCompletion', 'PTAR', 'Coverage', 'OverallAcc', 'CFA', 'SFA', 'SemanticRobustAccuracy'),
     'multi': ('EventF1', 'CompleteCaseAcc', 'PriorityAcc', 'CriticalEventRecall', 'FIR',
-              'ScheduleExactMatch', 'ActualPriorityAcc', 'ActualScheduleExactMatch', 'multi_ESR', 'Coverage'),
+              'ScheduleExactMatch', 'ActualPriorityAcc', 'ActualScheduleExactMatch', 'multi_ESR', 'Exposure', 'Coverage'),
     'baseline': ('TaskCompletion', 'MicroESR', 'Coverage'),
     'final_intent': ('TaskCompletion', 'MicroESR', 'Coverage'),
 }
@@ -453,6 +454,7 @@ def summarize(root, selected, models, args, source_root=None):
                                DecisionCoverage=metrics.get('denominators',{}).get('Acc',{}).get('coverage'),
                                CoveredMacroF1=metrics.get('classification',{}).get('covered_macro_f1'),
                                CoveredMicroESR=metrics.get('denominators',{}).get('MicroESR',{}).get('covered_rate'))
+                    row.update(MacroF1Supported=metrics.get('MacroF1Supported'),FollowupF1Supported=metrics.get('FollowupF1Supported'))
                 for key in ('Acc','MicroESR'):
                     if key in CORE_COLUMNS[experiment]:
                         counts = metrics.get('denominators', {}).get(key, {})
@@ -469,6 +471,7 @@ def summarize(root, selected, models, args, source_root=None):
                         cf_rows[kind].append({'model': name, 'view': view, 'type': kind,
                                               **{k: v for k, v in result.items() if not isinstance(v, (dict, list))},
                                               **{k:result.get('common_metrics',{}).get(k) for k in CORE_COLUMNS['main']},
+                                              **{k:result.get('common_metrics',{}).get(k) for k in ('MacroF1Supported','FollowupF1Supported')},
                                               'case_N': result['case_counts']['N'],
                                               'group_N': result['group_counts']['N'],
                                               'group_known': result['group_counts']['known'],
@@ -510,6 +513,10 @@ class LimitedModel:
                 result = await asyncio.to_thread(self.model.call, messages)
                 row.update(api_ok=True, response_sha256=sha(result))
                 return result
+            except Exception as error:
+                row['error_type']=type(error).__name__
+                row['provider_diagnostics']=getattr(error,'diagnostics',{})
+                raise
             finally:
                 row['finished_at'] = now()
                 if len(self.model.usage) > before:

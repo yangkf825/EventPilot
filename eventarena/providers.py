@@ -3,6 +3,7 @@ import json
 import os
 import ssl
 import time
+import re
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -10,6 +11,27 @@ from pathlib import Path
 import httpx
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class ProviderError(RuntimeError):
+    """Credential-free transport diagnostics; never an Agent decision failure."""
+    def __init__(self,category,http_status=None,provider_code=None,retryable=False,quota=False):
+        self.diagnostics={'category':category,'http_status':http_status,'provider_code':provider_code,
+                          'retryable':retryable,'quota_exhausted':quota}
+        super().__init__('Provider '+category+(f' (HTTP {http_status})' if http_status else ''))
+
+
+def response_error(response):
+    try:
+        obj=response.json();detail=obj.get('error',obj) if isinstance(obj,dict) else {}
+        if not isinstance(detail,dict):detail={'message':str(detail)}
+    except (ValueError,TypeError):detail={}
+    description=str(detail.get('message','')).lower()
+    code=str(detail.get('code',''))
+    quota=bool(re.search(r'quota|insufficient.{0,20}(?:balance|credit|fund)|exhaust|余额|额度|限额',description+' '+code)) or response.status_code==402
+    safe_code=code if re.fullmatch(r'[A-Za-z0-9_-]{1,64}',code) else None
+    category='quota_exhausted' if quota else 'authentication_error' if response.status_code in (401,403) else 'model_or_endpoint_unavailable' if response.status_code==404 else 'rate_limit' if response.status_code==429 else 'http_error'
+    return ProviderError(category,response.status_code,safe_code,response.status_code in (429,500,502,503,504) and not quota,quota)
 
 
 class ProviderText(str):
@@ -34,8 +56,11 @@ class Model:
         self.model = matches[0]
         self.usage = []
         self.last_call = 0.0
+        self.blocked=None
 
     def call(self, messages, max_tokens=None):
+        if self.blocked is not None:
+            raise self.blocked
         key = os.environ.get(self.model['api_key_env'])
         if not key:
             raise RuntimeError(f'Set {self.model["api_key_env"]} in the terminal first')
@@ -63,7 +88,11 @@ class Model:
                 with httpx.Client(timeout=self.model.get('timeout', self.config.get('timeout', 120)), verify=verify) as client:
                     response = client.post(self.model['endpoint'], json=body,
                                            headers={'Authorization': f'Bearer {key}'})
-                if response.status_code in (429, 500, 502, 503, 504) and attempt < retries:
+                failure=response_error(response) if response.is_error else None
+                if failure and (failure.diagnostics['quota_exhausted'] or response.status_code in (401,403,404)):
+                    self.blocked=failure
+                    raise failure
+                if failure and failure.diagnostics['retryable'] and attempt < retries:
                     retry_after = response.headers.get('Retry-After')
                     delay = min(8, 2 ** attempt)
                     if retry_after:
@@ -84,10 +113,15 @@ class Model:
                     continue
                 if response.is_error:
                     # Never include request headers or bearer credentials in errors/logs.
-                    raise RuntimeError(f'Provider HTTP {response.status_code}; inspect provider availability/configuration')
+                    if response.status_code==429:self.blocked=failure
+                    raise failure
                 data = response.json()
                 if not data.get('choices'):
-                    raise RuntimeError('Provider returned no choices')
+                    failure=response_error(response)
+                    if failure.diagnostics['quota_exhausted']:
+                        self.blocked=failure
+                        raise failure
+                    raise ProviderError('malformed_provider_response',response.status_code,retryable=True)
                 choice = data['choices'][0]
                 message = choice.get('message', {})
                 content = message.get('content') or ''
@@ -108,7 +142,7 @@ class Model:
                 return ProviderText(content, diagnostics)
             except (httpx.TimeoutException, httpx.NetworkError):
                 if attempt == retries:
-                    raise RuntimeError('Provider transport failure; not a model decision score') from None
+                    raise ProviderError('transport_failure',retryable=True) from None
                 time.sleep(2 ** attempt)
 
 
