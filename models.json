@@ -1,0 +1,88 @@
+{
+  "timeout": 120,
+  "retries": 3,
+  "models": [
+    {
+      "name": "gateway_ds",
+      "enabled": true,
+      "backend": "chat-completions",
+      "endpoint": "https://gateway.example.invalid/v1/chat/completions",
+      "model": "deepseek-v4-flash",
+      "api_key_env": "GATEWAY_DS_API_KEY",
+      "temperature": 0,
+      "max_tokens": 8192,
+      "min_interval_s": 1,
+      "extra_body": {
+        "thinking": {
+          "type": "disabled"
+        }
+      }
+    },
+    {
+      "name": "gateway_glm",
+      "enabled": true,
+      "backend": "chat-completions",
+      "endpoint": "https://gateway.example.invalid/v1/chat/completions",
+      "model": "glm-5.3",
+      "api_key_env": "GATEWAY_GLM_API_KEY",
+      "temperature": 0,
+      "max_tokens": 8192,
+      "min_interval_s": 1
+    },
+    {
+      "name": "gateway_kimi",
+      "enabled": true,
+      "backend": "chat-completions",
+      "endpoint": "https://gateway.example.invalid/v1/chat/completions",
+      "model": "k3-256k",
+      "api_key_env": "GATEWAY_KIMI_API_KEY",
+      "temperature": 1,
+      "max_tokens": 8192,
+      "min_interval_s": 1
+    },
+    {
+      "name": "gateway_gpt",
+      "enabled": true,
+      "backend": "chat-completions",
+      "endpoint": "https://gateway.example.invalid/v1/chat/completions",
+      "model": "gpt-5.4",
+      "api_key_env": "GATEWAY_GPT_API_KEY",
+      "temperature": 0,
+      "max_completion_tokens": 4096,
+      "extra_body": {
+        "reasoning_effort": "none"
+      },
+      "min_interval_s": 1
+    },
+    {
+      "name": "gateway_gpt61_sol",
+      "enabled": true,
+      "backend": "chat-completions",
+      "endpoint": "https://gateway.example.invalid/v1/chat/completions",
+      "model": "gpt-6.1-sol",
+      "api_key_env": "GATEWAY_GPT_API_KEY",
+      "max_completion_tokens": 16384,
+      "min_interval_s": 1,
+      "extra_body": {
+        "reasoning_effort": "low"
+      }
+    },
+    {
+      "name": "deepseek_official",
+      "enabled": true,
+      "backend": "chat-completions",
+      "endpoint": "https://api.deepseek.com/chat/completions",
+      "model": "deepseek-flash",
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "temperature": 0,
+      "max_tokens": 8192,
+      "min_interval_s": 1,
+      "extra_body": {
+        "thinking": {
+          "type": "disabled"
+        }
+      }
+    }
+  ],
+  "note": "Supply credentials through api_key_env. Replace the gateway.example.invalid endpoint in a local copy before using any gateway profile."
+}

@@ -1,0 +1,51 @@
+{
+  "version": "12.0.0",
+  "date": "2026-11-11",
+  "kind": "engineering_validation_not_model_results",
+  "paid_model_API_calls": 0,
+  "unit_tests": {
+    "passed": 70,
+    "failures": 0,
+    "errors": 0
+  },
+  "adapter_integration_paths": 48,
+  "adapter_fixture": "PRIVATE_ORACLE_NOT_LLM",
+  "runtime_tested": {
+    "python": "3.12.14",
+    "httpx": "0.28.1",
+    "lxml": "6.1.3",
+    "openpyxl": "3.1.5"
+  },
+  "main_views": [
+    "state"
+  ],
+  "main_five_methods_canonical_jobs": 1000,
+  "full_canonical_per_method": 1422,
+  "full_logical_per_method": 1622,
+  "independent_context_sequential_jobs_per_method": 800,
+  "methods": [
+    "direct",
+    "cot",
+    "react",
+    "reflexion",
+    "ps"
+  ],
+  "all_ablations_exclude_trajectory": true,
+  "base_data_and_scoring_unchanged_sha256": {
+    "data/cases.jsonl": "7cf2ab3724dcba4a3861adfa21407560bb7d6d61a616743a853c63c9252e84a9",
+    "data/manifest.json": "14f177fa0f829ab6bfbcbe6e9e06d5cf357834a0f8c0eec5d04bc6fb67991edd",
+    "data/sources.json": "6be4bcc45d7e365abd028e1fe52d1b298cdf04219cba02dea815f5adeae3d5d1",
+    "data/baselines.jsonl": "8a59ca133de1000884dc7e66123cd7cb638f8a5c227ce3c5fd11bc62fc1f4228",
+    "data/pair_registry.json": "5491e482f848eaf3204a7ab28209ebe065352a276748dc577d794ca7726ad7a8",
+    "data/counterfactual_groups.json": "9de377ea7127b708031bead5c4141f69f8dbe74a3d2bf80586cdd81bedb91122",
+    "corpus/snapshots.zip": "4f6df48bc29b75f6fc7c68f66ae1e2a28feca4d3585f5eb153c915dd88524a7b",
+    "corpus/data/normalized/tasks.jsonl": "ad87d9668b64814957343c75ece19d5e1acc1fbc2a6cbef6cb88636bb6f48ec5",
+    "eventpilot/engine.py": "f1bffbc00a10a0cb0d841a4089c0b97bdf0152fe2defce6c5f05ea4d7c5a1475",
+    "eventpilot/metrics.py": "b5b6e0bcaa5d7343c1362b79c095e59005967cd06238495966b7834761d6084a",
+    "eventpilot/corpus.py": "b285d87af2c7dae828824a764447e5e9f9d1322c829495e45091c307086785d9",
+    "eventpilot/prompts.py": "abb512af6d090d23cc61eb3bc31f62190aa878f93ddc2cca201ac28109aaf3b5"
+  },
+  "code_sha256": "a81965270be786a4d70317862b71e225444219e4c33113f48484e0df79603186",
+  "notes": "Synthetic/API-stub and private oracle fixtures validate engineering only. No measured method improvements are claimed.",
+  "macos_symlink_identity_regression_test": true
+}
