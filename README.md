@@ -1,104 +1,181 @@
-# EventPilot v6
+# EventPilot v12 — paper-method comparison
 
-当前目录是 **Casewise 逐案例运行版**，协议为 `official_online_eventarena_v6_casewise`。通过共同起点检查的案例立即开始实验，失败案例保留原因；不再用全局 90% 门槛阻止整批实验。原任务 / 事件 / Gold 保持不变。默认 2 路独立准备、同网站 preparation 串行。详细命令和比例定义：[CASEWISE.md](docs/CASEWISE.md)。下面旧说明中的全局准备门槛只适用于存档 v6。
+This release uses the same 460 approved English cases and frozen Mind2Web assets as v11. It changes experiment registration and adds four optional, train-free paper-method adaptations. It does not change Gold, case membership, candidate retrieval, scoring definitions or the underlying execution environment. Old v11 code and runs remain independent.
 
-基于官方 [Online-Mind2Web](https://github.com/OSU-NLP-Group/Online-Mind2Web) 的在线网页事件扩展。保留原任务的官方 ID、目标、入口；新增事件、授权、依赖与 Gold 是作者设定。网页动作、状态、结果和 Full Trajectory 必须来自真实执行。
+[v6 online release at its original commit](https://github.com/yangkf825/EventPilot/tree/09cd4be9e36d5e0cde829d55af5719c0c2768f02).
 
-本版提供全规模数据构建与实验代码，**不附带尚未运行的成绩，不声称完成人工审核或保证论文接收**。旧版说明见 [v5 存档](docs/ARCHIVE_V5_README.md)，旧版成绩不能混入 v6。
+## What changes in v12
 
-## 数据与难度
+| Item | Setting |
+|---|---|
+| Main | 200 cases, **Event + Goal + State**, internal `state` |
+| Main information ablation | Event-only / Event + Goal / Event + Goal + State |
+| Separate Goal CF / State CF / Multi context ablations | Event-only / Event + Goal / Event + State / Event + Goal + State |
+| Full Trajectory | **Removed from all ablations**; unchanged for non-ablation Counterfactual, Multi-event and native Baseline |
+| Shared record | Main and ablation/state use one canonical episode when registered together |
+| Methods | `direct`, `cot`, `react`, `reflexion`, `ps` |
+| LGR | Not included or enabled in this release; historical implementation remains in v11 |
 
-| 实验 | 规模 | 用途 |
-|---|---:|---|
-| Main | 200 cases，100 个原任务、69 个网站 | 决策和真实后续执行 |
-| Ablation | 同一批 200 × 4 inputs / model | Event-only、Event+Goal、Event+Goal+State、Full Trajectory |
-| Counterfactual | 140 cases | 20 Goal pairs、20 State pairs、20 Semantic triplets |
-| Multi-event | 40 cases，每例 3 events | 20 batch、20 stream |
-| No-event Baseline | Main 派生 200 episodes / model | 相同 checkpoint，无事件 |
-| Final-intent Baseline | 20 episodes / model | 修改后的完整任务从一开始给出 |
+The information intervention applies to Decision. Actor still uses the common public execution history and tools. Each paper method transforms only its currently permitted request; Actor reasoning never leaks into reduced-information Decision prompts. Methods are independent of backbone selection.
 
-单事件：IGNORE 60、DEFER 60、INTERRUPT 80；INTERRUPT 下 HANDLE 40、REPLAN 20、TERMINATE 20。预登记难度为 easy 20、medium 80、hard 100。
+## Install
 
-难例包括对象线索限定的通知、同网站不同目标、实际完成的相似查询、部分修改保留旧要求、看似紧急的促销、隐含交付依赖、后续事件到达后重新排序。难度分层是构建属性，不是按模型错误率事后划分。不得为了低分而反改 Gold。
-
-相同输入应做相同决策时，Event-only 的登记可识别上限为 80%，Goal-only 为 90%。这是缺失上下文造成的条件，**不是测得的准确率，也不是模型能力上限**。State / Full 的成绩必须实际运行获得。
-
-## 安装、数据和 Key
+Python **3.10+**, recommended 3.12. Clone or download this repository, then install the dependencies from the repository root. Model inference uses the API in your selected profile.
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements.txt
-python -m playwright install chromium
-cp models.example.json models.gateway.json
+python -m pip install -r requirements.lock.txt
 ```
 
-私有配置 `models.gateway.json` 填写 endpoint、精确 model ID 和 `api_key_env`；不填实际 Key。默认别名：`gateway_ds`、`gateway_glm`、`gateway_kimi`、`gateway_gpt`。
-Key 更新时用 `zsh scripts/configure_api_keys.zsh --replace`，旧文件只作本机备份。H 盘交付版使用本机 SSD 的私有 Key 文件，配置脚本和运行脚本读取同一个位置。
+Windows PowerShell:
 
-自行申请官方 Hugging Face 访问权限并取得 `Online_Mind2Web.json`。固定 revision：`eacad896a84dc5b65e29b0b06e4699ab0544d701`；原文件 SHA256：`7dedf381531d423dc0fc48d21dc1d425655dd75f38b10211a880fa09102f257f`。公开包不重新分发受限任务文本。
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.lock.txt
+```
+
+The project includes 362 used Mind2Web tasks and 2,197 unchanged HTML snapshots in `corpus/snapshots.zip`. The normalized source index has 1,750 task entries; the metadata catalog has 560 entries. Unused metadata is not an experimental case. This is the required subset, not the entire original Mind2Web distribution. See [dataset construction](docs/DATASET.md) and [Mind2Web attribution](corpus/ATTRIBUTION.md).
+
+Download [the v12.0.0 data archive and checksum](https://github.com/yangkf825/EventPilot/releases/tag/v12.0.0). Verify the archive, then unpack it from the repository root. The archive password is `mind2web`, following the upstream test-set distribution convention. This installs `data/`, the packed `corpus/` assets, and `review/`.
 
 ```bash
-python scripts/build_publication_dataset.py --input /path/to/Online_Mind2Web.json --output data/official_online/events_v6_final
-python scripts/audit_publication_dataset.py
-zsh scripts/configure_api_keys.zsh
+shasum -a 256 -c EventPilot-v12.0.0-data.zip.sha256
+unzip -n EventPilot-v12.0.0-data.zip
 ```
 
-生成三份 JSONL、来源索引、Gold 理由、manifest、统计和完整 `CASE_CATALOG.csv`。State 的 setup goal 是待真实执行的官方查询，不能当作已完成结果。已有 manifest 的目录不能覆盖；更换数据版本须新目录、新注册、新 run。
-
-## 全规模运行
-
-每个选定模型均完成全部消融。默认 repeat=1，两个并发 episode；固定 Preparation 为 `gateway_ds`，固定 Judge 为 `gateway_gpt`。即使只测 GLM / Kimi / DeepSeek，也需这两个固定角色的 Key。
+On Linux, `sha256sum -c EventPilot-v12.0.0-data.zip.sha256` also verifies the download. On Windows, compare `Get-FileHash .\EventPilot-v12.0.0-data.zip -Algorithm SHA256` with the checksum file and extract with a ZIP tool that supports password-protected archives.
 
 ```bash
-# 四模型统一运行，共用 preparation
-zsh scripts/start_publication.zsh gateway_ds,gateway_glm,gateway_kimi,gateway_gpt runs/v6_all
-
-# 分别运行
-zsh scripts/start_publication.zsh gateway_ds runs/v6_deepseek
-zsh scripts/start_publication.zsh gateway_glm runs/v6_glm
-zsh scripts/start_publication.zsh gateway_kimi runs/v6_kimi
-zsh scripts/start_publication.zsh gateway_gpt runs/v6_gpt
-
-# 指定精确 model ID，首次与续跑须相同
-EP_MODEL_ID=deepseek-v4-pro zsh scripts/start_publication.zsh gateway_ds runs/v6_deepseek_pro
-EP_MODEL_ID=glm-5.3 zsh scripts/start_publication.zsh gateway_glm runs/v6_glm_5_3
-EP_MODEL_ID=k3-256k zsh scripts/start_publication.zsh gateway_kimi runs/v6_kimi_k3
-EP_MODEL_ID=gpt-5.4 zsh scripts/start_publication.zsh gateway_gpt runs/v6_gpt_5_4
+python scripts/setup_data.py --check-only
+python scripts/build_dataset.py --validate-only
+python -m unittest discover -s tests -v
 ```
 
-model ID 以你的服务实际支持为准。HTTP 404、授权失败、额度不足会暂停后续请求，保留不含 Key 的诊断。四模型共登记 5600 jobs；Main / Full 共享 800 个 episode，实际被测 episode 为 4800，另有共用 preparation。共享样本不能重复计为独立结果。
-启动器会复制固定角色为 `publication_preparer` / `publication_judge`；`EP_MODEL_ID` 只改变被测 Actor，保留原固定角色的 model ID。
+Validation is local engineering evidence, not a model result. Do not use oracle fixture outputs as paper scores.
 
-仅有 DeepSeek Key 时，可显式固定同一 DeepSeek 为 Judge；这是 self-judge 设置，需披露并独立人工核验，不可与固定 GPT Judge 的结果混并：
+## Recommended: DeepSeek, five methods, Main only
+
+Copy the model configuration from the repository root, then set the endpoint and exact model ID for `gateway_ds` in `models.local.json`. The `deepseek_official` profile can use the checked-in configuration.
 
 ```bash
-EP_JUDGE_MODEL=gateway_ds zsh scripts/start_publication.zsh gateway_ds runs/v6_ds_selfjudge
+cp -n models.json models.local.json
 ```
 
-## 续跑与进度
+```zsh
+export EP_RUN_ROOT="$PWD/runs/deepseek_main_five_methods_v12"
+export EP_MODELS_CONFIG="$PWD/models.local.json"
+export EP_DELIVERIES=sequential
+export EP_WORKERS=8
+export EP_API_CONCURRENCY=4
+export EP_REPEATS=1
+zsh scripts/start_methods.zsh gateway_ds main full
+```
 
-保持原目录、模型列表、配置、数据、代码与固定角色。更换 Key 可以；改变 model ID、endpoint、评分算法应新开 run。
+Enter the gateway Key at the hidden terminal prompt. Credentials are never written to config, manifests or logs. Default model IDs/endpoints are user-managed in `models.json`; availability is not inferred from their names. The above command registers **1,000 canonical episodes: 200 × 5 methods**, not 1,000 model calls. Prefix/action/evaluation/reflection calls are additional. Five methods run in order with independent records; cases within each method run concurrently. The API concurrency remains 4 overall, not 20. Method order is fixed and recorded.
+
+Resume the same experiment (closed model failures are preserved; only infrastructure failures are retried):
+
+```zsh
+export EP_RUN_ROOT="$PWD/runs/deepseek_main_five_methods_v12"
+export EP_MODELS_CONFIG="$PWD/models.local.json"
+export EP_DELIVERIES=sequential
+zsh scripts/start_methods.zsh gateway_ds main resume
+```
+
+Export without calling any API:
+
+```zsh
+export EP_RUN_ROOT="$PWD/runs/deepseek_main_five_methods_v12"
+zsh scripts/start_methods.zsh gateway_ds main export
+```
+
+Use a new result root for a genuinely new experiment or a different code/data/model/method/budget/runtime configuration. Resume validates these identities; worker/API concurrency may change. A completed `direct` method is loaded from cache when resuming the five-method suite. Export also lists unstarted methods as pending.
+
+## Run just one method or one backbone
+
+Main only with Direct, using the gateway:
+
+```zsh
+export EP_METHODS=direct
+export EP_RUN_ROOT="$PWD/runs/deepseek_main_direct_v12"
+zsh scripts/start_methods.zsh gateway_ds main full
+```
+
+Replace `direct` with `cot`, `react`, `reflexion` or `ps` to run a method independently. Clear the selection with `unset EP_METHODS` before running all five. Each new experiment needs its own root. The equivalent single-method entry point is `EP_METHOD=cot zsh scripts/start.zsh gateway_ds full`; `EP_EXPERIMENTS` defaults to `main` for this entry point.
+
+To use the official DeepSeek API instead, change the model alias and result root:
+
+```zsh
+export EP_METHODS=all
+export EP_RUN_ROOT="$PWD/runs/deepseek_official_main_five_methods_v12"
+EP_MODELS_CONFIG="$PWD/models.json" zsh scripts/start_methods.zsh deepseek_official main full
+```
+
+Other configured aliases: `gateway_glm`, `gateway_kimi`, `gateway_gpt`, `gateway_gpt61_sol`. Each prompts for its own environment Key and can run the same scopes and methods. Configure the exact model ID in your local configuration copy before starting a run. Keys are supplied through the configured `api_key_env` variable.
+
+Portable Python command (Mac/Linux/Windows), with `GATEWAY_DS_API_KEY` set in your own terminal:
 
 ```bash
-zsh scripts/start_publication.zsh gateway_ds,gateway_glm,gateway_kimi,gateway_gpt runs/v6_all resume
-zsh scripts/start_publication.zsh gateway_ds,gateway_glm,gateway_kimi,gateway_gpt runs/v6_all resume retry-infra
-tail -n 20 -F runs/v6_all/logs/publication.log
-python scripts/run_official_online.py status --run-root runs/v6_all
+python -u scripts/run_methods.py --config models.local.json --only gateway_ds --methods all --experiments main --deliveries sequential --run-root runs/deepseek_main_five_methods_v12 --workers 8 --api-concurrency 4 --repeats 1
 ```
 
-`retry-infra` 补不可判定的基础设施失败，保留已可判定的模型失败。Actor 完成后仅 Judge 失败时只重新评价。存储使用唯一临时文件和本机待写 journal，失败后停止，恢复原 JSON 再续跑；不保证外置盘或操作系统永不故障。
+Append `--resume --retry-infra` to continue or use `--export-only` to export. In an interactive terminal this launcher also securely prompts if the Key is absent. `--methods cot` runs one method. `scripts/run.py --method cot` is the lower-level runner; its result root is a single method rather than a suite.
 
-共享 preparation 要求真实进展、已验证 setup 和独立 reset audit。覆盖低于 90% 会暂停，不把不可访问网站当作模型失败。gate 不读取被测模型成绩；所有候选失败和覆盖保留。更换任务池必须在被测采样前重新注册，不得按成绩挑选。
+## Other experiments remain available
 
-## 结果表
+The standard complete set (Main, Main ablation, CF, Multi with three delivery modes, native baseline), Direct only:
 
-```bash
-python scripts/export_publication.py --run-root runs/v6_all
+```zsh
+export EP_METHODS=direct
+export EP_RUN_ROOT="$PWD/runs/deepseek_standard_full_direct_v12"
+zsh scripts/start_methods.zsh gateway_ds full full
 ```
 
-正式完成后自动生成 `paper_tables/`：全部实验 CSV、反事实三类分表、`TABLES.md`、JSON、网站聚类 95% CI、按 split / 难度 / 到达方式分层结果。缺失或不可判定值为 NA；同时保留分母、unknown、Coverage、界限。Main / Ablation / Counterfactual 均有决策与执行指标，取消任务报告 PTAR。
+This registers 1,422 canonical episodes / 1,622 logical entries per method. Main/state aliases 200 entries without additional inference. Counterfactual includes Goal 50, State 50 and Semantic 60. Multi includes ORD / COND / RES / CAN, 25 each; CAN/Final intent stays inside Multi. `full` does not automatically add the independent context ablations.
 
-Follow-up 仅在 Gold 与预测均为 INTERRUPT 的样本计算；条件分母和 JointFUAcc 一并报告。固定三类 Macro-F1 中缺失类按 0 处理，单一 CF 类型可能存在结构上限；另给 Gold-supported F1，不能把此上限解释为任务难度。
+Independent context ablations, Direct, sequential delivery:
 
-详细协议与人工审核要求：[PUBLICATION_V6.md](docs/PUBLICATION_V6.md)。自动执行不能替代 Gold 和 Judge 人工审核，真实模型分数须如实报告。
+```zsh
+export EP_METHODS=direct
+export EP_RUN_ROOT="$PWD/runs/deepseek_context_direct_v12"
+zsh scripts/start_methods.zsh gateway_ds context full
+```
+
+This registers **800 episodes**, with Goal CF, State CF and Multi-event reported separately. To select another scope directly, use the Python launcher `--experiments` with any comma-separated selection of `main,ablation,counterfactual,multi,baseline,context_ablation_goal,context_ablation_state,context_ablation_multi`. Choose `--deliveries sequential` when a single delivery condition is intended; the standard full scope retains all three original delivery modes.
+
+A local plan needs no credentials, calls no model and writes no run records:
+
+```zsh
+unset EP_METHODS
+zsh scripts/start_methods.zsh gateway_ds main plan
+```
+
+Useful settings: `EP_WORKERS=8`, `EP_API_CONCURRENCY=4`, `EP_REPEATS=1`, `EP_MAX_COMMANDS=128`, `EP_CANDIDATE_LIMIT=50`, `EP_OUTPUT_TOKENS=8192`, `EP_MAX_MODEL_REQUESTS=1024`, `EP_REFLEXION_TRIALS=2`. Freeze these for a reported comparison. Each model request is capped at 64,000 UTF-8 bytes, with original permitted fields available through scoped public resources. Each episode has a common logical request limit, including auxiliary/cached requests; exceeding it is a known method failure, not an infrastructure unknown.
+
+## Results and progress
+
+```zsh
+tail -n 10 -F "$EP_RUN_ROOT/logs/"*.log
+```
+
+Live output reports closed/registered episodes, active workers, calls and recent activity; completion does not mean success. `METHOD/progress.json` is the current method progress. `tables/method_completion.csv` reports all suite methods, including pending ones.
+
+Per-method folders: `direct/`, `cot/`, `react/`, `reflexion/`, `ps/`. The outer `tables/` merges the same tables with a `method` column:
+
+- `all_experiments.csv`, per-experiment comparisons and Goal/State/Semantic tables;
+- `native_metrics.csv`, `paired_impact_summary.csv`, control/scheduling tables;
+- `metrics_with_denominators.csv`, bootstrap intervals, `job_ledger.csv`;
+- `efficiency_summary.csv`, `efficiency_by_case.csv`, `efficiency_by_stage.csv`;
+- `suite_summary.json` and `method_completion.csv`.
+
+Efficiency uses provider-reported tokens for the retained canonical attempt; prefix cache reuse is not billed again and shared Main/ablation records are not double-counted. Unknown token metadata remains empty. Summed request time includes queuing/cache waiting, so it is not wall-clock throughput. Provider-internal retries, interrupted or superseded attempts may incur additional billing not captured in retained-attempt totals. `api_calls` counts non-cached provider-adapter invocations, including failed ones, rather than internal HTTP retries. Raw calls preserve stage, trial, timestamps and returned usage for auditing.
+
+Quota/auth/model-endpoint failures pause the suite; ordinary rate limits use bounded transport retries. A framework error stops the run and saves a traceback. Successful or known-wrong model predictions are not selectively rerun. Code, dataset, model configuration, Python/dependency versions and budgets are frozen in manifests; all predictions and attempts are retained.
+
+## Scientific interpretation
+
+These four methods are **EventPilot adaptations**, described precisely in [METHODS.md](docs/METHODS.md). Reflexion uses local proposal/self-evaluation/reflection trials with role-isolated memory; it does not use hidden Gold, reset complete task episodes, or select trials by private score. It must be labeled as this adaptation in a paper.
+
+The environment is **offline staged event-conditioned teacher-forced action and control evaluation**. Recorded successors are supplied independently of predicted action correctness; a correct decision or reaching a recorded next page is not real website success. Event metrics and Mind2Web-style action metrics are unchanged. All original metrics remain exported, including weak results and unknown coverage; do not present a selected subset as the complete evaluation. Dataset approval does not establish inter-annotator agreement. Actual method improvements require the new model runs; this release supplies code and checks, not manufactured performance results.

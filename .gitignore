@@ -1,52 +1,20 @@
-# Credentials and machine-specific configuration
-.env
-.env.*
-!.env.example
-models.json
-models.gateway.json
-models.local.json
-.official_runtime.env
-*.key
-*.pem
-
-# Downloaded/locally reconstructed source data (including test text)
-data/raw/
-data/local/
-data/normalized/
-data/candidates/
-data/online_v2/
-data/online_v2_reviewed/
-data/official_online/
-
-# Runtime binaries, browsing evidence, and experiments
 .venv/
-.venv_*/
-venv/
-runtime/
-cache/
-tmp/
-runs/
-logs/
-artifacts/
-vendor/
-releases/
-reports/
-diagnostics/
-delivery_backups/
-*.har
-*.har.zip
-*.trace.zip
-
-# Tool caches
 __pycache__/
 *.py[cod]
-.pytest_cache/
 .DS_Store
-Thumbs.db
+.env
+.env.*
+runs/
+/corpus/*
+!/corpus/ATTRIBUTION.md
+!/corpus/upstream/
+/corpus/upstream/*
+!/corpus/upstream/Mind2Web_README.md
+*.tmp
 
-.credentials.env
-.credentials.env.*
-.storage_journal/
-.credential_file.env
-publication_local.json
-.model_overrides/
+# Local credentials, datasets and build products
+/models.local.json
+/data/
+/review/
+EventPilot-*-data.zip
+EventPilot-*-data.zip.sha256

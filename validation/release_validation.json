@@ -1,0 +1,61 @@
+{
+  "release": "EventPilot v11 reviewed English 460",
+  "validation_date": "2026-11-06",
+  "dataset": {
+    "valid": true,
+    "case_count": 460,
+    "baseline_count": 362,
+    "counts": {
+      "main": 200,
+      "goal": 50,
+      "state": 50,
+      "semantic": 60,
+      "multi": 100
+    },
+    "groups": {
+      "goal": 25,
+      "state": 25,
+      "semantic": 20
+    },
+    "dataset_digest": "0533163d2b6f293da243a8bf044a9dd7886164ac37472a5bafb95e61c291e32d",
+    "english_model_fields": true,
+    "review_method": "single_user_workbook_approval",
+    "agreement": null
+  },
+  "unit_checks": {
+    "passed": 47,
+    "failed": 0,
+    "network_calls": 0
+  },
+  "reference_path_engineering": {
+    "fixture": "PRIVATE_ORACLE_NOT_LLM",
+    "model_API_calls": 0,
+    "meaning": "source/control/denominator reachability check, not measured model performance",
+    "dataset_digest": "0533163d2b6f293da243a8bf044a9dd7886164ac37472a5bafb95e61c291e32d",
+    "executions": 1022,
+    "failures": 0,
+    "details": [],
+    "elapsed_seconds": 103.025
+  },
+  "runner_integration": {
+    "fixture": "PRIVATE_FIXTURE_NOT_LLM",
+    "network_calls": 0,
+    "records": 18,
+    "csv_tables": 23,
+    "framework_errors": 0,
+    "scope": "runner, real Session, stored raw prompts, source scoring and export integration; not LLM results"
+  },
+  "source_assets": {
+    "ok": true,
+    "files": 2198,
+    "bytes": 355878160,
+    "snapshot_storage": "unchanged_html_in_local_zip",
+    "missing": [],
+    "changed": []
+  },
+  "authored_data_CJK_files": [],
+  "snapshot_archive_sha256": "4f6df48bc29b75f6fc7c68f66ae1e2a28feca4d3585f5eb153c915dd88524a7b",
+  "model_API_calls": 0,
+  "model_experiment_results_generated": false,
+  "note": "Engineering validation is not LLM performance; use a fresh v11 run-root for model experiments."
+}

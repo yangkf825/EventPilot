@@ -1,0 +1,9 @@
+{
+  "tag": "v12.0.0",
+  "archive": "EventPilot-v12.0.0-data.zip",
+  "archive_sha256": "02aa1c00ba251986ce9872d77fa6215aa83facbf1bab8dccc93d705e454046b4",
+  "dataset_digest": "0533163d2b6f293da243a8bf044a9dd7886164ac37472a5bafb95e61c291e32d",
+  "reviewed_cases": 460,
+  "native_controls": 362,
+  "cleaned_html_snapshots": 2197
+}

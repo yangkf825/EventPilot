@@ -1,0 +1,178 @@
+"""Minimal provider adapter. Credentials are environment variables only."""
+import json
+import os
+import ssl
+import time
+import re
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
+from pathlib import Path
+
+from .input_budget import MAX_INPUT_BYTES
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+class ProviderError(RuntimeError):
+    """Credential-free transport diagnostics; never an Agent decision failure."""
+    def __init__(self,category,http_status=None,provider_code=None,retryable=False,quota=False):
+        self.diagnostics={'category':category,'http_status':http_status,'provider_code':provider_code,
+                          'retryable':retryable,'quota_exhausted':quota}
+        super().__init__('Provider '+category+(f' (HTTP {http_status})' if http_status else ''))
+
+
+def response_error(response):
+    try:
+        obj=response.json();detail=obj.get('error',obj) if isinstance(obj,dict) else {}
+        if not isinstance(detail,dict):detail={'message':str(detail)}
+    except (ValueError,TypeError):detail={}
+    description=str(detail.get('message','')).lower()
+    code=str(detail.get('code',''))
+    hard_limit_codes={'USAGE_LIMIT_EXCEEDED','INSUFFICIENT_QUOTA','QUOTA_EXCEEDED','INSUFFICIENT_BALANCE','CREDIT_BALANCE_EXHAUSTED'}
+    quota=(code.upper() in hard_limit_codes or bool(re.search(r'quota|insufficient.{0,20}(?:balance|credit|fund)|exhaust|余额|额度|限额',description+' '+code)) or response.status_code==402)
+    safe_code=code if re.fullmatch(r'[A-Za-z0-9_-]{1,64}',code) else None
+    auth_codes={'INVALID_API_KEY','AUTHENTICATION_ERROR','UNAUTHORIZED','INVALID_TOKEN'}
+    category='quota_exhausted' if quota else 'authentication_error' if response.status_code in (401,403) or code.upper() in auth_codes else 'model_or_endpoint_unavailable' if response.status_code==404 else 'rate_limit' if response.status_code==429 else 'http_error'
+    return ProviderError(category,response.status_code,safe_code,response.status_code in (429,500,502,503,504) and not quota,quota)
+
+
+class ProviderText(str):
+    """Text with credential-free response diagnostics, bound to this call."""
+    def __new__(cls, value, diagnostics):
+        result = super().__new__(cls, value)
+        result.diagnostics = diagnostics
+        return result
+
+    def __getnewargs__(self):
+        # copy/pickle must supply both constructor arguments when rebuilding
+        # this str subclass; deepcopy also isolates nested diagnostic values.
+        return str(self), self.diagnostics
+
+
+class Model:
+    def __init__(self, name, config=None):
+        self.config = json.loads(Path(config or ROOT / 'models.json').read_text())
+        matches = [m for m in self.config['models'] if m['name'] == name]
+        if len(matches) != 1 or matches[0]['backend'] != 'chat-completions':
+            raise ValueError('Choose a configured chat-completions model')
+        self.model = matches[0]
+        self.usage = []
+        self.last_call = 0.0
+        self.blocked=None
+
+    def call(self, messages, max_tokens=None):
+        # Transport dependencies are unnecessary for plan/export/local tests.
+        import httpx
+        if self.blocked is not None:
+            raise self.blocked
+        # An accidentally unbounded caller must fail locally, before billing or
+        # transport. The normal prompt builders project public inputs first.
+        if sum(len(m['content'].encode('utf-8')) for m in messages) > MAX_INPUT_BYTES:
+            raise ProviderError('input_budget_exceeded', retryable=False)
+        key = os.environ.get(self.model['api_key_env'])
+        if not key:
+            raise RuntimeError(f'Set {self.model["api_key_env"]} in the terminal first')
+        body = {'model': self.model['model'], 'messages': messages, 'stream': False}
+        for name in ('temperature', 'top_p', 'max_tokens', 'max_completion_tokens'):
+            if self.model.get(name) is not None:
+                body[name] = self.model[name]
+        if max_tokens is not None:
+            field = 'max_completion_tokens' if 'max_completion_tokens' in body else 'max_tokens'
+            body[field] = max_tokens
+        elif 'max_tokens' not in body and 'max_completion_tokens' not in body:
+            body['max_tokens'] = 4096
+        body.update(self.model.get('extra_body', {}))
+        wait = self.model.get('min_interval_s', 0) - (time.monotonic() - self.last_call)
+        if wait > 0:
+            time.sleep(wait)
+        retries = int(self.model.get('retries', self.config.get('retries', 2)))
+        ca_file = os.environ.get('EVENTARENA_CA_BUNDLE')
+        if not ca_file and Path('/etc/ssl/cert.pem').is_file():
+            ca_file = '/etc/ssl/cert.pem'
+        verify = ssl.create_default_context(cafile=ca_file) if ca_file else True
+        for attempt in range(retries + 1):
+            self.last_call = time.monotonic()
+            try:
+                with httpx.Client(timeout=self.model.get('timeout', self.config.get('timeout', 120)), verify=verify) as client:
+                    response = client.post(self.model['endpoint'], json=body,
+                                           headers={'Authorization': f'Bearer {key}'})
+                failure=response_error(response) if response.is_error else None
+                if failure and (failure.diagnostics['quota_exhausted'] or response.status_code in (401,403,404)):
+                    self.blocked=failure
+                    raise failure
+                if failure and failure.diagnostics['retryable'] and attempt < retries:
+                    retry_after = response.headers.get('Retry-After')
+                    delay = min(8, 2 ** attempt)
+                    if retry_after:
+                        try:
+                            delay = max(delay, float(retry_after))
+                        except ValueError:
+                            try:
+                                deadline = parsedate_to_datetime(retry_after)
+                                if deadline.tzinfo is None:
+                                    deadline = deadline.replace(tzinfo=timezone.utc)
+                                delay = max(delay, (deadline-datetime.now(timezone.utc)).total_seconds())
+                            except (TypeError, ValueError, OverflowError):
+                                pass
+                    maximum = float(self.model.get('max_retry_after_s', self.config.get('max_retry_after_s', 60)))
+                    if delay > maximum:
+                        raise ProviderError('rate_limit',response.status_code,retryable=True)
+                    time.sleep(max(0, delay))
+                    continue
+                if response.is_error:
+                    # Never include request headers or bearer credentials in errors/logs.
+                    # Ordinary 429 is transient backpressure, not a permanent
+                    # account block. Quota/auth errors are handled above.
+                    raise failure
+                try:
+                    data = response.json()
+                except ValueError:
+                    raise ProviderError('malformed_provider_response',response.status_code,retryable=True) from None
+                if not isinstance(data, dict):
+                    raise ProviderError('malformed_provider_response',response.status_code,retryable=True)
+                if not isinstance(data.get('choices'), list) or not data['choices']:
+                    failure=response_error(response)
+                    if failure.diagnostics['quota_exhausted'] or failure.diagnostics['category']=='authentication_error':
+                        self.blocked=failure
+                        raise failure
+                    raise ProviderError('malformed_provider_response',response.status_code,retryable=True)
+                choice = data['choices'][0]
+                if not isinstance(choice, dict) or not isinstance(choice.get('message'), dict):
+                    raise ProviderError('malformed_provider_response',response.status_code,retryable=True)
+                message = choice.get('message', {})
+                content = message.get('content') or ''
+                if isinstance(content, list):
+                    content = ''.join(part.get('text', '') for part in content if isinstance(part, dict))
+                if not isinstance(content, str):
+                    raise ProviderError('malformed_provider_response',response.status_code,retryable=True)
+                reasoning = message.get('reasoning_content', message.get('reasoning', ''))
+                diagnostics = {'finish_reason': choice.get('finish_reason'),
+                               'content_chars': len(content),
+                               'reasoning_chars': len(reasoning) if isinstance(reasoning, str) else None,
+                               'message_fields': sorted(message),
+                               'requested_output_tokens': body.get('max_completion_tokens', body.get('max_tokens')),
+                               'thinking_requested': body.get('thinking'),
+                               'empty_content': not bool(content.strip())}
+                usage=data.get('usage')
+                if not isinstance(usage,dict):usage=None
+                try:json.dumps(usage,allow_nan=False)
+                except (ValueError,TypeError,RecursionError):usage=None
+                self.usage.append({'model': data.get('model'), 'id': data.get('id'),
+                                   'usage': usage, **diagnostics})
+                return ProviderText(content, diagnostics)
+            except (httpx.TimeoutException, httpx.NetworkError):
+                if attempt == retries:
+                    raise ProviderError('transport_failure',retryable=True) from None
+                time.sleep(2 ** attempt)
+
+
+def object_output(text):
+    raw = text.strip()
+    if raw.startswith('```'):
+        raw = raw.split('\n', 1)[1].rsplit('```', 1)[0].strip()
+    value = json.loads(raw)
+    if not isinstance(value, dict):
+        raise ValueError('Expected one JSON object')
+    return value
+
+# Materialized source file for the reviewed v11 release.
